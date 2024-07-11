@@ -24,6 +24,7 @@ const stylesheet = createStyleSheet((theme) => ({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: theme.colors.base800,
   },
   link: {
     marginTop: theme.margins[16],
@@ -31,6 +32,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   linkText: {
     fontSize: 14,
-    color: '#2e78b7',
+    fontWeight: 'bold',
+    color: theme.colors.blue,
   },
 }));

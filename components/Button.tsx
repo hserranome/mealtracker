@@ -73,10 +73,10 @@ const stylesheet = createStyleSheet((theme) => ({
           backgroundColor: theme.colors.base800,
         },
         [ButtonType.Outline]: {
-          backgroundColor: theme.colors.white,
+          backgroundColor: theme.colors.background,
         },
         [ButtonType.Light]: {
-          backgroundColor: theme.colors.white,
+          backgroundColor: theme.colors.background,
         },
         [ButtonType.Ghost]: {
           backgroundColor: 'transparent',
@@ -100,14 +100,14 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   buttonText: {
     textAlign: 'center',
-    color: theme.colors.white,
+    color: theme.colors.background,
     fontSize: 16,
     lineHeight: 24,
     fontWeight: '800',
     variants: {
       type: {
         [ButtonType.Solid]: {
-          color: theme.colors.white,
+          color: theme.colors.background,
         },
         [ButtonType.Outline]: {
           color: theme.colors.base800,

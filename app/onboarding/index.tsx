@@ -33,8 +33,10 @@ export default function Welcome() {
 const stylesheet = createStyleSheet((theme) => ({
   title: {
     marginTop: theme.margins[32],
+    color: theme.colors.base800,
   },
   subtitle: {
     marginTop: theme.margins[20],
+    color: theme.colors.base800,
   },
 }));

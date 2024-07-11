@@ -7,10 +7,15 @@ export type TextInputProps = {
 } & ComponentProps<typeof RNTextInput>;
 
 export const TextInput = forwardRef<RNTextInput, TextInputProps>(({ suffix, ...props }, ref) => {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   return (
     <View style={styles.container}>
-      <RNTextInput ref={ref} style={[styles.input, props.style]} {...props} />
+      <RNTextInput
+        placeholderTextColor={theme.colors.base600}
+        ref={ref}
+        style={[styles.input, props.style]}
+        {...props}
+      />
       {suffix && <Text style={styles.suffix}>{suffix}</Text>}
     </View>
   );
@@ -26,7 +31,8 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: theme.margins[10],
     borderRadius: theme.radius[5],
     borderWidth: 2,
-    borderColor: theme.colors.base400,
+    borderColor: theme.colors.base800,
+    color: theme.colors.base800,
     variants: {
       selected: {
         true: {

@@ -19,18 +19,21 @@
     },
     "orientation": "portrait",
     "icon": "./assets/images/app/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/images/app/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "userInterfaceStyle": "automatic",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mealtracker.app"
+      "bundleIdentifier": "com.mealtracker.app",
+      "splash": {
+        "image": "./assets/images/app/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "backgroundColor": "#000000"
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -38,7 +41,15 @@
         "monochromeImage": "./assets/images/app/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mealtracker.app"
+      "package": "com.mealtracker.app",
+      "splash": {
+        "image": "./assets/images/app/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "backgroundColor": "#000000"
+        }
+      }
     },
     "extra": {
       "router": {

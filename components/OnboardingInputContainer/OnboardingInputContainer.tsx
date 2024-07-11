@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { useStyles } from 'react-native-unistyles';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 type OnboardingInputContainerProps = {
   title?: string;
@@ -12,11 +12,11 @@ export const OnboardingInputContainer = ({
   subtitle,
   children,
 }: OnboardingInputContainerProps) => {
-  const { theme } = useStyles();
+  const { styles, theme } = useStyles(stylesheet);
   return (
     <View>
-      {title && <Text style={theme.fonts.heading.xs}>{title}</Text>}
-      {subtitle && <Text style={theme.fonts.body.m}>{subtitle}</Text>}
+      {title && <Text style={[theme.fonts.heading.xs, styles.title]}>{title}</Text>}
+      {subtitle && <Text style={[theme.fonts.body.m, styles.subtitle]}>{subtitle}</Text>}
       {children && (
         <View style={{ gap: theme.margins[10], paddingVertical: theme.margins[12] }}>
           {children}
@@ -25,3 +25,12 @@ export const OnboardingInputContainer = ({
     </View>
   );
 };
+
+const stylesheet = createStyleSheet((theme) => ({
+  title: {
+    color: theme.colors.base800,
+  },
+  subtitle: {
+    color: theme.colors.base800,
+  },
+}));

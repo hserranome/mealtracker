@@ -23,9 +23,12 @@ const LayoutWrapper: FC<PropsWithChildren> = ({ children }) => {
       <View style={styles.header}>
         <View style={styles.titleBar}>
           <TouchableOpacity onPress={() => router.back()} style={styles.icon}>
-            <Feather name="arrow-left" size={32} />
+            <Feather name="arrow-left" size={32} color={theme.colors.base800} />
           </TouchableOpacity>
-          <Animated.Text entering={FadeIn} exiting={FadeOut} style={theme.fonts.heading.m}>
+          <Animated.Text
+            entering={FadeIn}
+            exiting={FadeOut}
+            style={[theme.fonts.heading.m, styles.title]}>
             {screen.title}
           </Animated.Text>
         </View>
@@ -39,11 +42,12 @@ const LayoutWrapper: FC<PropsWithChildren> = ({ children }) => {
 };
 
 export default function Layout() {
+  const { styles } = useStyles(stylesheet);
   return (
     <OnboardingParamsProvider>
       <OnboardingDataProvider>
         <LayoutWrapper>
-          <Stack screenOptions={{ headerShown: false }} />
+          <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }} />
         </LayoutWrapper>
       </OnboardingDataProvider>
     </OnboardingParamsProvider>
@@ -51,6 +55,10 @@ export default function Layout() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   safeArea: { flex: 1 },
   header: { paddingHorizontal: theme.margins[16] },
   titleBar: { flexDirection: 'row', alignItems: 'center' },
@@ -60,5 +68,8 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   icon: {
     marginRight: theme.margins[14],
+  },
+  title: {
+    color: theme.colors.base800,
   },
 }));

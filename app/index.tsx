@@ -33,6 +33,7 @@ const stylesheet = createStyleSheet((theme) => ({
   title: {
     marginTop: '40%',
     textAlign: 'center',
+    color: theme.colors.base800,
   },
   buttons: {
     gap: theme.margins[10],
