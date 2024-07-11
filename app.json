@@ -35,6 +35,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app/adaptive-icon.png",
+        "monochromeImage": "./assets/images/app/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.mealtracker.app"
