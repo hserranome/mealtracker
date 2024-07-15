@@ -57,16 +57,12 @@ export default function Dairy() {
   const [date, setDate] = useState(new Date());
 
   const { data, removeFoodFromDairy } = useDairy(date);
-  const dateName = getDateName(new Date(data.date));
-
-  const dateBack = () => {
-    setDate(new Date(date.setDate(date.getDate() - 1)));
-  };
-  const dateForward = () => {
-    setDate(new Date(date.setDate(date.getDate() + 1)));
-  };
 
   const dayNutriments = getFoodsNutriments(data.foods);
+
+  const dateName = getDateName(new Date(data.date));
+  const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
+  const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
 
   const { styles } = useStyles(stylesheet);
   return (
