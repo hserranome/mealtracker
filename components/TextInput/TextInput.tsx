@@ -4,22 +4,25 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export type TextInputProps = {
   suffix?: string | null;
+  containerStyle?: ComponentProps<typeof View>['style'];
 } & ComponentProps<typeof RNTextInput>;
 
-export const TextInput = forwardRef<RNTextInput, TextInputProps>(({ suffix, ...props }, ref) => {
-  const { styles, theme } = useStyles(stylesheet);
-  return (
-    <View style={styles.container}>
-      <RNTextInput
-        placeholderTextColor={theme.colors.base600}
-        ref={ref}
-        style={[styles.input, props.style]}
-        {...props}
-      />
-      {suffix && <Text style={styles.suffix}>{suffix}</Text>}
-    </View>
-  );
-});
+export const TextInput = forwardRef<RNTextInput, TextInputProps>(
+  ({ suffix, containerStyle, ...props }, ref) => {
+    const { styles, theme } = useStyles(stylesheet);
+    return (
+      <View style={[styles.container, containerStyle]}>
+        <RNTextInput
+          placeholderTextColor={theme.colors.base600}
+          ref={ref}
+          style={[styles.input, props.style]}
+          {...props}
+        />
+        {suffix && <Text style={styles.suffix}>{suffix}</Text>}
+      </View>
+    );
+  }
+);
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {

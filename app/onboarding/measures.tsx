@@ -3,13 +3,14 @@ import { useContext, useRef } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
 
 import { Button } from '~/components/Button';
+import { HeightInput } from '~/components/HeightInput';
 import { OnboardingContentContainer } from '~/components/OnboardingContentContainer';
 import { OnboardingDataContext, useOnboardingInput } from '~/components/OnboardingDataProvider';
 import { OnboardingInputContainer } from '~/components/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/OnboardingParamsProvider';
 import { OnboardingStepContainer } from '~/components/OnboardingStepContainer';
-import { TextInput } from '~/components/TextInput';
-import { Goal } from '~/data/types';
+import { WeightInput } from '~/components/WeightInput';
+import { Goal, HeightUnit, WeightUnit } from '~/data/types';
 
 export default function Measures() {
   useSetOnboardingParams({ title: 'Measures', progress: 75 });
@@ -29,14 +30,10 @@ export default function Measures() {
     <OnboardingStepContainer>
       <OnboardingContentContainer>
         <OnboardingInputContainer title="How tall are you?">
-          <TextInput
-            placeholder="Height"
-            value={currentHeight ? String(currentHeight) : ''}
-            onChangeText={(text) => setHeight(parseInt(text, 10))}
-            maxLength={3}
-            keyboardType="numeric"
-            suffix={heightUnit ? String(heightUnit) : null}
-            returnKeyType="next"
+          <HeightInput
+            value={currentHeight || 0}
+            setValue={setHeight}
+            format={heightUnit || HeightUnit.cm}
             onSubmitEditing={() => {
               refWeightInput.current?.focus();
             }}
@@ -45,14 +42,11 @@ export default function Measures() {
         <OnboardingInputContainer
           title="How much do you weight?"
           subtitle="It's ok to estimate, you can update this later.">
-          <TextInput
+          <WeightInput
+            value={currentWeight || 0}
+            setValue={setWeight}
+            format={weightUnit || WeightUnit.kg}
             ref={refWeightInput}
-            placeholder="Weight"
-            value={currentWeight ? String(currentWeight) : ''}
-            onChangeText={(text) => setWeight(parseInt(text, 10))}
-            maxLength={3}
-            keyboardType="numeric"
-            suffix={weightUnit ? String(weightUnit) : null}
           />
         </OnboardingInputContainer>
       </OnboardingContentContainer>
