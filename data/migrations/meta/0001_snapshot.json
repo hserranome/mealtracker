@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "04042c63-7d80-486f-acea-b753c3c89f60",
-  "prevId": "9b17a18b-f6cb-489f-848c-79de47ad2880",
+  "id": "27805bd6-047b-4e6c-a927-77f8c3e5102a",
+  "prevId": "5bd51f47-2705-4144-afc9-60577874373b",
   "tables": {
     "users": {
       "name": "users",
@@ -147,6 +147,58 @@
           "name": "users_email_unique",
           "columns": [
             "email"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "dairies": {
+      "name": "dairies",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "meals": {
+          "name": "meals",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "foods": {
+          "name": "foods",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "weight": {
+          "name": "weight",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "dairies_id_unique": {
+          "name": "dairies_id_unique",
+          "columns": [
+            "id"
           ],
           "isUnique": true
         }

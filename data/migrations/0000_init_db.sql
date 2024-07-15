@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `users`;
+--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`username` text,
@@ -8,8 +10,8 @@ CREATE TABLE `users` (
 	`weight_unit` text,
 	`height_unit` text,
 	`initial_height` integer,
-	`initial_weight` integer,
-	`goal_weight` integer,
+	`initial_weight` real,
+	`goal_weight` real,
 	`weight_variance_rate` real,
 	`email` text,
 	`password_hash` text,

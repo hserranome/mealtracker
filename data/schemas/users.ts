@@ -24,3 +24,5 @@ export const users = sqliteTable('users', {
   //   Misc
   created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
 });
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;

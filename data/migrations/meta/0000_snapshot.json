@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9b17a18b-f6cb-489f-848c-79de47ad2880",
+  "id": "5bd51f47-2705-4144-afc9-60577874373b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "users": {
@@ -72,14 +72,14 @@
         },
         "initial_weight": {
           "name": "initial_weight",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "goal_weight": {
           "name": "goal_weight",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

@@ -1,19 +1,19 @@
 import { createContext, FC, PropsWithChildren, useState } from 'react';
 
 import { db } from '~/data/database';
-import { users } from '~/data/schemas';
+import { NewUser, users } from '~/data/schemas';
 
 export type OnboardingData = {
-  goal?: (typeof users.$inferInsert)['goal'];
-  activityLevel?: (typeof users.$inferInsert)['activity_level'];
-  sex?: (typeof users.$inferInsert)['sex'];
-  birthYear?: (typeof users.$inferInsert)['birth_year'];
-  heightUnit?: (typeof users.$inferInsert)['height_unit'];
-  weightUnit?: (typeof users.$inferInsert)['weight_unit'];
-  initialHeight?: (typeof users.$inferInsert)['initial_height'];
-  initialWeight?: (typeof users.$inferInsert)['initial_weight'];
-  goalWeight?: (typeof users.$inferInsert)['goal_weight'];
-  weightVarianceRate?: (typeof users.$inferInsert)['weight_variance_rate'];
+  goal?: NewUser['goal'];
+  activityLevel?: NewUser['activity_level'];
+  sex?: NewUser['sex'];
+  birthYear?: NewUser['birth_year'];
+  heightUnit?: NewUser['height_unit'];
+  weightUnit?: NewUser['weight_unit'];
+  initialHeight?: NewUser['initial_height'];
+  initialWeight?: NewUser['initial_weight'];
+  goalWeight?: NewUser['goal_weight'];
+  weightVarianceRate?: NewUser['weight_variance_rate'];
 };
 
 type OnboardingDataProviderValue = {
