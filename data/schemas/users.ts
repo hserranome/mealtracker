@@ -12,8 +12,8 @@ export const users = sqliteTable('users', {
   weight_unit: text('weight_unit', { enum: [WeightUnit.kg, WeightUnit.lb] }),
   height_unit: text('height_unit', { enum: [HeightUnit.cm, HeightUnit.ftIn] }),
   initial_height: integer('initial_height'),
-  initial_weight: integer('initial_weight'),
-  goal_weight: integer('goal_weight'),
+  initial_weight: real('initial_weight'),
+  goal_weight: real('goal_weight'),
   weight_variance_rate: real('weight_variance_rate'),
   //   Account
   email: text('email').unique(),
