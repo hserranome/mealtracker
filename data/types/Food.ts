@@ -1,8 +1,8 @@
 export type Food = {
   name: string;
-  meal: string;
+  meal: number; //index
   amount: number;
-  measure: string;
+  unit: string;
   nutriment_basis: string;
   nutriments: {
     kcal: number;

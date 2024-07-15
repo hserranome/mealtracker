@@ -1,71 +1,12 @@
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-type foodType = {
-  name: string;
-  amount: number;
-  meal: string;
-  quantity: number;
-  measure: string;
-  nutriments: {
-    kcal: number;
-    fat: number;
-    protein: number;
-    carbs: number;
-  };
-  full_nutriments: {
-    kcal: number;
-    fat: number;
-    protein: number;
-    carbs: number;
-  };
-};
-const data = {
-  date: '2024-07-15',
-  meals: ['Breakfast', 'Lunch', 'Dinner'],
-  foods: [
-    {
-      name: 'Apple',
-      amount: 1,
-      meal: 'Breakfast',
-      quantity: 0.5,
-      measure: 'units',
-      nutriments: {
-        kcal: 50,
-        fat: 2.5,
-        protein: 5,
-        carbs: 5,
-      },
-      full_nutriments: {
-        kcal: 100,
-        fat: 5,
-        protein: 10,
-        carbs: 10,
-      },
-    },
-    {
-      name: 'Banana',
-      amount: 1,
-      meal: 'Breakfast',
-      quantity: 0.5,
-      measure: 'units',
-      nutriments: {
-        kcal: 50,
-        fat: 2.5,
-        protein: 5,
-        carbs: 5,
-      },
-      full_nutriments: {
-        kcal: 100,
-        fat: 5,
-        protein: 10,
-        carbs: 10,
-      },
-    },
-  ],
-};
+import { Button } from '~/components/Button';
+import { Food } from '~/data/types/Food';
+import { useDairy } from '~/hooks/useDairy';
 
-const getFoodsNutriments = (foods: foodType[]) => {
+const getFoodsNutriments = (foods: Food[]) => {
   return foods.reduce(
     (acc, food) => {
       return {
@@ -79,8 +20,9 @@ const getFoodsNutriments = (foods: foodType[]) => {
   );
 };
 
-const getMealFoods = (meal: string, foods: foodType[]) => {
-  return foods.filter((food) => food.meal === meal);
+const getMealFoods = (meal: number, foods: Food[]) => {
+  const foodsWithIndex = foods.map((food, index) => ({ ...food, index }));
+  return foodsWithIndex.filter((food) => food.meal === meal);
 };
 
 const getDateName = (date: Date) => {
@@ -112,40 +54,51 @@ const NutrimentsInline = ({
 };
 
 export default function Dairy() {
+  const [date, setDate] = useState(new Date());
+
+  const { data, removeFoodFromDairy } = useDairy(date);
+  const dateName = getDateName(new Date(data.date));
+
+  const dateBack = () => {
+    setDate(new Date(date.setDate(date.getDate() - 1)));
+  };
+  const dateForward = () => {
+    setDate(new Date(date.setDate(date.getDate() + 1)));
+  };
+
   const dayNutriments = getFoodsNutriments(data.foods);
 
-  const date = new Date(data.date);
-  const dateName = getDateName(date);
-
   const { styles } = useStyles(stylesheet);
-
   return (
     <View style={styles.container}>
+      {/* HEADER */}
       <View style={styles.header}>
+        <Button onPress={dateBack} title="Back" />
         <Text style={styles.title}>{dateName}</Text>
+        <Button onPress={dateForward} title="Forward" />
       </View>
       <NutrimentsInline nutriments={dayNutriments} />
-      {data.meals.map((meal) => {
-        const foods = getMealFoods(meal, data.foods);
+      {/* MEALS */}
+      {data.meals.map((meal: any, mealIndex) => {
+        const foods = getMealFoods(mealIndex, data.foods);
         const nutriments = getFoodsNutriments(foods);
         return (
           <View key={meal} style={styles.meal}>
             <View style={styles.mealHeader}>
               <Text style={styles.mealTitle}>{meal}</Text>
             </View>
+            {/* FOODS */}
             {foods.length ? (
               <View style={styles.mealFoods}>
-                {foods.map((food) => (
-                  <View key={food.name} style={styles.mealFood}>
+                {foods.map((food, index) => (
+                  <View key={`${food.name}-${index}`} style={styles.mealFood}>
                     <Text style={styles.mealFoodName}>{food.name}</Text>
-                    <Text
-                      style={
-                        styles.mealFoodAmount
-                      }>{`${food.amount} ${food.quantity} ${food.measure}`}</Text>
+                    <Button onPress={() => removeFoodFromDairy(food.index)} title="Remove" />
                   </View>
                 ))}
               </View>
             ) : null}
+            {/* NUTRIMENTS */}
             <NutrimentsInline nutriments={nutriments} />
           </View>
         );
@@ -161,6 +114,8 @@ const stylesheet = createStyleSheet((theme) => ({
   header: {
     backgroundColor: theme.colors.base400,
     padding: theme.margins[16],
+    flexDirection: 'row',
+    gap: theme.margins[16],
   },
   title: {
     ...theme.fonts.heading.xs,
