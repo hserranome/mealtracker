@@ -2,7 +2,7 @@ import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { HeightUnit, WeightUnit } from '../types';
 
-export const users = sqliteTable('users', {
+export const users = sqliteTable('user', {
   id: integer('id').primaryKey({ autoIncrement: true }).unique().notNull(),
   username: text('username'),
   goal: integer('goal', { mode: 'number' }),

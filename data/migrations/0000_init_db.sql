@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS `users`;
---> statement-breakpoint
-CREATE TABLE `users` (
+CREATE TABLE `user` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`username` text,
 	`goal` integer,
@@ -21,5 +19,14 @@ CREATE TABLE `users` (
 	`created_at` text DEFAULT 'CURRENT_TIMESTAMP' NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `users_id_unique` ON `users` (`id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);
+CREATE TABLE `dairy` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`date` text NOT NULL,
+	`meals` text NOT NULL,
+	`foods` text NOT NULL,
+	`weight` real
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `user_id_unique` ON `user` (`id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX `dairy_id_unique` ON `dairy` (`id`);
