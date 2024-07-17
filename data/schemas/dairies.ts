@@ -2,7 +2,7 @@ import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { Food } from '../types/Food';
 
-export const dairies = sqliteTable('dairy', {
+export const dairies = sqliteTable('dairies', {
   id: integer('id').primaryKey({ autoIncrement: true }).unique().notNull(),
   date: text('date').notNull(),
   meals: text('meals', { mode: 'json' }).$type<string[]>().notNull(), // can be removed and replace by settings meals based on index

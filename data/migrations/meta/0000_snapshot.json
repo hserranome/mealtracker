@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "96137b6b-3e85-4c44-9a5f-4f0de7c78b1f",
+  "id": "46e11152-14a2-46c8-a024-9198580c9307",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "user": {
-      "name": "user",
+    "users": {
+      "name": "users",
       "columns": {
         "id": {
           "name": "id",
@@ -136,15 +136,15 @@
         }
       },
       "indexes": {
-        "user_id_unique": {
-          "name": "user_id_unique",
+        "users_id_unique": {
+          "name": "users_id_unique",
           "columns": [
             "id"
           ],
           "isUnique": true
         },
-        "user_email_unique": {
-          "name": "user_email_unique",
+        "users_email_unique": {
+          "name": "users_email_unique",
           "columns": [
             "email"
           ],
@@ -155,8 +155,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "dairy": {
-      "name": "dairy",
+    "dairies": {
+      "name": "dairies",
       "columns": {
         "id": {
           "name": "id",
@@ -195,8 +195,8 @@
         }
       },
       "indexes": {
-        "dairy_id_unique": {
-          "name": "dairy_id_unique",
+        "dairies_id_unique": {
+          "name": "dairies_id_unique",
           "columns": [
             "id"
           ],
