@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -12,11 +13,11 @@ const getFoodsNutriments = (foods: Food[]) => {
       return {
         kcal: acc.kcal + food.nutriments.kcal,
         fat: acc.fat + food.nutriments.fat,
-        protein: acc.protein + food.nutriments.protein,
-        carbs: acc.carbs + food.nutriments.carbs,
+        proteins: acc.proteins + food.nutriments.proteins,
+        carbohydrates: acc.carbohydrates + food.nutriments.carbohydrates,
       };
     },
-    { kcal: 0, fat: 0, protein: 0, carbs: 0 }
+    { kcal: 0, fat: 0, proteins: 0, carbohydrates: 0 }
   );
 };
 
@@ -37,18 +38,14 @@ const getDateName = (date: Date) => {
   return dateString;
 };
 
-const NutrimentsInline = ({
-  nutriments,
-}: {
-  nutriments: { kcal: number; fat: number; protein: number; carbs: number };
-}) => {
+const NutrimentsInline = ({ nutriments }: { nutriments: Food['nutriments'] }) => {
   const { styles } = useStyles(stylesheet);
   return (
     <View style={styles.nutriments}>
       <Text style={[styles.nutriment]}>{`${nutriments.kcal} kcal`}</Text>
       <Text style={[styles.nutriment]}>{`${nutriments.fat} g fat`}</Text>
-      <Text style={[styles.nutriment]}>{`${nutriments.protein} g protein`}</Text>
-      <Text style={[styles.nutriment]}>{`${nutriments.carbs} g carbs`}</Text>
+      <Text style={[styles.nutriment]}>{`${nutriments.proteins} g proteins`}</Text>
+      <Text style={[styles.nutriment]}>{`${nutriments.carbohydrates} g carbs`}</Text>
     </View>
   );
 };
@@ -73,6 +70,9 @@ export default function Dairy() {
         <Text style={styles.title}>{dateName}</Text>
         <Button onPress={dateForward} title="Forward" />
       </View>
+      <Link href="/barcode-cam" asChild>
+        <Button title="Scan Barcode" />
+      </Link>
       <NutrimentsInline nutriments={dayNutriments} />
       {/* MEALS */}
       {data.meals.map((meal: any, mealIndex) => {

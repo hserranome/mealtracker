@@ -11,6 +11,12 @@
         {
           "launchMode": "most-recent"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes",
+        }
       ]
     ],
     "experiments": {
