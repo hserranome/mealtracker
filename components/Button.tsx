@@ -46,11 +46,7 @@ const stylesheet = createStyleSheet((theme) => ({
     variants: {
       type: {
         [ButtonType.Solid]: {},
-        [ButtonType.Outline]: {
-          borderWidth: 2,
-          borderColor: theme.colors.base800,
-          borderStyle: 'solid',
-        },
+        [ButtonType.Outline]: {},
         [ButtonType.Light]: {},
         [ButtonType.Ghost]: {},
       },
@@ -74,6 +70,10 @@ const stylesheet = createStyleSheet((theme) => ({
         },
         [ButtonType.Outline]: {
           backgroundColor: theme.colors.background,
+          borderWidth: 2,
+          borderColor: theme.colors.base800,
+          borderStyle: 'solid',
+          paddingVertical: theme.margins[12] - 2,
         },
         [ButtonType.Light]: {
           backgroundColor: theme.colors.background,
