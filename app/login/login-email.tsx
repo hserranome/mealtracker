@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { TextInput } from '~/components/elements/TextInput/TextInput';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
@@ -31,7 +32,6 @@ const LoginEmailScreen = () => {
     <OnboardingScreenContainer title="Login with Email" progress={null}>
       <View style={styles.container}>
         <TextInput
-          style={styles.input}
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
@@ -39,7 +39,6 @@ const LoginEmailScreen = () => {
           autoCapitalize="none"
         />
         <TextInput
-          style={styles.input}
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
@@ -63,14 +62,6 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: theme.margins[16],
-  },
-  input: {
-    width: '100%',
-    padding: theme.margins[12],
-    marginBottom: theme.margins[16],
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    borderRadius: theme.radius[5],
   },
   error: {
     color: theme.colors.base600,
