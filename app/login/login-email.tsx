@@ -70,14 +70,14 @@ const stylesheet = createStyleSheet((theme) => ({
     marginBottom: theme.margins[16],
     borderWidth: 1,
     borderColor: theme.colors.border,
-    borderRadius: theme.radius[4],
+    borderRadius: theme.radius[5],
   },
   error: {
-    color: theme.colors.error,
+    color: theme.colors.base600,
     marginBottom: theme.margins[16],
   },
   forgotPassword: {
-    color: theme.colors.primary,
+    color: theme.colors.blue,
     textAlign: 'right',
     marginBottom: theme.margins[16],
   },
