@@ -3,7 +3,7 @@ import '../theme/unistyles';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { Stack } from 'expo-router';
-import { SQLiteProvider } from 'expo-sqlite';
+import { deleteDatabaseSync, SQLiteProvider } from 'expo-sqlite';
 import * as SystemUI from 'expo-system-ui';
 import { Suspense, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
@@ -27,10 +27,13 @@ export default function Layout() {
     SystemUI.setBackgroundColorAsync(theme.colors.background);
   }, [colorScheme]);
 
+  if (!success && !error) return <LoadingScreen />;
   if (error) {
     console.error(error);
+    sqlDb.closeSync();
+    deleteDatabaseSync(DB_NAME); // @todo: only on dev mode (?)
+    return <></>;
   }
-  if (!success) return <LoadingScreen />;
 
   return (
     <Suspense fallback={<LoadingScreen />}>
