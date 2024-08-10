@@ -4,24 +4,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/Button';
-import { OnboardingStepContainer } from '~/components/OnboardingStepContainer';
+import { OnboardingFormStepContainer } from '~/components/OnboardingFormStepContainer';
 
 export default function Start() {
   const { styles, theme } = useStyles(stylesheet);
 
   return (
     <SafeAreaView style={styles.container}>
-      <OnboardingStepContainer>
-        <Text style={[theme.fonts.heading.xl, styles.title]}>MealTracker</Text>
-        <View style={styles.buttons}>
-          <Link href={{ pathname: '/onboarding' }} asChild>
-            <Button title="Start now" />
-          </Link>
-          <Link href={{ pathname: '/login' }} asChild>
-            <Button title="Log in" type={ButtonType.Outline} />
-          </Link>
-        </View>
-      </OnboardingStepContainer>
+      <OnboardingFormStepContainer
+      content={ <Text style={[theme.fonts.heading.xl, styles.title]}>MealTracker</Text>}
+        footer={        <View style={styles.buttons}>
+        <Link href={{ pathname: '/onboarding' }} asChild>
+          <Button title="Start now" />
+        </Link>
+        <Link href={{ pathname: '/login' }} asChild>
+          <Button title="Log in" type={ButtonType.Outline} />
+        </Link>
+      </View>}
+      />
+       
+
     </SafeAreaView>
   );
 }
