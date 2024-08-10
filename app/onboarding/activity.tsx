@@ -43,8 +43,8 @@ export default function Goals() {
   const canNext = currentValue !== undefined;
 
   return (
-    <OnboardingStepContainer>
-      <OnboardingContentContainer>
+    <OnboardingFormStepContainer
+      content={
         <OnboardingInputContainer
           title="What's your baseline activity level?"
           subtitle="Based on your activity level, Meal Tracker can estimate the amount of energy you burn each day.">
@@ -58,10 +58,12 @@ export default function Goals() {
             />
           ))}
         </OnboardingInputContainer>
-      </OnboardingContentContainer>
-      <Link href={{ pathname: '/onboarding/about' }} asChild>
-        <Button title="Next" disabled={!canNext} />
-      </Link>
-    </OnboardingStepContainer>
+      }
+      footer={
+        <Link href={{ pathname: '/onboarding/about' }} asChild>
+          <Button title="Next" disabled={!canNext} />
+        </Link>
+      }
+    />
   );
 }

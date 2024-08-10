@@ -43,34 +43,38 @@ export default function Goals() {
   const canNext = selectedGender !== undefined && ageFromBirthYear;
 
   return (
-    <OnboardingStepContainer>
-      <OnboardingContentContainer>
-        <OnboardingInputContainer
-          title="What sex should we use?"
-          subtitle="Please select which sex we should use to calculate your calorie needs.">
-          {sexOptions.map(({ value, label }) => (
-            <RadioOption
-              key={value}
-              subtitle={label}
-              onPress={() => setSelectedGender(value)}
-              selected={selectedGender === value}
+    <OnboardingFormStepContainer
+      content={
+        <>
+          <OnboardingInputContainer
+            title="What sex should we use?"
+            subtitle="Please select which sex we should use to calculate your calorie needs.">
+            {sexOptions.map(({ value, label }) => (
+              <RadioOption
+                key={value}
+                subtitle={label}
+                onPress={() => setSelectedGender(value)}
+                selected={selectedGender === value}
+              />
+            ))}
+          </OnboardingInputContainer>
+          <OnboardingInputContainer
+            title="How old are you?"
+            subtitle="We use this to calculate an accurate calorie goal.">
+            <TextInput
+              placeholder="Age"
+              keyboardType="numeric"
+              value={safeAgeString}
+              onChangeText={handleChangeAge}
             />
-          ))}
-        </OnboardingInputContainer>
-        <OnboardingInputContainer
-          title="How old are you?"
-          subtitle="We use this to calculate an accurate calorie goal.">
-          <TextInput
-            placeholder="Age"
-            keyboardType="numeric"
-            value={safeAgeString}
-            onChangeText={handleChangeAge}
-          />
-        </OnboardingInputContainer>
-      </OnboardingContentContainer>
-      <Link href={{ pathname: '/onboarding/units' }} asChild>
-        <Button title="Next" disabled={!canNext} />
-      </Link>
-    </OnboardingStepContainer>
+          </OnboardingInputContainer>
+        </>
+      }
+      footer={
+        <Link href={{ pathname: '/onboarding/units' }} asChild>
+          <Button title="Next" disabled={!canNext} />
+        </Link>
+      }
+    />
   );
 }

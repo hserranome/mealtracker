@@ -27,32 +27,36 @@ export default function Measures() {
   const nextRoute = goal === Goal.Maintain ? 'finish' : 'objectives';
 
   return (
-    <OnboardingStepContainer>
-      <OnboardingContentContainer>
-        <OnboardingInputContainer title="How tall are you?">
-          <HeightInput
-            value={currentHeight || 0}
-            setValue={setHeight}
-            format={heightUnit || HeightUnit.cm}
-            onSubmitEditing={() => {
-              refWeightInput.current?.focus();
-            }}
-          />
-        </OnboardingInputContainer>
-        <OnboardingInputContainer
-          title="How much do you weight?"
-          subtitle="It's ok to estimate, you can update this later.">
-          <WeightInput
-            value={currentWeight || 0}
-            setValue={setWeight}
-            format={weightUnit || WeightUnit.kg}
-            ref={refWeightInput}
-          />
-        </OnboardingInputContainer>
-      </OnboardingContentContainer>
-      <Link href={{ pathname: `/onboarding/${nextRoute}` }} asChild>
-        <Button title="Next" disabled={!canNext} />
-      </Link>
-    </OnboardingStepContainer>
+    <OnboardingFormStepContainer
+      content={
+        <>
+          <OnboardingInputContainer title="How tall are you?">
+            <HeightInput
+              value={currentHeight || 0}
+              setValue={setHeight}
+              format={heightUnit || HeightUnit.cm}
+              onSubmitEditing={() => {
+                refWeightInput.current?.focus();
+              }}
+            />
+          </OnboardingInputContainer>
+          <OnboardingInputContainer
+            title="How much do you weight?"
+            subtitle="It's ok to estimate, you can update this later.">
+            <WeightInput
+              value={currentWeight || 0}
+              setValue={setWeight}
+              format={weightUnit || WeightUnit.kg}
+              ref={refWeightInput}
+            />
+          </OnboardingInputContainer>
+        </>
+      }
+      footer={
+        <Link href={{ pathname: `/onboarding/${nextRoute}` }} asChild>
+          <Button title="Next" disabled={!canNext} />
+        </Link>
+      }
+    />
   );
 }

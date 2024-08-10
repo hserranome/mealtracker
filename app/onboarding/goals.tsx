@@ -33,8 +33,8 @@ export default function Goals() {
   const canNext = currentValue !== undefined;
 
   return (
-    <OnboardingStepContainer>
-      <OnboardingContentContainer>
+    <OnboardingFormStepContainer
+      content={
         <OnboardingInputContainer
           title="Let's start with goals."
           subtitle="Do you want to lose, maintain, or gain weight?">
@@ -48,10 +48,12 @@ export default function Goals() {
             />
           ))}
         </OnboardingInputContainer>
-      </OnboardingContentContainer>
-      <Link href={{ pathname: '/onboarding/activity' }} asChild>
-        <Button title="Next" disabled={!canNext} />
-      </Link>
-    </OnboardingStepContainer>
+      }
+      footer={
+        <Link href={{ pathname: '/onboarding/activity' }} asChild>
+          <Button title="Next" disabled={!canNext} />
+        </Link>
+      }
+    />
   );
 }

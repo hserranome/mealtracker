@@ -42,36 +42,40 @@ export default function UnitsAndFormats() {
   const canNext = selectedHeightUnit && selectedWeightUnit;
 
   return (
-    <OnboardingStepContainer>
-      <OnboardingContentContainer>
-        <OnboardingInputContainer
-          title="Preferred height unit"
-          subtitle="Used only for measuring your height.">
-          {heightOptions.map(({ value, label }) => (
-            <RadioOption
-              key={value}
-              subtitle={label}
-              onPress={() => setSelectedHeightUnit(value)}
-              selected={selectedHeightUnit === value}
-            />
-          ))}
-        </OnboardingInputContainer>
-        <OnboardingInputContainer
-          title="Preferred weight unit"
-          subtitle="Used only for measuring your weight and food measures.">
-          {weightOptions.map(({ value, label }) => (
-            <RadioOption
-              key={value}
-              subtitle={label}
-              onPress={() => setSelectedWeightUnit(value)}
-              selected={selectedWeightUnit === value}
-            />
-          ))}
-        </OnboardingInputContainer>
-      </OnboardingContentContainer>
-      <Link href={{ pathname: '/onboarding/measures' }} asChild>
-        <Button title="Next" disabled={!canNext} />
-      </Link>
-    </OnboardingStepContainer>
+    <OnboardingFormStepContainer
+      content={
+        <>
+          <OnboardingInputContainer
+            title="Preferred height unit"
+            subtitle="Used only for measuring your height.">
+            {heightOptions.map(({ value, label }) => (
+              <RadioOption
+                key={value}
+                subtitle={label}
+                onPress={() => setSelectedHeightUnit(value)}
+                selected={selectedHeightUnit === value}
+              />
+            ))}
+          </OnboardingInputContainer>
+          <OnboardingInputContainer
+            title="Preferred weight unit"
+            subtitle="Used only for measuring your weight and food measures.">
+            {weightOptions.map(({ value, label }) => (
+              <RadioOption
+                key={value}
+                subtitle={label}
+                onPress={() => setSelectedWeightUnit(value)}
+                selected={selectedWeightUnit === value}
+              />
+            ))}
+          </OnboardingInputContainer>
+        </>
+      }
+      footer={
+        <Link href={{ pathname: '/onboarding/measures' }} asChild>
+          <Button title="Next" disabled={!canNext} />
+        </Link>
+      }
+    />
   );
 }

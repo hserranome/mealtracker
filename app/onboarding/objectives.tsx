@@ -38,34 +38,38 @@ export default function Objectives() {
     useOnboardingInput('weightVarianceRate');
 
   return (
-    <OnboardingStepContainer>
-      <OnboardingContentContainer>
-        <OnboardingInputContainer
-          title="What's your goal weight? "
-          subtitle="Don't worry. This doesn't affect your daily calorie goal and you can always change it later. ">
-          <TextInput
-            placeholder="Goal weight"
-            keyboardType="numeric"
-            value={goalWeight ? String(goalWeight) : ''}
-            onChangeText={(text) => setGoalWeight(parseInt(text, 10))}
-            suffix="kg"
-            maxLength={3}
-          />
-        </OnboardingInputContainer>
-        <OnboardingInputContainer title="What's your weekly goal?">
-          {options.map(({ value, label }) => (
-            <RadioOption
-              key={value}
-              subtitle={label}
-              onPress={() => setWeightVarianceRate(value)}
-              selected={weightVarianceRate === value}
+    <OnboardingFormStepContainer
+      content={
+        <>
+          <OnboardingInputContainer
+            title="What's your goal weight? "
+            subtitle="Don't worry. This doesn't affect your daily calorie goal and you can always change it later. ">
+            <TextInput
+              placeholder="Goal weight"
+              keyboardType="numeric"
+              value={goalWeight ? String(goalWeight) : ''}
+              onChangeText={(text) => setGoalWeight(parseInt(text, 10))}
+              suffix="kg"
+              maxLength={3}
             />
-          ))}
-        </OnboardingInputContainer>
-      </OnboardingContentContainer>
-      <Link href={{ pathname: '/onboarding/finish' }} asChild>
-        <Button title="Next" />
-      </Link>
-    </OnboardingStepContainer>
+          </OnboardingInputContainer>
+          <OnboardingInputContainer title="What's your weekly goal?">
+            {options.map(({ value, label }) => (
+              <RadioOption
+                key={value}
+                subtitle={label}
+                onPress={() => setWeightVarianceRate(value)}
+                selected={weightVarianceRate === value}
+              />
+            ))}
+          </OnboardingInputContainer>
+        </>
+      }
+      footer={
+        <Link href={{ pathname: '/onboarding/finish' }} asChild>
+          <Button title="Next" />
+        </Link>
+      }
+    />
   );
 }
