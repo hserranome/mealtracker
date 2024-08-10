@@ -35,7 +35,7 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: theme.radius[5],
     borderWidth: 2,
     borderColor: theme.colors.base800,
-    backgroundColor: theme.colors.base200,
+    backgroundColor: theme.colors.background,
     color: theme.colors.base800,
     variants: {
       selected: {
