@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Button } from '~/components/Button';
+import { Button } from '~/components/elements/Button';
 import { Food } from '~/data/types/Food';
 import { useDairy } from '~/hooks/useDairy';
 

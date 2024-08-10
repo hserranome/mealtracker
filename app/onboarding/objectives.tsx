@@ -1,12 +1,12 @@
 import { Link } from 'expo-router';
 
-import { Button } from '~/components/Button';
+import { Button } from '~/components/elements/Button';
 import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
-import { RadioOption } from '~/components/RadioOption';
-import { TextInput } from '~/components/TextInput';
+import { RadioOption } from '~/components/elements/RadioOption';
+import { TextInput } from '~/components/elements/TextInput';
 
 // @todo lose/gain label, and kg/lb units
 // could be manual, or use enums

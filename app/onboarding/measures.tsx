@@ -1,13 +1,13 @@
 import { useContext, useRef } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
 
-import { Button } from '~/components/Button';
-import { HeightInput } from '~/components/HeightInput';
+import { Button } from '~/components/elements/Button';
+import { HeightInput } from '~/components/elements/HeightInput';
 import { OnboardingDataContext, useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
-import { WeightInput } from '~/components/WeightInput';
+import { WeightInput } from '~/components/elements/WeightInput';
 import { Goal, HeightUnit, WeightUnit } from '~/data/types';
 
 export default function Measures() {

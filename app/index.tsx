@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Button, ButtonType } from '~/components/Button';
+import { Button, ButtonType } from '~/components/elements/Button';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 
 export default function Start() {

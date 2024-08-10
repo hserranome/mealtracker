@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { Button } from '~/components/Button';
+import { Button } from '~/components/elements/Button';
 import { db } from '~/data/database';
 import { users } from '~/data/schemas';
 

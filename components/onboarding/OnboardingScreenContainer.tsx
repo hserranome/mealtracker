@@ -7,7 +7,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { ProgressBar } from '~/components/ProgressBar';
+import { ProgressBar } from '~/components/elements/ProgressBar';
 
 export const OnboardingScreenContainer: FC<PropsWithChildren<{
   title: string | null;
