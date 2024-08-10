@@ -6,7 +6,7 @@ import {
   OnboardingParamsContext,
   OnboardingParamsProvider,
 } from '~/components/OnboardingParamsProvider';
-import { OnboardingScreenContainer } from '~/components/OnboardingScreenTemplate';
+import { OnboardingScreenContainer } from '~/components/OnboardingScreenContainer';
 
 const LayoutWrapper: FC<PropsWithChildren> = ({ children }) => {
   const { screenParams: screen } = useContext(OnboardingParamsContext);
