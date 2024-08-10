@@ -14,8 +14,9 @@ WIP
 
 ## Running the app
 This is needed for running the app on development builds.
-1. **Install Dependencies**: Run `npm install` or `yarn install` to install all necessary packages.
-2. **Start the Project**: Use `expo start` to start the Expo development server.
+1. **Install Dependencies**: Run `yarn install` to install all necessary packages.
+2. **Start the Project**: Use `yarn start` to start the Expo development server.
+3. **Run app on Emulator or Device**: Start the app and connect to the development server.
 
 ## Code Layers
 - **UI Layer:** Built with React Native functional components, styled using React Native stylesheets and Unistyles.
