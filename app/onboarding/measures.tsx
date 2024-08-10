@@ -4,11 +4,10 @@ import { TextInput as RNTextInput } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { HeightInput } from '~/components/HeightInput';
-import { OnboardingContentContainer } from '~/components/OnboardingContentContainer';
 import { OnboardingDataContext, useOnboardingInput } from '~/components/OnboardingDataProvider';
 import { OnboardingInputContainer } from '~/components/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/OnboardingParamsProvider';
-import { OnboardingStepContainer } from '~/components/OnboardingStepContainer';
+import { OnboardingFormStepContainer } from '~/components/OnboardingFormStepContainer';
 import { WeightInput } from '~/components/WeightInput';
 import { Goal, HeightUnit, WeightUnit } from '~/data/types';
 
