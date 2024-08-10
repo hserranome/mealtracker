@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { FC, PropsWithChildren, useContext } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
 import { OnboardingDataProvider } from '~/components/onboarding/OnboardingDataProvider';
 import {
   OnboardingParamsContext,
@@ -12,10 +13,7 @@ const LayoutWrapper: FC<PropsWithChildren> = ({ children }) => {
   const { screenParams: screen } = useContext(OnboardingParamsContext);
 
   return (
-    <OnboardingScreenContainer
-      title={screen.title}
-      progress={screen.progress}
-    >
+    <OnboardingScreenContainer title={screen.title} progress={screen.progress}>
       {children}
     </OnboardingScreenContainer>
   );

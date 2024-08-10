@@ -15,15 +15,15 @@ export default function Welcome() {
     <OnboardingFormStepContainer
       content={
         <View>
-        <Text style={[styles.title, theme.fonts.heading.m]}>Welcome to MealTracker</Text>
-        <Text style={[styles.subtitle, theme.fonts.body.xl]}>
-          Enter your details so Meal Tracker can customize your goals.
-        </Text>
-        <Image
-          source={require('~/assets/images/onboarding/01_welcome.png')}
-          style={{ height: 300, width: 300, alignSelf: 'center', justifyContent: 'center' }}
-        />
-      </View>
+          <Text style={[styles.title, theme.fonts.heading.m]}>Welcome to MealTracker</Text>
+          <Text style={[styles.subtitle, theme.fonts.body.xl]}>
+            Enter your details so Meal Tracker can customize your goals.
+          </Text>
+          <Image
+            source={require('~/assets/images/onboarding/01_welcome.png')}
+            style={{ height: 300, width: 300, alignSelf: 'center', justifyContent: 'center' }}
+          />
+        </View>
       }
       footer={
         <Link href={{ pathname: '/onboarding/goals' }} asChild>

@@ -9,10 +9,12 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { ProgressBar } from '~/components/elements/ProgressBar';
 
-export const OnboardingScreenContainer: FC<PropsWithChildren<{
-  title: string | null;
-  progress: number | null;
-}>> = ({ title, progress, children }) => {
+export const OnboardingScreenContainer: FC<
+  PropsWithChildren<{
+    title: string | null;
+    progress: number | null;
+  }>
+> = ({ title, progress, children }) => {
   const { theme, styles } = useStyles(stylesheet);
 
   return (

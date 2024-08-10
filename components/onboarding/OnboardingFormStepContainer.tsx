@@ -6,7 +6,10 @@ type OnboardingFormStepContainerProps = {
   footer: React.ReactNode;
 };
 
-export const OnboardingFormStepContainer = ({ content, footer }: OnboardingFormStepContainerProps) => {
+export const OnboardingFormStepContainer = ({
+  content,
+  footer,
+}: OnboardingFormStepContainerProps) => {
   const { styles } = useStyles(stylesheet);
   return (
     <View style={styles.container}>

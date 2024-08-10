@@ -12,18 +12,18 @@ export default function Start() {
   return (
     <SafeAreaView style={styles.container}>
       <OnboardingFormStepContainer
-      content={ <Text style={[theme.fonts.heading.xl, styles.title]}>MealTracker</Text>}
-        footer={        <View style={styles.buttons}>
-        <Link href={{ pathname: '/onboarding' }} asChild>
-          <Button title="Start now" />
-        </Link>
-        <Link href={{ pathname: '/login' }} asChild>
-          <Button title="Log in" type={ButtonType.Outline} />
-        </Link>
-      </View>}
+        content={<Text style={[theme.fonts.heading.xl, styles.title]}>MealTracker</Text>}
+        footer={
+          <View style={styles.buttons}>
+            <Link href={{ pathname: '/onboarding' }} asChild>
+              <Button title="Start now" />
+            </Link>
+            <Link href={{ pathname: '/login' }} asChild>
+              <Button title="Log in" type={ButtonType.Outline} />
+            </Link>
+          </View>
+        }
       />
-       
-
     </SafeAreaView>
   );
 }

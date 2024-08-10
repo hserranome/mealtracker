@@ -1,11 +1,11 @@
 import { Link } from 'expo-router';
 
 import { Button } from '~/components/elements/Button';
+import { RadioOption } from '~/components/elements/RadioOption';
 import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
+import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
-import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
-import { RadioOption } from '~/components/elements/RadioOption';
 import { HeightUnit, WeightUnit } from '~/data/types';
 
 const heightOptions = [

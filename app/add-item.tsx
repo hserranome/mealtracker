@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Food } from '~/data/types/Food';
 
@@ -19,7 +19,7 @@ export default function AddItem() {
     nutriments: JSON.parse(getSafeString(initialRawParams.nutriments)),
   };
 
-  const [item, setItem] = useState<Food>({ ...initialParams });
+  const [item] = useState<Food>({ ...initialParams });
 
   console.log('coso', { item, initialParams });
 
