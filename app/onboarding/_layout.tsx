@@ -1,12 +1,12 @@
 import { Stack } from 'expo-router';
 import { FC, PropsWithChildren, useContext } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { OnboardingDataProvider } from '~/components/OnboardingDataProvider';
+import { OnboardingDataProvider } from '~/components/onboarding/OnboardingDataProvider';
 import {
   OnboardingParamsContext,
   OnboardingParamsProvider,
-} from '~/components/OnboardingParamsProvider';
-import { OnboardingScreenContainer } from '~/components/OnboardingScreenContainer';
+} from '~/components/onboarding/OnboardingParamsProvider';
+import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
 
 const LayoutWrapper: FC<PropsWithChildren> = ({ children }) => {
   const { screenParams: screen } = useContext(OnboardingParamsContext);

@@ -2,9 +2,9 @@ import { useContext } from 'react';
 import { Text } from 'react-native';
 
 import { Button } from '~/components/Button';
-import { OnboardingDataContext } from '~/components/OnboardingDataProvider';
-import { useSetOnboardingParams } from '~/components/OnboardingParamsProvider';
-import { OnboardingFormStepContainer } from '~/components/OnboardingFormStepContainer';
+import { OnboardingDataContext } from '~/components/onboarding/OnboardingDataProvider';
+import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
+import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 
 export default function Finish() {
   useSetOnboardingParams({ title: 'All set!', progress: null });

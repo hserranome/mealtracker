@@ -1,10 +1,10 @@
 import { Link } from 'expo-router';
 
 import { Button } from '~/components/Button';
-import { useOnboardingInput } from '~/components/OnboardingDataProvider';
-import { OnboardingInputContainer } from '~/components/OnboardingInputContainer';
-import { useSetOnboardingParams } from '~/components/OnboardingParamsProvider';
-import { OnboardingFormStepContainer } from '~/components/OnboardingFormStepContainer';
+import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
+import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
+import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
+import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { RadioOption } from '~/components/RadioOption';
 import { Goal } from '~/data/types';
 

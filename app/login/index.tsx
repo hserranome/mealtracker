@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { OnboardingScreenContainer } from '~/components/OnboardingScreenContainer';
+import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
 import { Button, ButtonType } from '~/components/Button';
 
 const LoginScreen = () => {

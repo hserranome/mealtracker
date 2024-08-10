@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button } from '~/components/Button';
-import { OnboardingFormStepContainer } from '~/components/OnboardingFormStepContainer';
-import { useSetOnboardingParams } from '~/components/OnboardingParamsProvider';
+import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
+import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
 
 export default function Welcome() {
   const { theme, styles } = useStyles(stylesheet);

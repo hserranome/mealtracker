@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/Button';
-import { OnboardingFormStepContainer } from '~/components/OnboardingFormStepContainer';
+import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 
 export default function Start() {
   const { styles, theme } = useStyles(stylesheet);
