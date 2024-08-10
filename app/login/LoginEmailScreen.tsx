@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+import { usePocketbase } from '~/components/contexts/PocketbaseContext';
 import { Button } from '~/components/elements/Button';
 import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
-import { usePocketbase } from '~/components/contexts/PocketbaseContext';
 
 const LoginEmailScreen = ({ navigation }) => {
   const { styles } = useStyles(stylesheet);
@@ -45,7 +46,10 @@ const LoginEmailScreen = ({ navigation }) => {
           secureTextEntry
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        <TouchableOpacity onPress={() => { /* Forgot password logic */ }}>
+        <TouchableOpacity
+          onPress={() => {
+            /* Forgot password logic */
+          }}>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
         <Button title="Login" onPress={handleLogin} style={styles.button} />
