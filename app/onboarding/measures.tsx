@@ -1,4 +1,3 @@
-import { Link } from 'expo-router';
 import { useContext, useRef } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
 
