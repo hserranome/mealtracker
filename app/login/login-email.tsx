@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { TextInput } from '~/components/elements/TextInput/TextInput';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
 import { Button } from '~/components/elements/Button';
+import { TextInput } from '~/components/elements/TextInput/TextInput';
 import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
 
 const LoginEmailScreen = () => {
@@ -62,6 +62,7 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: theme.margins[16],
+    gap: theme.margins[16],
   },
   error: {
     color: theme.colors.base600,
