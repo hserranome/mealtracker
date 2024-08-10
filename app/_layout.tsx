@@ -12,7 +12,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { LoadingScreen } from '~/components/LoadingScreen';
-import { SessionProvider } from '~/components/SessionProvider';
+import { SessionProvider } from '~/components/contexts/SessionProvider';
 import { DB_NAME } from '~/constants';
 import { db, sqlDb } from '~/data/database';
 import migrations from '~/data/migrations/migrations';
