@@ -6,7 +6,7 @@ import { usePocketbase } from '~/components/contexts/PocketbaseContext';
 import { Button } from '~/components/elements/Button';
 import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
 
-const LoginEmailScreen = ({ navigation }) => {
+const LoginEmailScreen = () => {
   const { styles } = useStyles(stylesheet);
   const { login } = usePocketbase();
   const [email, setEmail] = useState('');
@@ -70,7 +70,7 @@ const stylesheet = createStyleSheet((theme) => ({
     marginBottom: theme.margins[16],
     borderWidth: 1,
     borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius[4],
+    borderRadius: theme.radius[4],
   },
   error: {
     color: theme.colors.error,

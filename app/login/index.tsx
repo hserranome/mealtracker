@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { Link } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -8,16 +8,13 @@ import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScr
 
 const LoginScreen = () => {
   const { styles } = useStyles(stylesheet);
-  const navigation = useNavigation();
 
   return (
     <OnboardingScreenContainer title="Login" progress={null}>
       <View style={styles.container}>
-        <Button
-          title="Login with Email"
-          style={styles.button}
-          onPress={() => navigation.navigate('LoginEmailScreen')}
-        />
+        <Link href="/login/login-email" asChild>
+          <Button title="Login with Email" style={styles.button} />
+        </Link>
         <Button title="Login with Google" type={ButtonType.Outline} style={styles.button} />
         <Button title="Login with Apple" type={ButtonType.Outline} style={styles.button} />
       </View>
