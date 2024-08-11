@@ -36,7 +36,7 @@ export const PocketProvider = ({ children }: { children: React.ReactNode }) => {
     return await pb.authStore.clear();
   }, []);
 
-  // Refresh tokens
+  // @todo: Refresh tokens
 
   return (
     <PocketbaseContext.Provider value={{ register, login, logout, user, token, pb }}>
