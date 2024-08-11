@@ -1,9 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { FC, PropsWithChildren } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -24,12 +23,7 @@ export const OnboardingScreenContainer: FC<
           <TouchableOpacity onPress={() => router.back()} style={styles.icon}>
             <Feather name="arrow-left" size={32} color={theme.colors.base800} />
           </TouchableOpacity>
-          <Animated.Text
-            entering={FadeIn}
-            exiting={FadeOut}
-            style={[theme.fonts.heading.m, styles.title]}>
-            {title}
-          </Animated.Text>
+          <Text style={[theme.fonts.heading.m, styles.title]}>{title}</Text>
         </View>
         <View style={styles.progressBarContainer}>
           {progress && <ProgressBar progress={progress} />}
