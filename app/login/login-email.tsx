@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { ClientResponseError } from 'pocketbase';
+import React, { useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
@@ -15,6 +16,7 @@ const LoginEmailScreen = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const passwordInputRef = useRef<RNTextInput>(null);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -27,8 +29,24 @@ const LoginEmailScreen = () => {
       await login?.(email, password);
       router.navigate('(tabs)');
     } catch (err) {
-      console.error(err);
-      setError('Invalid email or password');
+      if (err instanceof ClientResponseError) {
+        // Handle specific error types from Pocketbase
+        if (err.message.includes('Failed to authenticate')) {
+          setError('Invalid email or password');
+        } else if (
+          err.message.includes('Missing required') ||
+          err.message.includes('Invalid') ||
+          err.message.includes('email')
+        ) {
+          setError('Please enter a valid email address');
+        } else if (err.message.includes('password')) {
+          setError('Password is incorrect');
+        } else {
+          setError('An error occurred. Please try again.');
+        }
+      } else {
+        setError('An unexpected error occurred');
+      }
     } finally {
       setLoading(false);
     }
@@ -43,12 +61,18 @@ const LoginEmailScreen = () => {
           onChangeText={loading ? undefined : setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          returnKeyType="next"
+          onSubmitEditing={() => passwordInputRef.current?.focus()}
+          blurOnSubmit={false}
         />
         <TextInput
+          ref={passwordInputRef}
           placeholder="Password"
           value={password}
           onChangeText={loading ? undefined : setPassword}
           secureTextEntry
+          returnKeyType="join"
+          onSubmitEditing={handleLogin}
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <TouchableOpacity
