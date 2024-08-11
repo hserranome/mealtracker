@@ -21,7 +21,7 @@ const LoginEmailScreen = () => {
     }
 
     try {
-      await login(email, password);
+      await login?.(email, password);
       // Navigate to the next screen or home screen
     } catch (err) {
       setError('Invalid user or password');

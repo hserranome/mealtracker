@@ -1,10 +1,18 @@
-import PocketBase from 'pocketbase';
+import PocketBase, { RecordModel, RecordAuthResponse, AuthModel } from 'pocketbase';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-export const PocketbaseContext = createContext({});
+type PocketbaseContextType = {
+  register?: (email: string, password: string) => Promise<RecordModel>;
+  login?: (email: string, password: string) => Promise<RecordAuthResponse<RecordModel>>;
+  logout?: () => Promise<void>;
+  user?: AuthModel;
+  token?: string;
+  pb?: PocketBase;
+};
+export const PocketbaseContext = createContext<PocketbaseContextType>({});
 
 export const PocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const pb = useMemo(() => new PocketBase('http://127.0.0.1:8090'), []);
+  const pb = useMemo(() => new PocketBase('http://192.168.1.168:8090'), []);
 
   const [token, setToken] = useState(pb.authStore.token);
   const [user, setUser] = useState(pb.authStore.model);
