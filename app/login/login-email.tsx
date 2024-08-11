@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
 import { ClientResponseError } from 'pocketbase';
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { View, Text, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
@@ -10,16 +10,24 @@ import { Button } from '~/components/elements/Button';
 import { TextInput } from '~/components/elements/TextInput/TextInput';
 import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
 
+type FormData = {
+  email: string;
+  password: string;
+};
+
 const LoginEmailScreen = () => {
   const { styles } = useStyles(stylesheet);
   const { login } = usePocketbase();
-  const methods = useForm();
-  const { handleSubmit, setError, formState: { errors } } = methods;
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (data) => {
+  const methods = useForm<FormData>();
+  const {
+    handleSubmit,
+    setError,
+    setFocus,
+    formState: { errors, isSubmitting },
+  } = methods;
+
+  const handleLogin = async (data: FormData) => {
     const { email, password } = data;
     if (!email || !password) {
       setError('email', { type: 'manual', message: 'Email and password are required' });
@@ -27,7 +35,6 @@ const LoginEmailScreen = () => {
     }
 
     try {
-      setLoading(true);
       await login?.(email, password);
       router.navigate('(tabs)');
     } catch (err) {
@@ -48,8 +55,6 @@ const LoginEmailScreen = () => {
       } else {
         setError('email', { type: 'manual', message: 'An unexpected error occurred' });
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -63,7 +68,7 @@ const LoginEmailScreen = () => {
             keyboardType="email-address"
             autoCapitalize="none"
             returnKeyType="next"
-            onSubmitEditing={() => methods.setFocus('password')}
+            onSubmitEditing={() => setFocus('password')}
             blurOnSubmit={false}
           />
           {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
@@ -81,7 +86,12 @@ const LoginEmailScreen = () => {
             }}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
-          <Button disabled={loading} title="Login" onPress={handleSubmit(handleLogin)} style={styles.button} />
+          <Button
+            disabled={isSubmitting}
+            title="Login"
+            onPress={handleSubmit(handleLogin)}
+            style={styles.button}
+          />
         </View>
       </OnboardingScreenContainer>
     </FormProvider>
