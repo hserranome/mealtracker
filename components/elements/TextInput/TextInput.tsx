@@ -1,16 +1,19 @@
 import { ComponentProps, forwardRef } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import { TextInput as RNTextInput, Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export type TextInputProps = {
   suffix?: string | null;
   containerStyle?: ComponentProps<typeof View>['style'];
+  name?: string;
 } & ComponentProps<typeof RNTextInput>;
 
 export const TextInput = forwardRef<RNTextInput, TextInputProps>(
-  ({ suffix, containerStyle, ...props }, ref) => {
+  ({ suffix, containerStyle, name, ...props }, ref) => {
+    const { control } = useFormContext();
     const { styles, theme } = useStyles(stylesheet);
-    return (
+    const renderInput = (field) => (
       <View style={[styles.container, containerStyle]}>
         <RNTextInput
           placeholderTextColor={theme.colors.base600}
