@@ -20,12 +20,12 @@ export const InputContainer = ({ name, error, children }: InputContainerProps) =
   );
 };
 
-export const TextInputStyleSheet = createStyleSheet(() => ({
+export const TextInputStyleSheet = createStyleSheet((theme) => ({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   errorContainer: {
-    color: '#FF0000', // @todo: use theme value
+    color: theme.colors.red,
   },
 }));

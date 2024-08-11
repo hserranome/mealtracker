@@ -95,6 +95,7 @@ export const lightTheme = {
   colors: {
     background: '#ffffff',
     blue: '#34AFF7',
+    red: '#FF5252',
     base200: '#EDF0F7',
     base400: '#CBD2E0',
     base600: '#717D96',
