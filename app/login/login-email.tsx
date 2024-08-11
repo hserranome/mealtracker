@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { ClientResponseError } from 'pocketbase';
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
@@ -28,40 +28,36 @@ const LoginEmailScreen = () => {
   } = methods;
 
   const handleLogin = async (data: FormData) => {
+    console.log('data', data);
     const { email, password } = data;
-    if (!email || !password) {
-      setError('email', { type: 'manual', message: 'Email and password are required' });
-      return;
-    }
 
     try {
       await login?.(email, password);
       router.navigate('(tabs)');
     } catch (err) {
       if (err instanceof ClientResponseError) {
-        if (err.message.includes('Failed to authenticate')) {
-          setError('email', { type: 'manual', message: 'Invalid email or password' });
-        } else if (
+        if (
+          err.message.includes('Failed to authenticate') ||
           err.message.includes('Missing required') ||
           err.message.includes('Invalid') ||
-          err.message.includes('email')
+          err.message.includes('email') ||
+          err.message.includes('password')
         ) {
-          setError('email', { type: 'manual', message: 'Please enter a valid email address' });
-        } else if (err.message.includes('password')) {
-          setError('password', { type: 'manual', message: 'Password is incorrect' });
-        } else {
-          setError('email', { type: 'manual', message: 'An error occurred. Please try again.' });
+          return setError('root', { type: 'manual', message: 'Invalid email or password' });
         }
-      } else {
-        setError('email', { type: 'manual', message: 'An unexpected error occurred' });
+        return setError('root', {
+          type: 'manual',
+          message: 'An error occurred. Please try again.',
+        });
       }
+      return setError('root', { type: 'manual', message: 'An unexpected error occurred' });
     }
   };
 
   return (
     <FormProvider {...methods}>
       <OnboardingScreenContainer title="Login with Email" progress={null}>
-        <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior="padding">
           <TextInput
             name="email"
             placeholder="Email"
@@ -71,7 +67,6 @@ const LoginEmailScreen = () => {
             onSubmitEditing={() => setFocus('password')}
             blurOnSubmit={false}
           />
-          {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
           <TextInput
             name="password"
             placeholder="Password"
@@ -79,10 +74,10 @@ const LoginEmailScreen = () => {
             returnKeyType="join"
             onSubmitEditing={handleSubmit(handleLogin)}
           />
-          {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
           <TouchableOpacity
             onPress={() => {
-              /* @todo: Forgot password logic */
+              // @todo: Forgot password navigation
+              // @todo: Should be a button with type ghost
             }}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
@@ -92,7 +87,8 @@ const LoginEmailScreen = () => {
             onPress={handleSubmit(handleLogin)}
             style={styles.button}
           />
-        </View>
+          {errors.root && <Text style={styles.error}>{errors.root.message}</Text>}
+        </KeyboardAvoidingView>
       </OnboardingScreenContainer>
     </FormProvider>
   );
@@ -106,8 +102,7 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: theme.margins[16],
   },
   error: {
-    color: theme.colors.base600,
-    marginBottom: theme.margins[16],
+    color: theme.colors.red,
   },
   forgotPassword: {
     color: theme.colors.blue,
