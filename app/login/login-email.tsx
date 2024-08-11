@@ -17,13 +17,12 @@ const LoginEmailScreen = () => {
   const { handleSubmit, setError, formState: { errors } } = methods;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (data) => {
     const { email, password } = data;
     if (!email || !password) {
-      setError('Email and password are required');
+      setError('email', { type: 'manual', message: 'Email and password are required' });
       return;
     }
 
@@ -33,22 +32,21 @@ const LoginEmailScreen = () => {
       router.navigate('(tabs)');
     } catch (err) {
       if (err instanceof ClientResponseError) {
-        // Handle specific error types from Pocketbase
         if (err.message.includes('Failed to authenticate')) {
-          setError('Invalid email or password');
+          setError('email', { type: 'manual', message: 'Invalid email or password' });
         } else if (
           err.message.includes('Missing required') ||
           err.message.includes('Invalid') ||
           err.message.includes('email')
         ) {
-          setError('Please enter a valid email address');
+          setError('email', { type: 'manual', message: 'Please enter a valid email address' });
         } else if (err.message.includes('password')) {
-          setError('Password is incorrect');
+          setError('password', { type: 'manual', message: 'Password is incorrect' });
         } else {
-          setError('An error occurred. Please try again.');
+          setError('email', { type: 'manual', message: 'An error occurred. Please try again.' });
         }
       } else {
-        setError('An unexpected error occurred');
+        setError('email', { type: 'manual', message: 'An unexpected error occurred' });
       }
     } finally {
       setLoading(false);
@@ -77,7 +75,6 @@ const LoginEmailScreen = () => {
             onSubmitEditing={handleSubmit(handleLogin)}
           />
           {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
-          {error ? <Text style={styles.error}>{error}</Text> : null}
           <TouchableOpacity
             onPress={() => {
               /* @todo: Forgot password logic */
