@@ -5,8 +5,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 type BaseTextInputProps = ComponentProps<typeof RNTextInput> & {
   suffix?: string | null;
 };
-export const BaseTextInput = forwardRef<RNTextInput>(
-  ({ suffix, ...textInputProps }: BaseTextInputProps, ref) => {
+export const BaseTextInput = forwardRef<RNTextInput, BaseTextInputProps>(
+  ({ suffix, ...textInputProps }, ref) => {
     const { styles, theme } = useStyles(baseInputStyleSheet);
     return (
       <View style={styles.container}>
