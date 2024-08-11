@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -13,6 +14,7 @@ const LoginEmailScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -21,10 +23,14 @@ const LoginEmailScreen = () => {
     }
 
     try {
+      setLoading(true);
       await login?.(email, password);
-      // Navigate to the next screen or home screen
+      router.navigate('(tabs)');
     } catch (err) {
-      setError('Invalid user or password');
+      console.error(err);
+      setError('Invalid email or password');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,24 +40,24 @@ const LoginEmailScreen = () => {
         <TextInput
           placeholder="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={loading ? undefined : setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
         />
         <TextInput
           placeholder="Password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={loading ? undefined : setPassword}
           secureTextEntry
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <TouchableOpacity
           onPress={() => {
-            /* Forgot password logic */
+            /* @todo: Forgot password logic */
           }}>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
-        <Button title="Login" onPress={handleLogin} style={styles.button} />
+        <Button disabled={loading} title="Login" onPress={handleLogin} style={styles.button} />
       </View>
     </OnboardingScreenContainer>
   );
