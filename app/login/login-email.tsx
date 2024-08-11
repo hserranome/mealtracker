@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { ClientResponseError } from 'pocketbase';
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import { View, Text, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -12,13 +13,15 @@ import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScr
 const LoginEmailScreen = () => {
   const { styles } = useStyles(stylesheet);
   const { login } = usePocketbase();
+  const methods = useForm();
+  const { handleSubmit, setError, formState: { errors } } = methods;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const passwordInputRef = useRef<RNTextInput>(null);
 
-  const handleLogin = async () => {
+  const handleLogin = async (data) => {
+    const { email, password } = data;
     if (!email || !password) {
       setError('Email and password are required');
       return;
@@ -53,37 +56,38 @@ const LoginEmailScreen = () => {
   };
 
   return (
-    <OnboardingScreenContainer title="Login with Email" progress={null}>
-      <View style={styles.container}>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={loading ? undefined : setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          returnKeyType="next"
-          onSubmitEditing={() => passwordInputRef.current?.focus()}
-          blurOnSubmit={false}
-        />
-        <TextInput
-          ref={passwordInputRef}
-          placeholder="Password"
-          value={password}
-          onChangeText={loading ? undefined : setPassword}
-          secureTextEntry
-          returnKeyType="join"
-          onSubmitEditing={handleLogin}
-        />
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        <TouchableOpacity
-          onPress={() => {
-            /* @todo: Forgot password logic */
-          }}>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <Button disabled={loading} title="Login" onPress={handleLogin} style={styles.button} />
-      </View>
-    </OnboardingScreenContainer>
+    <FormProvider {...methods}>
+      <OnboardingScreenContainer title="Login with Email" progress={null}>
+        <View style={styles.container}>
+          <TextInput
+            name="email"
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            returnKeyType="next"
+            onSubmitEditing={() => methods.setFocus('password')}
+            blurOnSubmit={false}
+          />
+          {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+          <TextInput
+            name="password"
+            placeholder="Password"
+            secureTextEntry
+            returnKeyType="join"
+            onSubmitEditing={handleSubmit(handleLogin)}
+          />
+          {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          <TouchableOpacity
+            onPress={() => {
+              /* @todo: Forgot password logic */
+            }}>
+            <Text style={styles.forgotPassword}>Forgot Password?</Text>
+          </TouchableOpacity>
+          <Button disabled={loading} title="Login" onPress={handleSubmit(handleLogin)} style={styles.button} />
+        </View>
+      </OnboardingScreenContainer>
+    </FormProvider>
   );
 };
 
