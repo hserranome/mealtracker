@@ -101,15 +101,3 @@ export const lightTheme = {
     base800: '#2D3648',
   },
 } as const;
-
-export const darkTheme = {
-  ...constants,
-  colors: {
-    background: '#2D3648',
-    blue: '#34AFF7',
-    base200: '#1A1C22',
-    base400: '#2A2D35',
-    base600: '#4C4F58',
-    base800: '#EDF0F7',
-  },
-} as const;
