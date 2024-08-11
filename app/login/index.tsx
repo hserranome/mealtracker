@@ -13,10 +13,10 @@ const LoginScreen = () => {
     <OnboardingScreenContainer title="Login" progress={null}>
       <View style={styles.container}>
         <Link href="/login/login-email" asChild>
-          <Button title="Login with Email" style={styles.button} />
+          <Button title="Login with Email" />
         </Link>
-        <Button title="Login with Google" type={ButtonType.Outline} style={styles.button} />
-        <Button title="Login with Apple" type={ButtonType.Outline} style={styles.button} />
+        <Button title="Login with Google" type={ButtonType.Outline} />
+        <Button title="Login with Apple" type={ButtonType.Outline} />
       </View>
     </OnboardingScreenContainer>
   );
@@ -25,12 +25,10 @@ const LoginScreen = () => {
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
-    justifyContent: 'center',
     paddingHorizontal: theme.margins[16],
-  },
-  button: {
-    width: '100%',
-    marginBottom: theme.margins[16],
+    justifyContent: 'center',
+    gap: 10,
+    flexDirection: 'column',
   },
 }));
 
