@@ -25,3 +25,5 @@ android
 
 build-*.apk
 .aider*
+.idea
+.history
