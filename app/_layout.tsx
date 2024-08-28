@@ -19,10 +19,10 @@ import { db, sqlDb } from '~/data/database';
 import migrations from '~/data/migrations/migrations';
 
 export default function Layout() {
-  useDrizzleStudio(sqlDb);
   const { success, error } = useMigrations(db, migrations);
   const { styles, theme } = useStyles(stylesheet);
   const colorScheme = useColorScheme();
+  useDrizzleStudio(sqlDb as any);
 
   useEffect(() => {
     SystemUI.setBackgroundColorAsync(theme.colors.background);
