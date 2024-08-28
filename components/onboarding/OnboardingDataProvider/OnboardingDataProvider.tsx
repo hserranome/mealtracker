@@ -1,4 +1,4 @@
-import { createContext, FC, PropsWithChildren, useReducer } from 'react';
+import { createContext, FC, PropsWithChildren, useReducer, useState, useCallback } from 'react';
 
 import { db } from '~/data/database';
 import { NewUser, users } from '~/data/schemas';
@@ -16,16 +16,16 @@ export type OnboardingData = {
   weightVarianceRate?: NewUser['weight_variance_rate'];
 };
 
-type OnboardingAction = {
-  type: 'UPDATE_DATA';
-  key: keyof OnboardingData;
-  value: OnboardingData[keyof OnboardingData];
-};
+type OnboardingAction =
+  | { type: 'UPDATE_DATA'; key: keyof OnboardingData; value: OnboardingData[keyof OnboardingData] }
+  | { type: 'RESET' };
 
 const onboardingDataReducer = (state: OnboardingData, action: OnboardingAction): OnboardingData => {
   switch (action.type) {
     case 'UPDATE_DATA':
       return { ...state, [action.key]: action.value };
+    case 'RESET':
+      return {};
     default:
       return state;
   }
@@ -36,6 +36,7 @@ type OnboardingDataProviderValue = {
   updateData: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
   submit: () => Promise<{ id: number } | void>;
   submitting: boolean;
+  reset: () => void;
 };
 
 export const OnboardingDataContext = createContext<OnboardingDataProviderValue>({
@@ -43,17 +44,22 @@ export const OnboardingDataContext = createContext<OnboardingDataProviderValue>(
   updateData: () => {},
   submit: async () => {},
   submitting: false,
+  reset: () => {},
 });
 
 export const OnboardingDataProvider: FC<PropsWithChildren> = ({ children }) => {
   const [data, dispatch] = useReducer(onboardingDataReducer, {});
   const [submitting, setSubmitting] = useState(false);
 
-  const updateData = <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
+  const updateData = useCallback(<K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
     dispatch({ type: 'UPDATE_DATA', key, value });
-  };
+  }, []);
 
-  const submit = async () => {
+  const reset = useCallback(() => {
+    dispatch({ type: 'RESET' });
+  }, []);
+
+  const submit = useCallback(async () => {
     setSubmitting(true);
     try {
       const newUser: typeof users.$inferInsert = {
@@ -68,11 +74,11 @@ export const OnboardingDataProvider: FC<PropsWithChildren> = ({ children }) => {
         goal_weight: data.goalWeight,
         weight_variance_rate: data.weightVarianceRate,
       };
-      await db.insert(users).values(newUser).returning({ id: users.id });
+      return await db.insert(users).values(newUser).returning({ id: users.id });
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [data]);
 
   return (
     <OnboardingDataContext.Provider
@@ -81,8 +87,17 @@ export const OnboardingDataProvider: FC<PropsWithChildren> = ({ children }) => {
         updateData,
         submit,
         submitting,
+        reset,
       }}>
       {children}
     </OnboardingDataContext.Provider>
   );
+};
+
+export const useOnboardingData = () => {
+  const context = useContext(OnboardingDataContext);
+  if (context === undefined) {
+    throw new Error('useOnboardingData must be used within an OnboardingDataProvider');
+  }
+  return context;
 };

@@ -1,9 +1,10 @@
 import { Link } from 'expo-router';
+import { useCallback, useMemo } from 'react';
 
 import { Button } from '~/components/elements/Button';
 import { RadioOption } from '~/components/elements/RadioOption';
 import { TextInput } from '~/components/elements/TextInput';
-import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
+import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
@@ -21,22 +22,23 @@ const sexOptions = [
 ];
 
 export default function Goals() {
-  const { currentValue: selectedGender, setValue: setSelectedGender } = useOnboardingInput('sex');
-  const { currentValue: birthYear, setValue: setBirthYear } = useOnboardingInput('birthYear');
+  const { data, updateData } = useOnboardingData();
+  const selectedGender = data.sex;
+  const birthYear = data.birthYear;
 
   useSetOnboardingParams({ title: 'About you', progress: 45 });
 
   const currentYear = new Date().getFullYear();
 
-  const handleChangeAge = (text: string) => {
+  const handleChangeAge = useCallback((text: string) => {
     const valuesAsNumber = Number(text.replace(/[^0-9]/g, ''));
     if (isNaN(valuesAsNumber)) return;
     const valueWithConstrains = Math.min(Math.max(valuesAsNumber, 0), 99);
     const birthYearFromAge = currentYear - valueWithConstrains;
-    setBirthYear(birthYearFromAge);
-  };
+    updateData('birthYear', birthYearFromAge);
+  }, [currentYear, updateData]);
 
-  const ageFromBirthYear = birthYear ? currentYear - birthYear : null;
+  const ageFromBirthYear = useMemo(() => birthYear ? currentYear - birthYear : null, [birthYear, currentYear]);
   const safeAgeString = ageFromBirthYear ? String(ageFromBirthYear) : '';
 
   const canNext = selectedGender !== undefined && ageFromBirthYear;
@@ -52,7 +54,7 @@ export default function Goals() {
               <RadioOption
                 key={value}
                 subtitle={label}
-                onPress={() => setSelectedGender(value)}
+                onPress={() => updateData('sex', value)}
                 selected={selectedGender === value}
               />
             ))}
