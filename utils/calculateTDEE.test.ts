@@ -32,7 +32,7 @@ describe('calculateBasalMetabolicRate', () => {
 
   it('should return 0 for an unknown sex', () => {
     const args: calculateBasalMetabolicRateArgs = {
-      sex: 'unknown' as Sex,
+      sex: 'unknown' as unknown as Sex,
       weight: 70,
       height: 180,
       age: 30,
@@ -69,7 +69,7 @@ describe('calculateTDEE', () => {
 
   it('should return 0 for an unknown activity level', () => {
     const args: calculateTDEEArgs = {
-      activityLevel: 'unknown' as ActivityLevel,
+      activityLevel: 'unknown' as unknown as ActivityLevel,
       sex: Sex.Male,
       weight: 70,
       height: 180,
@@ -77,5 +77,31 @@ describe('calculateTDEE', () => {
     };
     const result = calculateTDEE(args);
     expect(result).toBe(0);
+  });
+
+  it('should return adjusted calories based on weight change positive', () => {
+    const args: calculateTDEEArgs = {
+      activityLevel: ActivityLevel.Sedentary,
+      sex: Sex.Male,
+      weight: 70,
+      height: 180,
+      age: 30,
+      weightChangePerWeek: 0.5,
+    };
+    const result = calculateTDEE(args);
+    expect(result).toBe(2516);
+  });
+
+  it('should return adjusted calories based on weight change negative', () => {
+    const args: calculateTDEEArgs = {
+      activityLevel: ActivityLevel.Sedentary,
+      sex: Sex.Male,
+      weight: 70,
+      height: 180,
+      age: 30,
+      weightChangePerWeek: -0.5,
+    };
+    const result = calculateTDEE(args);
+    expect(result).toBe(1466);
   });
 });

@@ -1,19 +1,7 @@
-// Uses the Mifflin-St Jeor Equation
-
-// Formula
-// Females: (10*weight [kg]) + (6.25*height [cm]) – (5*age [years]) – 161
-// Males: (10*weight [kg]) + (6.25*height [cm]) – (5*age [years]) + 5
-
-// Multiply by scale factor for activity level:
-// Sedentary *1.2
-// Lightly active *1.375
-// Moderately active *1.55
-// Active *1.725
-// Very active *1.9
-
-// More likely than the other equations to predict RMR to within 10% of that measured.
-
 import { Sex, ActivityLevel } from '~/data/types';
+
+const caloriesPerKgLose = 7700 / 7;
+const caloriesPerKgGain = 7000 / 7;
 
 export type calculateBasalMetabolicRateArgs = {
   sex: Sex;
@@ -22,6 +10,7 @@ export type calculateBasalMetabolicRateArgs = {
   age: number;
 };
 
+// Uses the Mifflin-St Jeor Equation
 export const calculateBasalMetabolicRate = ({
   sex,
   weight,
@@ -39,10 +28,12 @@ export const calculateBasalMetabolicRate = ({
 
 export type calculateTDEEArgs = {
   activityLevel: ActivityLevel;
+  weightChangePerWeek?: number;
 } & calculateBasalMetabolicRateArgs;
 
 export const calculateTDEE = ({
   activityLevel,
+  weightChangePerWeek = 0,
   ...calculateBasalMetabolicRateArgs
 }: calculateTDEEArgs) => {
   const scale = {
@@ -53,8 +44,13 @@ export const calculateTDEE = ({
     [ActivityLevel.Heavy]: 1.9,
   };
   if (!scale[activityLevel]) return 0;
-  const result =
-    calculateBasalMetabolicRate(calculateBasalMetabolicRateArgs) * scale[activityLevel];
+  const tdee = calculateBasalMetabolicRate(calculateBasalMetabolicRateArgs) * scale[activityLevel];
 
-  return Math.round(result);
+  // Adjust calories based on weight change per week.
+  // Probably can be improved and made dynamic. Like on that CSV
+  const calorieAdjustment =
+    weightChangePerWeek * (weightChangePerWeek > 0 ? caloriesPerKgGain : caloriesPerKgLose);
+  const adjustedTDEE = tdee + calorieAdjustment;
+
+  return Math.round(adjustedTDEE);
 };
