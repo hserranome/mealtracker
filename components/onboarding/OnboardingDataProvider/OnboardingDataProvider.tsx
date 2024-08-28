@@ -1,4 +1,4 @@
-import { createContext, FC, PropsWithChildren, useState } from 'react';
+import { createContext, FC, PropsWithChildren, useReducer } from 'react';
 
 import { db } from '~/data/database';
 import { NewUser, users } from '~/data/schemas';
@@ -16,23 +16,42 @@ export type OnboardingData = {
   weightVarianceRate?: NewUser['weight_variance_rate'];
 };
 
+type OnboardingAction = {
+  type: 'UPDATE_DATA';
+  key: keyof OnboardingData;
+  value: OnboardingData[keyof OnboardingData];
+};
+
+const onboardingDataReducer = (state: OnboardingData, action: OnboardingAction): OnboardingData => {
+  switch (action.type) {
+    case 'UPDATE_DATA':
+      return { ...state, [action.key]: action.value };
+    default:
+      return state;
+  }
+};
+
 type OnboardingDataProviderValue = {
   data: OnboardingData;
-  setData: (data: OnboardingData) => void;
+  updateData: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
   submit: () => Promise<{ id: number } | void>;
   submitting: boolean;
 };
 
 export const OnboardingDataContext = createContext<OnboardingDataProviderValue>({
   data: {},
-  setData: () => {},
+  updateData: () => {},
   submit: async () => {},
   submitting: false,
 });
 
 export const OnboardingDataProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [data, setData] = useState<OnboardingDataProviderValue['data']>({});
+  const [data, dispatch] = useReducer(onboardingDataReducer, {});
   const [submitting, setSubmitting] = useState(false);
+
+  const updateData = <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
+    dispatch({ type: 'UPDATE_DATA', key, value });
+  };
 
   const submit = async () => {
     setSubmitting(true);
@@ -59,7 +78,7 @@ export const OnboardingDataProvider: FC<PropsWithChildren> = ({ children }) => {
     <OnboardingDataContext.Provider
       value={{
         data,
-        setData,
+        updateData,
         submit,
         submitting,
       }}>
