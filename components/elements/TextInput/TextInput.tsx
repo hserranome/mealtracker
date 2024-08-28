@@ -5,14 +5,15 @@ import { BaseTextInput } from './BaseTextInput';
 import { InputContainer } from '../InputContainer';
 
 type TextInputProps = ComponentProps<typeof BaseTextInput> &
-  Omit<ComponentProps<typeof InputContainer>, 'children'> &
-  Pick<ComponentProps<typeof Controller>, 'name'>;
+  Omit<ComponentProps<typeof InputContainer>, 'children' | 'name'> &
+  Partial<Pick<ComponentProps<typeof Controller>, 'name'>>;
 
 export const TextInput = ({ name, error, ...textInputProps }: TextInputProps) => {
   const { control } = useFormContext();
 
   return (
-    <InputContainer name={name} error={error}>
+    // TODO: randomize name?
+    <InputContainer name={name || ''} error={error}>
       {name ? (
         <Controller
           control={control}
