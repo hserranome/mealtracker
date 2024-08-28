@@ -2,7 +2,7 @@ import { Link } from 'expo-router';
 
 import { Button } from '~/components/elements/Button';
 import { RadioOption } from '~/components/elements/RadioOption';
-import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
+import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
@@ -31,10 +31,8 @@ const weightOptions = [
 ];
 
 export default function UnitsAndFormats() {
-  const { currentValue: selectedHeightUnit, setValue: setSelectedHeightUnit } =
-    useOnboardingInput('heightUnit');
-  const { currentValue: selectedWeightUnit, setValue: setSelectedWeightUnit } =
-    useOnboardingInput('weightUnit');
+  const { data, updateData } = useOnboardingData();
+  const { heightUnit: selectedHeightUnit, weightUnit: selectedWeightUnit } = data;
 
   useSetOnboardingParams({ title: 'Units', progress: 60 });
 
@@ -51,7 +49,7 @@ export default function UnitsAndFormats() {
               <RadioOption
                 key={value}
                 subtitle={label}
-                onPress={() => setSelectedHeightUnit(value)}
+                onPress={() => updateData('heightUnit', value)}
                 selected={selectedHeightUnit === value}
               />
             ))}
@@ -63,7 +61,7 @@ export default function UnitsAndFormats() {
               <RadioOption
                 key={value}
                 subtitle={label}
-                onPress={() => setSelectedWeightUnit(value)}
+                onPress={() => updateData('weightUnit', value)}
                 selected={selectedWeightUnit === value}
               />
             ))}

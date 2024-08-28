@@ -5,10 +5,7 @@ import { TextInput as RNTextInput } from 'react-native';
 import { Button } from '~/components/elements/Button';
 import { HeightInput } from '~/components/elements/HeightInput';
 import { WeightInput } from '~/components/elements/WeightInput';
-import {
-  OnboardingDataContext,
-  useOnboardingInput,
-} from '~/components/onboarding/OnboardingDataProvider';
+import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
@@ -17,11 +14,8 @@ import { Goal, LengthUnit, WeightUnit } from '~/data/types';
 export default function Measures() {
   useSetOnboardingParams({ title: 'Measures', progress: 75 });
 
-  const {
-    data: { weightUnit, heightUnit, goal },
-  } = useContext(OnboardingDataContext);
-  const { currentValue: currentHeight, setValue: setHeight } = useOnboardingInput('initialHeight');
-  const { currentValue: currentWeight, setValue: setWeight } = useOnboardingInput('initialWeight');
+  const { data, updateData } = useOnboardingData();
+  const { weightUnit, heightUnit, goal, initialHeight: currentHeight, initialWeight: currentWeight } = data;
   const refWeightInput = useRef<RNTextInput>(null);
 
   const canNext = currentHeight && currentWeight;
@@ -35,7 +29,7 @@ export default function Measures() {
           <OnboardingInputContainer title="How tall are you?">
             <HeightInput
               value={currentHeight || 0}
-              setValue={setHeight}
+              setValue={(value) => updateData('initialHeight', value)}
               format={heightUnit || LengthUnit.cm}
               onSubmitEditing={() => {
                 refWeightInput.current?.focus();
@@ -47,7 +41,7 @@ export default function Measures() {
             subtitle="It's ok to estimate, you can update this later.">
             <WeightInput
               value={currentWeight || 0}
-              setValue={setWeight}
+              setValue={(value) => updateData('initialWeight', value)}
               format={weightUnit || WeightUnit.kg}
               ref={refWeightInput}
             />

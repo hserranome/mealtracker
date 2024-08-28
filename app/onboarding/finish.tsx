@@ -1,14 +1,13 @@
-import { useContext } from 'react';
 import { Text } from 'react-native';
 
 import { Button } from '~/components/elements/Button';
-import { OnboardingDataContext } from '~/components/onboarding/OnboardingDataProvider';
+import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
 
 export default function Finish() {
   useSetOnboardingParams({ title: 'All set!', progress: null });
-  const { submit, submitting } = useContext(OnboardingDataContext);
+  const { submit, submitting } = useOnboardingData();
 
   return (
     <OnboardingFormStepContainer

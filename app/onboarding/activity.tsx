@@ -2,7 +2,7 @@ import { Link } from 'expo-router';
 
 import { Button } from '~/components/elements/Button';
 import { RadioOption } from '~/components/elements/RadioOption';
-import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
+import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
@@ -38,7 +38,8 @@ const options = [
 
 export default function Goals() {
   useSetOnboardingParams({ title: 'Activity Level', progress: 30 });
-  const { currentValue, setValue } = useOnboardingInput('activityLevel');
+  const { data, updateData } = useOnboardingData();
+  const currentValue = data.activityLevel;
   const canNext = currentValue !== undefined;
 
   return (
@@ -52,7 +53,7 @@ export default function Goals() {
               key={value}
               title={label}
               subtitle={description}
-              onPress={() => setValue(value)}
+              onPress={() => updateData('activityLevel', value)}
               selected={currentValue === value}
             />
           ))}

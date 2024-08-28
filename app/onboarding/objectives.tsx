@@ -3,7 +3,7 @@ import { Link } from 'expo-router';
 import { Button } from '~/components/elements/Button';
 import { RadioOption } from '~/components/elements/RadioOption';
 import { TextInput } from '~/components/elements/TextInput';
-import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvider';
+import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
@@ -32,9 +32,8 @@ const options = [
 export default function Objectives() {
   useSetOnboardingParams({ title: 'Weekly goal', progress: 90 });
 
-  const { currentValue: goalWeight, setValue: setGoalWeight } = useOnboardingInput('goalWeight');
-  const { currentValue: weightVarianceRate, setValue: setWeightVarianceRate } =
-    useOnboardingInput('weightVarianceRate');
+  const { data, updateData } = useOnboardingData();
+  const { goalWeight, weightVarianceRate } = data;
 
   return (
     <OnboardingFormStepContainer
@@ -47,7 +46,7 @@ export default function Objectives() {
               placeholder="Goal weight"
               keyboardType="numeric"
               value={goalWeight ? String(goalWeight) : ''}
-              onChangeText={(text) => setGoalWeight(parseInt(text, 10))}
+              onChangeText={(text) => updateData('goalWeight', parseInt(text, 10))}
               suffix="kg"
               maxLength={3}
             />
@@ -57,7 +56,7 @@ export default function Objectives() {
               <RadioOption
                 key={value}
                 subtitle={label}
-                onPress={() => setWeightVarianceRate(value)}
+                onPress={() => updateData('weightVarianceRate', value)}
                 selected={weightVarianceRate === value}
               />
             ))}
