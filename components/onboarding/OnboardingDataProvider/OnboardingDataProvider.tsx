@@ -51,9 +51,12 @@ export const OnboardingDataProvider: FC<PropsWithChildren> = ({ children }) => {
   const [data, dispatch] = useReducer(onboardingDataReducer, {});
   const [submitting, setSubmitting] = useState(false);
 
-  const updateData = useCallback(<K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
-    dispatch({ type: 'UPDATE_DATA', key, value });
-  }, []);
+  const updateData = useCallback(
+    <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
+      dispatch({ type: 'UPDATE_DATA', key, value });
+    },
+    []
+  );
 
   const reset = useCallback(() => {
     dispatch({ type: 'RESET' });

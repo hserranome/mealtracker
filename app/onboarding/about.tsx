@@ -30,15 +30,21 @@ export default function Goals() {
 
   const currentYear = new Date().getFullYear();
 
-  const handleChangeAge = useCallback((text: string) => {
-    const valuesAsNumber = Number(text.replace(/[^0-9]/g, ''));
-    if (isNaN(valuesAsNumber)) return;
-    const valueWithConstrains = Math.min(Math.max(valuesAsNumber, 0), 99);
-    const birthYearFromAge = currentYear - valueWithConstrains;
-    updateData('birthYear', birthYearFromAge);
-  }, [currentYear, updateData]);
+  const handleChangeAge = useCallback(
+    (text: string) => {
+      const valuesAsNumber = Number(text.replace(/[^0-9]/g, ''));
+      if (isNaN(valuesAsNumber)) return;
+      const valueWithConstrains = Math.min(Math.max(valuesAsNumber, 0), 99);
+      const birthYearFromAge = currentYear - valueWithConstrains;
+      updateData('birthYear', birthYearFromAge);
+    },
+    [currentYear, updateData]
+  );
 
-  const ageFromBirthYear = useMemo(() => birthYear ? currentYear - birthYear : null, [birthYear, currentYear]);
+  const ageFromBirthYear = useMemo(
+    () => (birthYear ? currentYear - birthYear : null),
+    [birthYear, currentYear]
+  );
   const safeAgeString = ageFromBirthYear ? String(ageFromBirthYear) : '';
 
   const canNext = selectedGender !== undefined && ageFromBirthYear;

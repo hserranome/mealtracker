@@ -15,7 +15,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes"
         }
       ]
     ],
@@ -26,9 +26,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/app/icon.png",
     "userInterfaceStyle": "automatic",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mealtracker.app",

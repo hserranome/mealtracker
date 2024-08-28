@@ -15,7 +15,13 @@ export default function Measures() {
   useSetOnboardingParams({ title: 'Measures', progress: 75 });
 
   const { data, updateData } = useOnboardingData();
-  const { weightUnit, heightUnit, goal, initialHeight: currentHeight, initialWeight: currentWeight } = data;
+  const {
+    weightUnit,
+    heightUnit,
+    goal,
+    initialHeight: currentHeight,
+    initialWeight: currentWeight,
+  } = data;
   const refWeightInput = useRef<RNTextInput>(null);
 
   const canNext = currentHeight && currentWeight;
