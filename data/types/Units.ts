@@ -1,4 +1,4 @@
-export enum HeightUnit {
+export enum LengthUnit {
   cm = 'cm',
   ftIn = 'ft-in',
 }

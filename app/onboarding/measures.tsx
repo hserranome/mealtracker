@@ -12,7 +12,7 @@ import {
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
-import { Goal, HeightUnit, WeightUnit } from '~/data/types';
+import { Goal, LengthUnit, WeightUnit } from '~/data/types';
 
 export default function Measures() {
   useSetOnboardingParams({ title: 'Measures', progress: 75 });
@@ -36,7 +36,7 @@ export default function Measures() {
             <HeightInput
               value={currentHeight || 0}
               setValue={setHeight}
-              format={heightUnit || HeightUnit.cm}
+              format={heightUnit || LengthUnit.cm}
               onSubmitEditing={() => {
                 refWeightInput.current?.focus();
               }}

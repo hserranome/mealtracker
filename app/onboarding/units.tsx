@@ -6,15 +6,15 @@ import { useOnboardingInput } from '~/components/onboarding/OnboardingDataProvid
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
-import { HeightUnit, WeightUnit } from '~/data/types';
+import { LengthUnit, WeightUnit } from '~/data/types';
 
 const heightOptions = [
   {
-    value: HeightUnit.cm,
+    value: LengthUnit.cm,
     label: 'Centimeters (cm)',
   },
   {
-    value: HeightUnit.ftIn,
+    value: LengthUnit.ftIn,
     label: 'Feet and inches',
   },
 ];

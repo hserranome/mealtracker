@@ -1,6 +1,6 @@
-import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { HeightUnit, WeightUnit } from '../types';
+import { LengthUnit, WeightUnit } from '../types';
 
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }).unique().notNull(),
@@ -10,11 +10,8 @@ export const users = sqliteTable('users', {
   sex: integer('sex', { mode: 'number' }),
   birth_year: integer('birth_year', { mode: 'number' }),
   weight_unit: text('weight_unit', { enum: [WeightUnit.kg, WeightUnit.lb] }),
-  height_unit: text('height_unit', { enum: [HeightUnit.cm, HeightUnit.ftIn] }),
-  initial_height: integer('initial_height'),
-  initial_weight: real('initial_weight'),
-  goal_weight: real('goal_weight'),
-  weight_variance_rate: real('weight_variance_rate'),
+  length_unit: text('length_unit', { enum: [LengthUnit.cm, LengthUnit.ftIn] }),
+  height: integer('height'),
   //   Account
   email: text('email').unique(),
   password_hash: text('password_hash'),
