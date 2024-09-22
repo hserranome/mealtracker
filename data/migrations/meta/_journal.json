@@ -15,6 +15,13 @@
       "when": 1724873647063,
       "tag": "0001_unify_goals",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1725030206393,
+      "tag": "0002_remove_units",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,5 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { LengthUnit, WeightUnit } from '../types';
-
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }).unique().notNull(),
   username: text('username'),
@@ -9,8 +7,6 @@ export const users = sqliteTable('users', {
   activity_level: integer('activity_level', { mode: 'number' }),
   sex: integer('sex', { mode: 'number' }),
   birth_year: integer('birth_year', { mode: 'number' }),
-  weight_unit: text('weight_unit', { enum: [WeightUnit.kg, WeightUnit.lb] }),
-  length_unit: text('length_unit', { enum: [LengthUnit.cm, LengthUnit.ftIn] }),
   height: integer('height'),
   //   Account
   email: text('email').unique(),
