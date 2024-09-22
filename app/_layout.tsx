@@ -1,8 +1,9 @@
 import '../theme/unistyles';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
 import * as SystemUI from 'expo-system-ui';
 import { Suspense, useEffect } from 'react';
@@ -20,7 +21,7 @@ import migrations from '~/data/migrations/migrations';
 
 export default function Layout() {
   const { success, error } = useMigrations(db, migrations);
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useStyles(stylesheet);
   const colorScheme = useColorScheme();
   useDrizzleStudio(sqlDb as any);
 
@@ -40,16 +41,39 @@ export default function Layout() {
         <PocketProvider>
           <SessionProvider>
             <SafeAreaProvider>
-              <GestureHandlerRootView>
-                <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>
-                  <Stack.Screen name="index" />
-                </Stack>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <RootLayoutNav />
               </GestureHandlerRootView>
             </SafeAreaProvider>
           </SessionProvider>
         </PocketProvider>
       </SQLiteProvider>
     </Suspense>
+  );
+}
+
+function RootLayoutNav() {
+  const router = useRouter();
+  const { styles } = useStyles(stylesheet);
+
+  useEffect(() => {
+    async function checkExistingData() {
+      try {
+        const existingData = await AsyncStorage.getItem('weekdayCalories');
+        if (existingData !== null) return router.replace('/(tabs)');
+        return router.replace('/welcome');
+      } catch (error) {
+        console.error('Error checking existing data:', error);
+      }
+    }
+
+    checkExistingData();
+  }, [router]);
+
+  return (
+    <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>
+      <Stack.Screen name="index" />
+    </Stack>
   );
 }
 

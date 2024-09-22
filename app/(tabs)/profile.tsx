@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -23,11 +24,27 @@ export default function Profile() {
     }
   };
 
+  const deleteLocalStorageData = async () => {
+    try {
+      await AsyncStorage.removeItem('weekdayCalories');
+      console.log('Local storage data deleted successfully');
+      router.replace('/welcome');
+    } catch (error) {
+      console.error('Error deleting local storage data:', error);
+    }
+  };
+
+  const navigateToSetupWeekdays = () => {
+    router.push('/setup-weekdays');
+  };
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Profile</Text>
       <Button onPress={() => wipeData()} title="Wipe data" />
       <Button onPress={handleLogout} title="Logout" />
+      <Button onPress={deleteLocalStorageData} title="Delete local storage data" />
+      <Button onPress={navigateToSetupWeekdays} title="Edit Calorie Intake" />
     </View>
   );
 }
