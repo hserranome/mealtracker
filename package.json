@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-    "preinstall": "npx only-allow pnpm", 
     "start": "expo start --dev-client",
     "build:dev": "eas build --profile development",
     "build:preview": "eas build --profile preview",
