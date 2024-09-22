@@ -6,6 +6,7 @@
 - Write simple, verbose code, over terse, compact, dense code.
 - If a function does not have a corresponding test, mention it.
 - When building tests, don't mock anything.
+- Keep logic out of components by placing it on custom hooks consumed by components
 
 #### Project Structure
 
