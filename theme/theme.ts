@@ -64,6 +64,11 @@ const constants = {
       },
     },
     body: {
+      xs: {
+        fontFamily: 'Inter',
+        fontSize: 12,
+        lineHeigh: 12 * 1.5,
+      },
       m: {
         fontFamily: 'Inter',
         fontWeight: '400',

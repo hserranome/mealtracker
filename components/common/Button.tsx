@@ -75,6 +75,9 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingVertical: theme.margins[12],
     backgroundColor: theme.colors.base800,
     borderRadius: theme.radius[6],
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'baseline',
     variants: {
       type: {
         [ButtonType.Solid]: {
