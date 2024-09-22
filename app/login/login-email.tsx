@@ -5,9 +5,9 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import { Button } from '~/components/common/Button';
+import { TextInput } from '~/components/common/TextInput/TextInput';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
-import { Button } from '~/components/elements/Button';
-import { TextInput } from '~/components/elements/TextInput/TextInput';
 import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
 
 type FormData = {

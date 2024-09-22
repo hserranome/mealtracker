@@ -1,63 +1,60 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Button } from '~/components/elements/Button';
-import { Food } from '~/data/types/Food';
-import { useDairy } from '~/hooks/useDairy';
+import { Button } from '~/components/common/Button';
+// import { Food } from '~/data/types/Food';
 
-const getFoodsNutriments = (foods: Food[]) => {
-  return foods.reduce(
-    (acc, food) => {
-      return {
-        kcal: acc.kcal + food.nutriments.kcal,
-        fat: acc.fat + food.nutriments.fat,
-        proteins: acc.proteins + food.nutriments.proteins,
-        carbohydrates: acc.carbohydrates + food.nutriments.carbohydrates,
-      };
-    },
-    { kcal: 0, fat: 0, proteins: 0, carbohydrates: 0 }
-  );
-};
+// const getFoodsNutriments = (foods: Food[]) => {
+//   return foods.reduce(
+//     (acc, food) => {
+//       return {
+//         kcal: acc.kcal + food.nutriments.kcal,
+//         fat: acc.fat + food.nutriments.fat,
+//         proteins: acc.proteins + food.nutriments.proteins,
+//         carbohydrates: acc.carbohydrates + food.nutriments.carbohydrates,
+//       };
+//     },
+//     { kcal: 0, fat: 0, proteins: 0, carbohydrates: 0 }
+//   );
+// };
 
-const getMealFoods = (meal: number, foods: Food[]) => {
-  const foodsWithIndex = foods.map((food, index) => ({ ...food, index }));
-  return foodsWithIndex.filter((food) => food.meal === meal);
-};
+// const getMealFoods = (meal: number, foods: Food[]) => {
+//   const foodsWithIndex = foods.map((food, index) => ({ ...food, index }));
+//   return foodsWithIndex.filter((food) => food.meal === meal);
+// };
 
-const getDateName = (date: Date) => {
-  const dateString = date.toDateString();
-  if (dateString === new Date().toDateString()) {
-    return 'Today';
-  } else if (dateString === new Date(new Date().setDate(new Date().getDate() - 1)).toDateString()) {
-    return 'Yesterday';
-  } else if (dateString === new Date(new Date().setDate(new Date().getDate() + 1)).toDateString()) {
-    return 'Tomorrow';
-  }
-  return dateString;
-};
+// const getDateName = (date: Date) => {
+//   const dateString = date.toDateString();
+//   if (dateString === new Date().toDateString()) {
+//     return 'Today';
+//   } else if (dateString === new Date(new Date().setDate(new Date().getDate() - 1)).toDateString()) {
+//     return 'Yesterday';
+//   } else if (dateString === new Date(new Date().setDate(new Date().getDate() + 1)).toDateString()) {
+//     return 'Tomorrow';
+//   }
+//   return dateString;
+// };
 
-const NutrimentsInline = ({ nutriments }: { nutriments: Food['nutriments'] }) => {
-  const { styles } = useStyles(stylesheet);
-  return (
-    <View style={styles.nutriments}>
-      <Text style={[styles.nutriment]}>{`${nutriments.kcal} kcal`}</Text>
-      <Text style={[styles.nutriment]}>{`${nutriments.fat} g fat`}</Text>
-      <Text style={[styles.nutriment]}>{`${nutriments.proteins} g proteins`}</Text>
-      <Text style={[styles.nutriment]}>{`${nutriments.carbohydrates} g carbs`}</Text>
-    </View>
-  );
-};
+// const NutrimentsInline = ({ nutriments }: { nutriments: Food['nutriments'] }) => {
+//   const { styles } = useStyles(stylesheet);
+//   return (
+//     <View style={styles.nutriments}>
+//       <Text style={[styles.nutriment]}>{`${nutriments.kcal} kcal`}</Text>
+//       <Text style={[styles.nutriment]}>{`${nutriments.fat} g fat`}</Text>
+//       <Text style={[styles.nutriment]}>{`${nutriments.proteins} g proteins`}</Text>
+//       <Text style={[styles.nutriment]}>{`${nutriments.carbohydrates} g carbs`}</Text>
+//     </View>
+//   );
+// };
 
 export default function Dairy() {
   const [date, setDate] = useState(new Date());
 
-  const { data, removeFoodFromDairy } = useDairy(date);
+  // const dayNutriments = getFoodsNutriments(data.foods);
 
-  const dayNutriments = getFoodsNutriments(data.foods);
-
-  const dateName = getDateName(new Date(data.date));
+  // const dateName = getDateName(new Date(data.date));
   const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
   const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
 
@@ -67,15 +64,15 @@ export default function Dairy() {
       {/* HEADER */}
       <View style={styles.header}>
         <Button onPress={dateBack} title="Back" />
-        <Text style={styles.title}>{dateName}</Text>
+        {/* <Text style={styles.title}>{dateName}</Text> */}
         <Button onPress={dateForward} title="Forward" />
       </View>
       <Link href="/barcode-cam" asChild>
         <Button title="Scan Barcode" />
       </Link>
-      <NutrimentsInline nutriments={dayNutriments} />
+      {/* <NutrimentsInline nutriments={dayNutriments} /> */}
       {/* MEALS */}
-      {data.meals.map((meal: any, mealIndex) => {
+      {/* {data.meals.map((meal: any, mealIndex) => {
         const foods = getMealFoods(mealIndex, data.foods);
         const nutriments = getFoodsNutriments(foods);
         return (
@@ -83,7 +80,6 @@ export default function Dairy() {
             <View style={styles.mealHeader}>
               <Text style={styles.mealTitle}>{meal}</Text>
             </View>
-            {/* FOODS */}
             {foods.length ? (
               <View style={styles.mealFoods}>
                 {foods.map((food, index) => (
@@ -94,11 +90,10 @@ export default function Dairy() {
                 ))}
               </View>
             ) : null}
-            {/* NUTRIMENTS */}
             <NutrimentsInline nutriments={nutriments} />
           </View>
         );
-      })}
+      })} */}
     </View>
   );
 }

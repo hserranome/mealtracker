@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { ComponentProps, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { Button } from '~/components/elements/Button';
+import { Button } from '~/components/common/Button';
 
 const fetchProductByBarcode = async (barcode: string) => {
   const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}`);

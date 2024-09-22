@@ -1,8 +1,8 @@
 import { Link } from 'expo-router';
 
-import { Button } from '~/components/elements/Button';
-import { RadioOption } from '~/components/elements/RadioOption';
-import { TextInput } from '~/components/elements/TextInput';
+import { Button } from '~/components/common/Button';
+import { RadioOption } from '~/components/common/RadioOption';
+import { TextInput } from '~/components/common/TextInput';
 import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';

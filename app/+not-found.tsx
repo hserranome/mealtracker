@@ -2,7 +2,7 @@ import { Link, Stack } from 'expo-router';
 import { Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Container } from '~/components/elements/Container';
+import { Container } from '~/components/common/Container';
 
 export default function NotFoundScreen() {
   const { styles } = useStyles(stylesheet);

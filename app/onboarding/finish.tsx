@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { Button } from '~/components/elements/Button';
+import { Button } from '~/components/common/Button';
 import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';

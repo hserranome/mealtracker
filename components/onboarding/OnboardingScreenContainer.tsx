@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { ProgressBar } from '~/components/elements/ProgressBar';
+import { ProgressBar } from '~/components/common/ProgressBar';
 
 export const OnboardingScreenContainer: FC<
   PropsWithChildren<{

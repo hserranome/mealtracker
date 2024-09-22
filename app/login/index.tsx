@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Button, ButtonType } from '~/components/elements/Button';
+import { Button, ButtonType } from '~/components/common/Button';
 import { OnboardingScreenContainer } from '~/components/onboarding/OnboardingScreenContainer';
 
 const LoginScreen = () => {

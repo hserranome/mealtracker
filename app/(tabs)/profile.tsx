@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { Button } from '~/components/common/Button';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
-import { Button } from '~/components/elements/Button';
 import { db } from '~/data/database';
 import { users } from '~/data/schemas';
 

@@ -2,8 +2,8 @@ import { Link } from 'expo-router';
 import { useRef } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
 
-import { TextInput } from '~/components/elements';
-import { Button } from '~/components/elements/Button';
+import { TextInput } from '~/components/common';
+import { Button } from '~/components/common/Button';
 import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';

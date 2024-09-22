@@ -27,3 +27,4 @@ build-*.apk
 .aider*
 .idea
 .history
+.temp

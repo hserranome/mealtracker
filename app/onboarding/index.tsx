@@ -3,7 +3,7 @@ import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Button } from '~/components/elements/Button';
+import { Button } from '~/components/common/Button';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
 
