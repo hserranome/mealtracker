@@ -14,6 +14,7 @@ export const foods = sqliteTable('foods', {
   fat: integer('fat').notNull(),
   proteins: integer('proteins').notNull(),
   carbohydrates: integer('carbohydrates').notNull(),
+  // TODO: add more nutriments
 });
 export type Food = typeof foods.$inferSelect;
 export type NewFood = typeof foods.$inferInsert;
