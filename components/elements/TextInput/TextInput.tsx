@@ -8,6 +8,7 @@ type TextInputProps = ComponentProps<typeof BaseTextInput> &
   Omit<ComponentProps<typeof InputContainer>, 'children' | 'name'> &
   Partial<Pick<ComponentProps<typeof Controller>, 'name'>>;
 
+// @todo: handle inputs other than strings. for example, numbers.
 export const TextInput = ({ name, error, ...textInputProps }: TextInputProps) => {
   const formContext = useFormContext();
   const control = formContext?.control;
