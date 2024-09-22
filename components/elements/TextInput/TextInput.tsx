@@ -9,7 +9,8 @@ type TextInputProps = ComponentProps<typeof BaseTextInput> &
   Partial<Pick<ComponentProps<typeof Controller>, 'name'>>;
 
 export const TextInput = ({ name, error, ...textInputProps }: TextInputProps) => {
-  const { control } = useFormContext();
+  const formContext = useFormContext();
+  const control = formContext?.control;
 
   return (
     // TODO: randomize name?
