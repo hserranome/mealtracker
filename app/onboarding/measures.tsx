@@ -1,27 +1,20 @@
 import { Link } from 'expo-router';
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
 
+import { TextInput } from '~/components/elements';
 import { Button } from '~/components/elements/Button';
-import { HeightInput } from '~/components/elements/HeightInput';
-import { WeightInput } from '~/components/elements/WeightInput';
 import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvider/OnboardingDataProvider';
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
-import { Goal, LengthUnit, WeightUnit } from '~/data/types';
+import { Goal } from '~/data/types';
 
 export default function Measures() {
   useSetOnboardingParams({ title: 'Measures', progress: 75 });
 
   const { data, updateData } = useOnboardingData();
-  const {
-    weightUnit,
-    heightUnit,
-    goal,
-    initialHeight: currentHeight,
-    initialWeight: currentWeight,
-  } = data;
+  const { goal, initialHeight: currentHeight, initialWeight: currentWeight } = data;
   const refWeightInput = useRef<RNTextInput>(null);
 
   const canNext = currentHeight && currentWeight;
@@ -33,10 +26,13 @@ export default function Measures() {
       content={
         <>
           <OnboardingInputContainer title="How tall are you?">
-            <HeightInput
-              value={currentHeight || 0}
-              setValue={(value) => updateData('initialHeight', value)}
-              format={heightUnit || LengthUnit.cm}
+            <TextInput
+              placeholder="Current height"
+              keyboardType="numeric"
+              value={currentHeight ? String(currentHeight) : ''}
+              onChangeText={(value) => updateData('initialHeight', parseInt(value, 10))}
+              suffix="kg"
+              maxLength={3}
               onSubmitEditing={() => {
                 refWeightInput.current?.focus();
               }}
@@ -45,11 +41,13 @@ export default function Measures() {
           <OnboardingInputContainer
             title="How much do you weight?"
             subtitle="It's ok to estimate, you can update this later.">
-            <WeightInput
-              value={currentWeight || 0}
-              setValue={(value) => updateData('initialWeight', value)}
-              format={weightUnit || WeightUnit.kg}
-              ref={refWeightInput}
+            <TextInput
+              placeholder="Initial weight"
+              keyboardType="numeric"
+              value={currentWeight ? String(currentWeight) : ''}
+              onChangeText={(value) => updateData('initialWeight', parseInt(value, 10))}
+              suffix="kg"
+              maxLength={3}
             />
           </OnboardingInputContainer>
         </>
