@@ -1,30 +1,25 @@
-# Project Name
+# MealTracker
 
 ## Overview
-This app tracks daily meals, calories, macros, weight, and progression photos. Data is stored locally using SQLite and managed with Drizzle. The app is built using Expo for ease of development and cross-platform deployment.
+Calorie and macro tracker app, with a focus on tracking real progress through daily weight entry and progress pics. With a focus on sharing meals easily.
 
 ## Features
-- Track meals, calories, and macros.
-- Log daily weight.
-- Store and view progression photos.
-- Generate reports on nutrition and weight trends.
+- Set daily calorie goal for each day of the week
+- Track your daily meals and macros
+- Track your daily weight (with optional progress pic)
+- Meals (Ex: Breakfast, Lunch) can consist of single food items, recipes, or quick addedd calories
+- You can search for existing food items on OpenFoodFacts or create your items
+- You can create recipes, which are a group of food items, and set ration size
+- Share a meal through a link
+- Receive a meal link, and add single items (foods or recipes) to a day and meal you choose
 
-## Building the app
-WIP
+## Data privacy
+We only save whenever you create a share link, to allow the other user to receive it with the full data. 
+We delete link data after a month (this can change).
 
-## Running the app
-This is needed for running the app on development builds.
-1. **Install Dependencies**: Run `yarn install` to install all necessary packages.
-2. **Start the Project**: Use `yarn start` to start the Expo development server.
-3. **Run app on Emulator or Device**: Start the app and connect to the development server.
 
-## Code Layers
-- **UI Layer:** Built with React Native functional components, styled using React Native stylesheets and Unistyles.
-- **Data Layer:** Local data storage managed with SQLite and Drizzle.
-- **Logic Layer:** Business logic for managing meals, macros, weight, and progression photos.
+## In the future
 
-## Contributing
-- For code style, testing, and documentation guidelines, see `CONTRIBUTION.md`.
-
-## Changelog
-- For details on updates, see `CHANGELOG.md`.
+- Data import/export
+- Onboarding to find out TDEE and calorie goal
+- Backup data on our servers (paid)
