@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -6,22 +5,22 @@ import { View, ScrollView, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TextInput, Button } from '~/components/common';
+import { saveWeekdayCalories, getWeekdayCalories, WeekdayCalories } from '~/utils/calorieStorage';
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function SetupWeekdays() {
   const { styles } = useStyles(stylesheet);
-  const methods = useForm();
+  const methods = useForm<WeekdayCalories>();
   const router = useRouter();
 
   useEffect(() => {
     const loadExistingData = async () => {
       try {
-        const storedData = await AsyncStorage.getItem('weekdayCalories');
+        const storedData = await getWeekdayCalories();
         if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          Object.keys(parsedData).forEach((day) => {
-            methods.setValue(day, parsedData[day]);
+          Object.entries(storedData).forEach(([day, calories]) => {
+            methods.setValue(day, calories);
           });
         }
       } catch (error) {
@@ -32,10 +31,9 @@ export default function SetupWeekdays() {
     loadExistingData();
   }, [methods]);
 
-  const onSubmit = async (data: Record<string, string>) => {
+  const onSubmit = async (data: WeekdayCalories) => {
     try {
-      await AsyncStorage.setItem('weekdayCalories', JSON.stringify(data));
-      console.log('Data saved successfully');
+      await saveWeekdayCalories(data);
       router.replace('/(tabs)');
     } catch (error) {
       console.error('Error saving data:', error);

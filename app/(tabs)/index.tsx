@@ -1,9 +1,11 @@
 import { Link } from 'expo-router';
-import { useState } from 'react';
-import { View } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Button } from '~/components/common/Button';
+import { Button, ButtonType } from '~/components/common/Button';
+import { getCurrentDayCalories } from '~/utils/calorieStorage';
+import { getDateName } from '~/utils/getDateName';
 // import { Food } from '~/data/types/Food';
 
 // const getFoodsNutriments = (foods: Food[]) => {
@@ -25,18 +27,6 @@ import { Button } from '~/components/common/Button';
 //   return foodsWithIndex.filter((food) => food.meal === meal);
 // };
 
-// const getDateName = (date: Date) => {
-//   const dateString = date.toDateString();
-//   if (dateString === new Date().toDateString()) {
-//     return 'Today';
-//   } else if (dateString === new Date(new Date().setDate(new Date().getDate() - 1)).toDateString()) {
-//     return 'Yesterday';
-//   } else if (dateString === new Date(new Date().setDate(new Date().getDate() + 1)).toDateString()) {
-//     return 'Tomorrow';
-//   }
-//   return dateString;
-// };
-
 // const NutrimentsInline = ({ nutriments }: { nutriments: Food['nutriments'] }) => {
 //   const { styles } = useStyles(stylesheet);
 //   return (
@@ -51,10 +41,17 @@ import { Button } from '~/components/common/Button';
 
 export default function Dairy() {
   const [date, setDate] = useState(new Date());
+  const [currentDayCalories, setCurrentDayCalories] = useState<string | null>(null);
 
-  // const dayNutriments = getFoodsNutriments(data.foods);
+  useEffect(() => {
+    const fetchCurrentDayCalories = async () => {
+      const calories = await getCurrentDayCalories();
+      setCurrentDayCalories(calories);
+    };
 
-  // const dateName = getDateName(new Date(data.date));
+    fetchCurrentDayCalories();
+  }, [date]);
+
   const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
   const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
 
@@ -63,9 +60,12 @@ export default function Dairy() {
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        <Button onPress={dateBack} title="Back" />
-        {/* <Text style={styles.title}>{dateName}</Text> */}
-        <Button onPress={dateForward} title="Forward" />
+        <Button type={ButtonType.Ghost} onPress={dateBack} icon="arrow-left" />
+        <Text style={styles.title}>{getDateName(date)}</Text>
+        <Button type={ButtonType.Ghost} onPress={dateForward} icon="arrow-right" />
+      </View>
+      <View style={styles.calorieInfo}>
+        <Text style={styles.calorieText}>{`${currentDayCalories ?? 'N/A'} kcal`}</Text>
       </View>
       <Link href="/barcode-cam" asChild>
         <Button title="Scan Barcode" />
@@ -106,11 +106,21 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.colors.base400,
     padding: theme.margins[16],
     flexDirection: 'row',
-    gap: theme.margins[16],
+    alignItems: 'center',
   },
   title: {
     ...theme.fonts.heading.xs,
     color: theme.colors.base800,
+    marginHorizontal: theme.margins[18],
+  },
+  calorieInfo: {
+    padding: theme.margins[16],
+    backgroundColor: theme.colors.base200,
+  },
+  calorieText: {
+    ...theme.fonts.body.m,
+    color: theme.colors.base800,
+    textAlign: 'center',
   },
   nutriments: {
     paddingVertical: theme.margins[16],

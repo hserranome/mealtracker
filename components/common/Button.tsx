@@ -1,4 +1,5 @@
-import { forwardRef } from 'react';
+import FeatherIcon from '@expo/vector-icons/Feather';
+import { ComponentProps, forwardRef } from 'react';
 import { Text, TouchableNativeFeedbackProps, View } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -14,13 +15,15 @@ type ButtonProps = {
   title?: string;
   disabled?: boolean;
   type?: ButtonType;
+  icon?: ComponentProps<typeof FeatherIcon>['name'];
 } & TouchableNativeFeedbackProps;
 
 export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
-  ({ title, disabled, type = ButtonType.Solid, ...touchableProps }, ref) => {
+  ({ title, disabled, type = ButtonType.Solid, icon, ...touchableProps }, ref) => {
     const { styles, theme } = useStyles(stylesheet, {
       disabled: disabled ? type : undefined,
       type,
+      hasTitle: !!title,
     });
 
     return (
@@ -31,7 +34,15 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
           background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
           {...touchableProps}>
           <View style={[styles.button, touchableProps.style]}>
-            <Text style={styles.buttonText}>{title}</Text>
+            {icon && (
+              <FeatherIcon
+                name={icon}
+                size={24}
+                color={styles.buttonText.color}
+                style={styles.icon}
+              />
+            )}
+            {title && <Text style={styles.buttonText}>{title}</Text>}
           </View>
         </TouchableNativeFeedback>
       </View>
@@ -133,6 +144,16 @@ const stylesheet = createStyleSheet((theme) => ({
         [ButtonType.Ghost]: {
           color: theme.colors.base400,
         },
+      },
+    },
+  },
+  icon: {
+    variants: {
+      hasTitle: {
+        true: {
+          marginRight: theme.margins[8],
+        },
+        false: {},
       },
     },
   },
