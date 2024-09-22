@@ -15,6 +15,7 @@ export const dairies_items = sqliteTable('dairies_items', {
   food_id: integer('food_id')
     .notNull()
     .references(() => foods.id),
+  meal: text('meal').notNull(),
   quantity: real('quantity'),
   unit: text('unit'),
   created_at: text('created_at').notNull().default('CURRENT_TIMESTAMP'),
