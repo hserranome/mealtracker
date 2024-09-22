@@ -8,8 +8,6 @@ import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingF
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
 
-// @todo lose/gain label, and kg/lb units
-// could be manual, or use enums
 const options = [
   {
     value: 0.25,

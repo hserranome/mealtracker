@@ -78,7 +78,7 @@ export default function Goals() {
         </>
       }
       footer={
-        <Link href={{ pathname: '/onboarding/units' }} asChild>
+        <Link href={{ pathname: '/onboarding/measures' }} asChild>
           <Button title="Next" disabled={!canNext} />
         </Link>
       }
