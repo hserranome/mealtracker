@@ -2,12 +2,15 @@ import React, { ComponentProps, forwardRef } from 'react';
 import { TextInput as RNTextInput, Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-type BaseTextInputProps = ComponentProps<typeof RNTextInput> & {
+type BaseTextInputProps = {
   suffix?: string | null;
-};
+  variant?: 'default' | 'ghost';
+} & ComponentProps<typeof RNTextInput>;
+
 export const BaseTextInput = forwardRef<RNTextInput, BaseTextInputProps>(
-  ({ suffix, ...textInputProps }, ref) => {
-    const { styles, theme } = useStyles(baseInputStyleSheet);
+  // TODO: fix as any on variant
+  ({ suffix, variant = 'default' as any, ...textInputProps }, ref) => {
+    const { styles, theme } = useStyles(baseInputStyleSheet, { variant });
     return (
       <View style={styles.container}>
         <RNTextInput
@@ -31,11 +34,18 @@ const baseInputStyleSheet = createStyleSheet((theme) => ({
     flex: 1,
     padding: theme.margins[10],
     borderRadius: theme.radius[5],
-    borderWidth: 2,
-    borderColor: theme.colors.base800,
     backgroundColor: theme.colors.background,
     color: theme.colors.base800,
     variants: {
+      variant: {
+        default: {
+          borderWidth: 2,
+          borderColor: theme.colors.base800,
+        },
+        ghost: {
+          borderWidth: 0,
+        },
+      },
       selected: {
         true: {
           borderColor: theme.colors.blue,
