@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -12,6 +13,7 @@ const defaultMeals = ['Breakfast', 'Lunch', 'Dinner'];
 export default function Dairy() {
   const [date, setDate] = useState(new Date());
   const [currentDayCalories, setCurrentDayCalories] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCurrentDayCalories = async () => {
@@ -26,6 +28,11 @@ export default function Dairy() {
   const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
 
   const { styles } = useStyles(stylesheet);
+
+  const handleAddFood = (meal: string) => {
+    router.push({ pathname: '/meal', params: { meal } });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -44,7 +51,12 @@ export default function Dairy() {
               <Text style={{ fontWeight: '800' }}>{name}</Text>
             </View>
             <View style={{ justifyContent: 'center' }}>
-              <Button type={ButtonType.Ghost} title="Add food" icon="plus-circle" />
+              <Button
+                type={ButtonType.Ghost}
+                title="Add food"
+                icon="plus-circle"
+                onPress={() => handleAddFood(name)}
+              />
             </View>
             <NutrimentsRow />
           </View>
