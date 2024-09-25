@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -9,164 +9,84 @@ import { NewFood } from '../../data/schemas/foods';
 
 export default function CreateFood() {
   const { styles } = useStyles(stylesheet);
-  const { control, handleSubmit } = useForm<NewFood>();
+  const methods = useForm<NewFood>();
 
   const onSubmit = (data: NewFood) => {
     console.log(data);
-    // TODO: Implement food creation logic
   };
 
   return (
     <>
       <Stack.Screen options={{ title: 'Create Food' }} />
       <ScrollView style={styles.container}>
-        <View style={styles.form}>
-          <Controller
-            control={control}
+        <FormProvider {...methods}>
+          <TextInput
             name="name"
             rules={{ required: 'Name is required' }}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value}
-                label="Name"
-                error={error?.message}
-                onChangeText={onChange}
-                placeholder="Required"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            label="Name"
+            placeholder="Required"
+            variant="ghost"
+            direction="horizontal"
           />
-
-          <Controller
-            control={control}
+          <TextInput
+            label="Brand"
             name="brand"
-            rules={{}}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value}
-                label="Brand"
-                error={error?.message}
-                onChangeText={onChange}
-                placeholder="Optional"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            placeholder="Optional"
+            variant="ghost"
+            direction="horizontal"
           />
-
-          <Controller
-            control={control}
+          <TextInput
             name="quantity"
-            rules={{}}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value}
-                label="Quantity"
-                error={error?.message}
-                onChangeText={onChange}
-                placeholder="Optional"
-                keyboardType="numeric"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            label="Quantity"
+            placeholder="Optional"
+            keyboardType="numeric"
+            variant="ghost"
+            direction="horizontal"
           />
-
-          <Controller
-            control={control}
+          <TextInput
             name="unit"
-            rules={{}}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value}
-                label="Unit"
-                error={error?.message}
-                onChangeText={onChange}
-                placeholder="Optional"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            label="Unit"
+            placeholder="Optional"
+            variant="ghost"
+            direction="horizontal"
           />
-
           <Separator title="Nutrition facts" right="For 100g" />
-
-          <Controller
-            control={control}
-            name="kcal"
+          <TextInput
             rules={{ required: 'Calories are required' }}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value?.toString()}
-                label="Calories"
-                error={error?.message}
-                onChangeText={(text) => onChange(parseInt(text, 10))}
-                placeholder="Required"
-                keyboardType="numeric"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            label="Calories"
+            name="kcal"
+            placeholder="Required"
+            keyboardType="numeric"
+            variant="ghost"
+            direction="horizontal"
           />
-
-          <Controller
-            control={control}
+          <TextInput
             name="fat"
-            rules={{}}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value?.toString()}
-                label="Fat (g)"
-                error={error?.message}
-                onChangeText={(text) => onChange(parseInt(text, 10))}
-                placeholder="Optional"
-                keyboardType="numeric"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            label="Fat (g)"
+            placeholder="Optional"
+            keyboardType="numeric"
+            variant="ghost"
+            direction="horizontal"
           />
-
-          <Controller
-            control={control}
+          <TextInput
             name="proteins"
-            rules={{}}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value?.toString()}
-                label="Proteins (g)"
-                error={error?.message}
-                onChangeText={(text) => onChange(parseInt(text, 10))}
-                placeholder="Optional"
-                keyboardType="numeric"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            label="Proteins (g)"
+            placeholder="Optional"
+            keyboardType="numeric"
+            variant="ghost"
+            direction="horizontal"
           />
-
-          <Controller
-            control={control}
+          <TextInput
             name="carbohydrates"
-            rules={{}}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextInput
-                value={value?.toString()}
-                label="Carbohydrates (g)"
-                error={error?.message}
-                onChangeText={(text) => onChange(parseInt(text, 10))}
-                placeholder="Optional"
-                keyboardType="numeric"
-                variant="ghost"
-                direction="horizontal"
-              />
-            )}
+            label="Carbohydrates (g)"
+            placeholder="Optional"
+            keyboardType="numeric"
+            variant="ghost"
+            direction="horizontal"
           />
-
-          <View style={styles.button}>
-            <Button onPress={handleSubmit(onSubmit)} title="Next" />
-          </View>
+        </FormProvider>
+        <View style={styles.button}>
+          <Button onPress={methods.handleSubmit(onSubmit)} title="Next" />
         </View>
       </ScrollView>
     </>
@@ -178,9 +98,7 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  form: {
-    // padding: theme.margins[24],
-  },
+
   button: {
     paddingVertical: theme.margins[10],
     paddingHorizontal: theme.margins[18],
