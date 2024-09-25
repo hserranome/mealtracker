@@ -7,11 +7,10 @@ import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useTable } from 'tinybase/ui-react';
 
 import { LoadingScreen } from '~/components/common/LoadingScreen';
 import { PocketProvider } from '~/components/contexts/PocketbaseContext';
-import TinyBaseProvider from '~/components/contexts/TinyBaseContext';
+import TinyBaseProvider, { TinyBase } from '~/components/contexts/TinyBaseContext';
 import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 
 export default function Layout() {
@@ -40,7 +39,7 @@ export default function Layout() {
 function RootLayoutNav() {
   const router = useRouter();
   const { styles } = useStyles(stylesheet);
-  const caloriesSchedule = useTable(CALORIES_SCHEDULE_TABLE);
+  const caloriesSchedule = TinyBase.useTable(CALORIES_SCHEDULE_TABLE);
 
   useEffect(() => {
     if (Object.keys(caloriesSchedule).length >= 7) {

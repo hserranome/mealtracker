@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useSetTableCallback, useTable } from 'tinybase/ui-react';
 
 import { TextInput, Button } from '~/components/common';
+import { TinyBase } from '~/components/contexts/TinyBaseContext';
 import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 
 export type WeekdayCalories = Record<string, string>;
@@ -16,15 +16,15 @@ export default function SetupWeekdays() {
   const { styles } = useStyles(stylesheet);
   const methods = useForm<WeekdayCalories>();
   const router = useRouter();
-  const storedData = useTable(CALORIES_SCHEDULE_TABLE);
+  const storedData = TinyBase.useTable(CALORIES_SCHEDULE_TABLE);
 
   useEffect(() => {
     Object.keys(storedData).forEach((key) => {
-      methods.setValue(key, storedData[key].calories.toString());
+      methods.setValue(key, (storedData[key].calories ?? '').toString());
     });
   }, [storedData]);
 
-  const onSubmit = useSetTableCallback(
+  const onSubmit = TinyBase.useSetTableCallback(
     CALORIES_SCHEDULE_TABLE,
     (data: WeekdayCalories) => {
       const table = Object.keys(data).reduce(

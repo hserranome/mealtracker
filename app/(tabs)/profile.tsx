@@ -1,9 +1,9 @@
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
-import { useDelTableCallback } from 'tinybase/ui-react';
 
 import { Button } from '~/components/common/Button';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
+import { TinyBase } from '~/components/contexts/TinyBaseContext';
 import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 
 export default function Profile() {
@@ -18,8 +18,10 @@ export default function Profile() {
     }
   };
 
-  const deleteCalorieSchedule = useDelTableCallback(CALORIES_SCHEDULE_TABLE, undefined, () =>
-    router.replace('/welcome')
+  const deleteCalorieSchedule = TinyBase.useDelTableCallback(
+    CALORIES_SCHEDULE_TABLE,
+    undefined,
+    () => router.replace('/welcome')
   );
 
   const navigateToSetupWeekdays = () => {
