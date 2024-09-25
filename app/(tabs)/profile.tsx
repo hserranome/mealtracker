@@ -3,12 +3,13 @@ import { Text, View } from 'react-native';
 
 import { Button } from '~/components/common/Button';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
-import { TinyBase } from '~/components/contexts/TinyBaseContext';
+import { useTinyBase } from '~/components/contexts/TinyBaseContext';
 import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 
 export default function Profile() {
   const router = useRouter();
   const { logout } = usePocketbase();
+  const { useDelTableCallback } = useTinyBase();
 
   const handleLogout = async () => {
     try {
@@ -18,10 +19,8 @@ export default function Profile() {
     }
   };
 
-  const deleteCalorieSchedule = TinyBase.useDelTableCallback(
-    CALORIES_SCHEDULE_TABLE,
-    undefined,
-    () => router.replace('/welcome')
+  const deleteCalorieSchedule = useDelTableCallback(CALORIES_SCHEDULE_TABLE, undefined, () =>
+    router.replace('/welcome')
   );
 
   const navigateToSetupWeekdays = () => {

@@ -10,7 +10,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { LoadingScreen } from '~/components/common/LoadingScreen';
 import { PocketProvider } from '~/components/contexts/PocketbaseContext';
-import TinyBaseProvider, { TinyBase } from '~/components/contexts/TinyBaseContext';
+import TinyBaseProvider, { useTinyBase } from '~/components/contexts/TinyBaseContext';
 import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 
 export default function Layout() {
@@ -39,7 +39,8 @@ export default function Layout() {
 function RootLayoutNav() {
   const router = useRouter();
   const { styles } = useStyles(stylesheet);
-  const caloriesSchedule = TinyBase.useTable(CALORIES_SCHEDULE_TABLE);
+  const { useTable } = useTinyBase();
+  const caloriesSchedule = useTable(CALORIES_SCHEDULE_TABLE);
 
   useEffect(() => {
     if (Object.keys(caloriesSchedule).length >= 7) {

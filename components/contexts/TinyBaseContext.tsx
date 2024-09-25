@@ -10,16 +10,17 @@ import { createStore } from 'tinybase/with-schemas';
 import { CALORIES_SCHEDULE_TABLE, CALORIES_SCHEDULE_TABLE_SCHEMA, DB_NAME } from '~/constants';
 import { sqlDb } from '~/data/database';
 
+// TODO: Move this?
 const tablesSchema = {
   [CALORIES_SCHEDULE_TABLE]: CALORIES_SCHEDULE_TABLE_SCHEMA,
 } as const;
 const valuesSchema = {} as const;
 
 // Cast the whole module to be schema-based
-export const TinyBase = TBUIReact as WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
+const TinyBase = TBUIReact as WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
 
+// Initialize store instance
 const storeInstance = createStore().setSchema(tablesSchema, valuesSchema);
-export const StoreContext = React.createContext(storeInstance); // Not used at the moment
 
 const useAndStartPersister = (store: typeof storeInstance) =>
   // Persist store to Expo SQLite; load once, then auto-save.
@@ -37,7 +38,6 @@ const useAndStartPersister = (store: typeof storeInstance) =>
       })
   );
 
-// Define the provider component
 const TinyBaseProvider = ({ children }: PropsWithChildren) => {
   const store = TinyBase.useCreateStore(() => storeInstance);
   useAndStartPersister(store);
@@ -47,5 +47,4 @@ const TinyBaseProvider = ({ children }: PropsWithChildren) => {
 };
 
 export default TinyBaseProvider;
-
-// Holy shit this library has some convulated typing solutions
+export const useTinyBase = () => TinyBase;
