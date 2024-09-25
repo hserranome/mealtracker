@@ -10,15 +10,15 @@ type InputContainerProps = ComponentProps<typeof InputContainer>;
 
 type TextInputProps = {
   name?: ControllerProps['name'];
+  rules?: ControllerProps['rules'];
   label?: InputContainerProps['label'];
-  error?: InputContainerProps['error'];
   direction?: InputContainerProps['direction'];
 } & BaseTextInputProps;
 
 // @todo: handle inputs other than strings. for example, numbers.
 export const TextInput = ({
   name,
-  error,
+  rules,
   variant = 'default',
   direction,
   label,
@@ -28,24 +28,28 @@ export const TextInput = ({
   const control = formContext?.control;
 
   return (
-    // TODO: randomize name?
-    <InputContainer name={name || ''} label={label} direction={direction} error={error}>
+    <>
       {name ? (
         <Controller
           control={control}
           name={name}
-          render={({ field: { onChange, ...field } }) => (
-            <BaseTextInput
-              {...baseTextInputProps}
-              {...field}
-              onChangeText={onChange}
-              variant={variant}
-            />
+          rules={rules}
+          render={({ field: { onChange, ...field }, fieldState: { error } }) => (
+            <InputContainer name={name} label={label} direction={direction} error={error?.message}>
+              <BaseTextInput
+                {...baseTextInputProps}
+                {...field}
+                onChangeText={onChange}
+                variant={variant}
+              />
+            </InputContainer>
           )}
         />
       ) : (
-        <BaseTextInput {...baseTextInputProps} variant={variant} />
+        <InputContainer name={name || ''} label={label} direction={direction}>
+          <BaseTextInput {...baseTextInputProps} variant={variant} />
+        </InputContainer>
       )}
-    </InputContainer>
+    </>
   );
 };
