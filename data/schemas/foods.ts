@@ -4,6 +4,8 @@ export const foods = sqliteTable('foods', {
   id: integer('id').primaryKey({ autoIncrement: true }).unique().notNull(),
   name: text('name').notNull(),
   brand: text('brand').notNull(),
+  // TODO: what if 2 products have the same barcode?
+  barcode: text('barcode').unique().notNull(),
   quantity: text('quantity').notNull(),
   unit: text('unit').notNull(),
   image_url: text('image_url'),

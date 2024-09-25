@@ -1,1 +1,0 @@
-ALTER TABLE `dairies_items` ADD `meal` text NOT NULL;

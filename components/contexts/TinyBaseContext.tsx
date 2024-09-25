@@ -9,7 +9,6 @@ import type { WithSchemas } from 'tinybase/ui-react/with-schemas';
 import { createStore } from 'tinybase/with-schemas';
 
 import { CALORIES_SCHEDULE_TABLE, CALORIES_SCHEDULE_TABLE_SCHEMA, DB_NAME } from '~/constants';
-import { sqlDb } from '~/data/database';
 
 // TODO: Move this?
 const tablesSchema = {
@@ -44,7 +43,7 @@ const useAndStartPersister = (store: typeof tbStore, callback: () => void) =>
 export const TinyBaseProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const store = TinyBase.useCreateStore(() => tbStore);
-  useDrizzleStudio(sqlDb as any); // Does this still work?
+  useDrizzleStudio(openDatabaseSync(DB_NAME, { enableChangeListener: true }) as any); // Does this still work?
 
   const checkHasNecessaryData = () => {
     const caloriesSchedule = store.getTable(CALORIES_SCHEDULE_TABLE);
