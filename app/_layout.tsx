@@ -10,8 +10,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { LoadingScreen } from '~/components/common/LoadingScreen';
 import { PocketProvider } from '~/components/contexts/PocketbaseContext';
-import TinyBaseProvider, { useTinyBase } from '~/components/contexts/TinyBaseContext';
-import { CALORIES_SCHEDULE_TABLE } from '~/constants';
+import { TinyBaseProvider } from '~/components/contexts/TinyBaseContext';
 
 export default function Layout() {
   const { theme } = useStyles(stylesheet);
@@ -37,17 +36,7 @@ export default function Layout() {
 }
 
 function RootLayoutNav() {
-  const router = useRouter();
   const { styles } = useStyles(stylesheet);
-  const { useTable } = useTinyBase();
-  const caloriesSchedule = useTable(CALORIES_SCHEDULE_TABLE);
-
-  useEffect(() => {
-    if (Object.keys(caloriesSchedule).length >= 7) {
-      return router.replace('/(tabs)');
-    }
-    return router.replace('/welcome');
-  }, [caloriesSchedule]);
 
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>

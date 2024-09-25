@@ -1,5 +1,6 @@
 // TinyBaseProvider.js
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import { useRouter } from 'expo-router';
 import { openDatabaseSync } from 'expo-sqlite';
 import React, { PropsWithChildren } from 'react';
 import { createExpoSqlitePersister } from 'tinybase/persisters/persister-expo-sqlite/with-schemas';
@@ -18,11 +19,12 @@ const valuesSchema = {} as const;
 
 // Cast the whole module to be schema-based
 const TinyBase = TBUIReact as WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
+export const useTinyBase = () => TinyBase;
 
 // Initialize store instance
-const storeInstance = createStore().setSchema(tablesSchema, valuesSchema);
+export const tbStore = createStore().setSchema(tablesSchema, valuesSchema);
 
-const useAndStartPersister = (store: typeof storeInstance) =>
+const useAndStartPersister = (store: typeof tbStore, callback: () => void) =>
   // Persist store to Expo SQLite; load once, then auto-save.
   TinyBase.useCreatePersister(
     store,
@@ -35,16 +37,23 @@ const useAndStartPersister = (store: typeof storeInstance) =>
         } else {
           console.warn('Persister is undefined or null, auto-save not started.');
         }
+        callback?.();
       })
   );
 
-const TinyBaseProvider = ({ children }: PropsWithChildren) => {
-  const store = TinyBase.useCreateStore(() => storeInstance);
-  useAndStartPersister(store);
+export const TinyBaseProvider = ({ children }: PropsWithChildren) => {
+  const router = useRouter();
+  const store = TinyBase.useCreateStore(() => tbStore);
   useDrizzleStudio(sqlDb as any); // Does this still work?
+
+  const checkHasNecessaryData = () => {
+    const caloriesSchedule = store.getTable(CALORIES_SCHEDULE_TABLE);
+    const missingDays = Object.keys(caloriesSchedule).length < 7;
+    if (missingDays) return router.replace('/welcome');
+    return router.replace('/(tabs)');
+  };
+
+  useAndStartPersister(store, checkHasNecessaryData);
 
   return <TinyBase.Provider store={store}>{children}</TinyBase.Provider>;
 };
-
-export default TinyBaseProvider;
-export const useTinyBase = () => TinyBase;
