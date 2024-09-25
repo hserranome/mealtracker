@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { TextInput, Button } from '../../components/common';
+import { TextInput, Button, Separator } from '../../components/common';
 import { NewFood } from '../../data/schemas/foods';
 
 export default function CreateFood() {
@@ -90,6 +90,8 @@ export default function CreateFood() {
             )}
           />
 
+          <Separator title="Nutrition facts" right="For 100g" />
+
           <Controller
             control={control}
             name="kcal"
@@ -162,7 +164,9 @@ export default function CreateFood() {
             )}
           />
 
-          <Button onPress={handleSubmit(onSubmit)} title="Next" />
+          <View style={styles.button}>
+            <Button onPress={handleSubmit(onSubmit)} title="Next" />
+          </View>
         </View>
       </ScrollView>
     </>
@@ -175,6 +179,10 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.colors.background,
   },
   form: {
-    padding: theme.margins[24],
+    // padding: theme.margins[24],
+  },
+  button: {
+    paddingVertical: theme.margins[10],
+    paddingHorizontal: theme.margins[18],
   },
 }));
