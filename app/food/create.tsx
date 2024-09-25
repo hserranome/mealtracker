@@ -35,21 +35,6 @@ export default function CreateFood() {
             variant="ghost"
             direction="horizontal"
           />
-          <TextInput
-            name="quantity"
-            label="Quantity"
-            placeholder="Optional"
-            keyboardType="numeric"
-            variant="ghost"
-            direction="horizontal"
-          />
-          <TextInput
-            name="unit"
-            label="Unit"
-            placeholder="Optional"
-            variant="ghost"
-            direction="horizontal"
-          />
           <Separator title="Nutrition facts" right="For 100g" />
           <TextInput
             rules={{ required: 'Calories are required' }}
