@@ -55,6 +55,7 @@ const inputContainerStyleSheet = createStyleSheet((theme) => ({
           marginBottom: theme.margins[8],
         },
         horizontal: {
+          marginLeft: theme.margins[4],
           marginRight: theme.margins[16],
         },
       },
@@ -68,6 +69,8 @@ const inputContainerStyleSheet = createStyleSheet((theme) => ({
         },
         horizontal: {
           flex: 1,
+          // TODO: horizontal aligned inputs should stick to the right side and grow as filled
+          marginRight: theme.margins[4],
         },
       },
     },
