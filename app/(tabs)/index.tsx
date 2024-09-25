@@ -35,9 +35,9 @@ export default function Dairy() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Button type={ButtonType.Ghost} onPress={dateBack} icon="arrow-left" />
+        <Button type={ButtonType.Ghost} onPress={dateBack} icon="arrow-left" debounceRate={0} />
         <Text style={styles.title}>{getDateName(date)}</Text>
-        <Button type={ButtonType.Ghost} onPress={dateForward} icon="arrow-right" />
+        <Button type={ButtonType.Ghost} onPress={dateForward} icon="arrow-right" debounceRate={0} />
       </View>
       <View style={styles.calorieInfo}>
         <Text style={styles.calorieText}>{`N/A / ${currentDayCalories ?? 'N/A'} kcal`}</Text>

@@ -1,14 +1,14 @@
 import { useRef } from 'react';
 
-const BOUNCE_RATE = 2000;
+const BOUNCE_RATE = 500;
 
-export const useDebounce = () => {
+export const useDebounce = (defaultRate = BOUNCE_RATE) => {
   const busy = useRef(false);
 
-  const debounce = async (callback: Function) => {
+  const debounce = async (callback: Function, rate = defaultRate) => {
     setTimeout(() => {
       busy.current = false;
-    }, BOUNCE_RATE);
+    }, rate);
 
     if (!busy.current) {
       busy.current = true;

@@ -1,6 +1,6 @@
 import FeatherIcon from '@expo/vector-icons/Feather';
 import { ComponentProps, forwardRef } from 'react';
-import { Text, TouchableNativeFeedbackProps, View } from 'react-native';
+import { StyleProp, Text, TouchableNativeFeedbackProps, View } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -18,27 +18,41 @@ type ButtonProps = {
   disabled?: boolean;
   type?: ButtonType;
   icon?: ComponentProps<typeof FeatherIcon>['name'];
+  debounceRate?: number;
+  style?: StyleProp<View>;
 } & TouchableNativeFeedbackProps;
 
 export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
-  ({ title, disabled, type = ButtonType.Solid, icon, onPress, ...touchableProps }, ref) => {
+  (
+    {
+      title,
+      disabled,
+      type = ButtonType.Solid,
+      icon,
+      onPress,
+      style,
+      debounceRate,
+      ...touchableProps
+    },
+    ref
+  ) => {
     const { styles, theme } = useStyles(stylesheet, {
       disabled: disabled ? type : undefined,
       type,
       hasTitle: !!title,
     });
 
-    const { debounce } = useDebounce();
+    const { debounce } = useDebounce(debounceRate);
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, style]}>
         <TouchableNativeFeedback
           ref={ref}
           disabled={disabled}
           background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
           {...touchableProps}
           onPress={onPress ? () => debounce(onPress) : undefined}>
-          <View style={[styles.button, touchableProps.style]}>
+          <View style={[styles.button]}>
             {icon && (
               <FeatherIcon
                 name={icon}
