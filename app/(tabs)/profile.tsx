@@ -1,20 +1,14 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
+import { useDelTableCallback } from 'tinybase/ui-react';
 
 import { Button } from '~/components/common/Button';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
-import { db } from '~/data/database';
-import { users } from '~/data/schemas';
+import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 
 export default function Profile() {
   const router = useRouter();
   const { logout } = usePocketbase();
-
-  const wipeData = async () => {
-    await db.delete(users);
-    router.replace('/');
-  };
 
   const handleLogout = async () => {
     try {
@@ -24,15 +18,9 @@ export default function Profile() {
     }
   };
 
-  const deleteLocalStorageData = async () => {
-    try {
-      await AsyncStorage.removeItem('weekdayCalories');
-      console.log('Local storage data deleted successfully');
-      router.replace('/welcome');
-    } catch (error) {
-      console.error('Error deleting local storage data:', error);
-    }
-  };
+  const deleteCalorieSchedule = useDelTableCallback(CALORIES_SCHEDULE_TABLE, undefined, () =>
+    router.replace('/welcome')
+  );
 
   const navigateToSetupWeekdays = () => {
     router.push('/setup-weekdays');
@@ -41,9 +29,8 @@ export default function Profile() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Profile</Text>
-      <Button onPress={() => wipeData()} title="Wipe data" />
       <Button onPress={handleLogout} title="Logout" />
-      <Button onPress={deleteLocalStorageData} title="Delete local storage data" />
+      <Button onPress={deleteCalorieSchedule} title="Delete calorie schedule" />
       <Button onPress={navigateToSetupWeekdays} title="Edit Calorie Intake" />
     </View>
   );

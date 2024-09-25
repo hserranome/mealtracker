@@ -1,53 +1,38 @@
 import '../theme/unistyles';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { Stack, useRouter } from 'expo-router';
-import { SQLiteProvider } from 'expo-sqlite';
 import * as SystemUI from 'expo-system-ui';
 import { Suspense, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useTable } from 'tinybase/ui-react';
 
 import { LoadingScreen } from '~/components/common/LoadingScreen';
 import { PocketProvider } from '~/components/contexts/PocketbaseContext';
-import { SessionProvider } from '~/components/contexts/SessionProvider';
-import { DB_NAME } from '~/constants';
-import { db, sqlDb } from '~/data/database';
-import migrations from '~/data/migrations/migrations';
+import TinyBaseProvider from '~/components/contexts/TinyBaseContext';
+import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 
 export default function Layout() {
-  const { success, error } = useMigrations(db, migrations);
   const { theme } = useStyles(stylesheet);
   const colorScheme = useColorScheme();
-  useDrizzleStudio(sqlDb as any);
 
   useEffect(() => {
     SystemUI.setBackgroundColorAsync(theme.colors.background);
   }, [colorScheme]);
 
-  if (!success && !error) return <LoadingScreen />;
-  if (error) {
-    console.error(error);
-    return <></>;
-  }
-
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <SQLiteProvider databaseName={DB_NAME} useSuspense>
+      <TinyBaseProvider>
         <PocketProvider>
-          <SessionProvider>
-            <SafeAreaProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <RootLayoutNav />
-              </GestureHandlerRootView>
-            </SafeAreaProvider>
-          </SessionProvider>
+          <SafeAreaProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <RootLayoutNav />
+            </GestureHandlerRootView>
+          </SafeAreaProvider>
         </PocketProvider>
-      </SQLiteProvider>
+      </TinyBaseProvider>
     </Suspense>
   );
 }
@@ -55,20 +40,14 @@ export default function Layout() {
 function RootLayoutNav() {
   const router = useRouter();
   const { styles } = useStyles(stylesheet);
+  const caloriesSchedule = useTable(CALORIES_SCHEDULE_TABLE);
 
   useEffect(() => {
-    async function checkExistingData() {
-      try {
-        const existingData = await AsyncStorage.getItem('weekdayCalories');
-        if (existingData !== null) return router.replace('/(tabs)');
-        return router.replace('/welcome');
-      } catch (error) {
-        console.error('Error checking existing data:', error);
-      }
+    if (Object.keys(caloriesSchedule).length >= 7) {
+      return router.replace('/(tabs)');
     }
-
-    checkExistingData();
-  }, [router]);
+    return router.replace('/welcome');
+  }, [caloriesSchedule]);
 
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>

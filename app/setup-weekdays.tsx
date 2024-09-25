@@ -1,11 +1,14 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useSetTableCallback, useTable } from 'tinybase/ui-react';
 
 import { TextInput, Button } from '~/components/common';
-import { saveWeekdayCalories, getWeekdayCalories, WeekdayCalories } from '~/utils/calorieStorage';
+import { CALORIES_SCHEDULE_TABLE } from '~/constants';
+
+export type WeekdayCalories = Record<string, string>;
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -13,32 +16,30 @@ export default function SetupWeekdays() {
   const { styles } = useStyles(stylesheet);
   const methods = useForm<WeekdayCalories>();
   const router = useRouter();
+  const storedData = useTable(CALORIES_SCHEDULE_TABLE);
 
   useEffect(() => {
-    const loadExistingData = async () => {
-      try {
-        const storedData = await getWeekdayCalories();
-        if (storedData) {
-          Object.entries(storedData).forEach(([day, calories]) => {
-            methods.setValue(day, calories);
-          });
-        }
-      } catch (error) {
-        console.error('Error loading existing data:', error);
-      }
-    };
+    Object.keys(storedData).forEach((key) => {
+      methods.setValue(key, storedData[key].calories.toString());
+    });
+  }, [storedData]);
 
-    loadExistingData();
-  }, [methods]);
-
-  const onSubmit = async (data: WeekdayCalories) => {
-    try {
-      await saveWeekdayCalories(data);
-      router.replace('/(tabs)');
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
-  };
+  const onSubmit = useSetTableCallback(
+    CALORIES_SCHEDULE_TABLE,
+    (data: WeekdayCalories) => {
+      const table = Object.keys(data).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: { calories: parseInt(data[key], 10) },
+        }),
+        {}
+      );
+      return table;
+    },
+    [],
+    undefined,
+    () => router.replace('/(tabs)')
+  );
 
   return (
     <FormProvider {...methods}>
@@ -46,8 +47,9 @@ export default function SetupWeekdays() {
         <View style={styles.formContainer}>
           {weekdays.map((day, index) => (
             <View key={day} style={styles.inputContainer}>
-              <Text style={styles.label}>{day}:</Text>
               <TextInput
+                label={day}
+                direction="horizontal"
                 name={day.toLowerCase()}
                 placeholder="Enter calorie intake"
                 keyboardType="numeric"
@@ -61,7 +63,9 @@ export default function SetupWeekdays() {
               />
             </View>
           ))}
-          <Button title="Save" onPress={methods.handleSubmit(onSubmit)} style={styles.button} />
+          <View style={styles.button}>
+            <Button title="Save" onPress={methods.handleSubmit(onSubmit)} />
+          </View>
         </View>
       </ScrollView>
     </FormProvider>

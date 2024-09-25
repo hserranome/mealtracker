@@ -1,28 +1,27 @@
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useTable } from 'tinybase/ui-react';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { NutrimentsRow } from '~/components/common/NutrimentsRow';
-import { getCurrentDayCalories } from '~/utils/calorieStorage';
+import { CALORIES_SCHEDULE_TABLE } from '~/constants';
 import { getDateName } from '~/utils/getDateName';
 
 const defaultMeals = ['Breakfast', 'Lunch', 'Dinner'];
 
 export default function Dairy() {
   const [date, setDate] = useState(new Date());
-  const [currentDayCalories, setCurrentDayCalories] = useState<string | null>(null);
   const router = useRouter();
+  const caloriesSchedule = useTable(CALORIES_SCHEDULE_TABLE);
 
-  useEffect(() => {
-    const fetchCurrentDayCalories = async () => {
-      const calories = await getCurrentDayCalories();
-      setCurrentDayCalories(calories);
-    };
-
-    fetchCurrentDayCalories();
-  }, [date]);
+  const currentDayCalories = useMemo(() => {
+    const selectedDay = new Date(date)
+      .toLocaleDateString('en-US', { weekday: 'long' })
+      .toLowerCase();
+    return caloriesSchedule[selectedDay]?.calories;
+  }, [caloriesSchedule, date]);
 
   const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
   const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
