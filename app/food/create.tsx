@@ -1,19 +1,47 @@
-import { Stack } from 'expo-router';
-import React from 'react';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { TextInput, Button, Separator } from '../../components/common';
-import { NewFood } from '../../data/schemas/foods';
+import { TextInput, Button, Separator, InputContainer, ButtonType } from '../../components/common';
 
 export default function CreateFood() {
   const { styles } = useStyles(stylesheet);
-  const methods = useForm<NewFood>();
+  // TODO: food schema type
+  const methods = useForm({
+    defaultValues: {
+      serving_size: 100,
+      unit: 'g',
+    },
+  });
+  const router = useRouter();
 
-  const onSubmit = (data: NewFood) => {
+  const navigateToServingSizes = () => {
+    router.push({
+      pathname: '/food/serving-sizes',
+      params: {
+        serving_size: methods.getValues('serving_size'),
+        unit: methods.getValues('unit'),
+      },
+    });
+  };
+
+  const { serving_sizes } = useLocalSearchParams();
+  useEffect(() => {
+    if (typeof serving_sizes === 'string') {
+      const data = JSON.parse(serving_sizes);
+      methods.setValue('serving_size', data.serving_size);
+      methods.setValue('unit', data.unit);
+    }
+  }, [serving_sizes]);
+
+  const onSubmit = (data: any) => {
     console.log(data);
   };
+
+  const serving_size = methods.getValues('serving_size');
+  const unit = methods.getValues('unit');
 
   return (
     <>
@@ -42,8 +70,16 @@ export default function CreateFood() {
             variant="ghost"
             direction="horizontal"
           />
-          <Text>Serving Sizes</Text>
-          <Separator title="Nutrition facts" right="For 100g" />
+          <InputContainer name="serving_sizes" direction="horizontal" label="Serving sizes">
+            <Button
+              title="Edit Serving Sizes"
+              icon="arrow-right"
+              iconPosition="right"
+              onPress={navigateToServingSizes}
+              type={ButtonType.Ghost}
+            />
+          </InputContainer>
+          <Separator title="Nutrition facts" right={`For ${serving_size} ${unit}`} />
           <TextInput
             rules={{ required: 'Calories are required' }}
             label="Calories"
@@ -52,6 +88,7 @@ export default function CreateFood() {
             keyboardType="numeric"
             variant="ghost"
             direction="horizontal"
+            type="number"
           />
           <TextInput
             name="fat"
@@ -60,6 +97,7 @@ export default function CreateFood() {
             keyboardType="numeric"
             variant="ghost"
             direction="horizontal"
+            type="number"
           />
           <TextInput
             name="proteins"
@@ -68,6 +106,7 @@ export default function CreateFood() {
             keyboardType="numeric"
             variant="ghost"
             direction="horizontal"
+            type="number"
           />
           <TextInput
             name="carbohydrates"
@@ -76,6 +115,7 @@ export default function CreateFood() {
             keyboardType="numeric"
             variant="ghost"
             direction="horizontal"
+            type="number"
           />
         </FormProvider>
         <View style={styles.button}>
