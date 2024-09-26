@@ -1,12 +1,15 @@
 import { z } from 'zod';
 
-import { createTablesSchema } from '~/utils/createTablesSchema';
+import { zodToSimpleSchema } from '~/utils/zodToSimpleSchema';
 
-export const CaloriesScheduleTableSchema = z.object({
+// CaloriesSchedule
+const CaloriesScheduleSchema = z.object({
   calories: z.number(),
 });
 export const CALORIES_SCHEDULE_TABLE = 'calories_schedule';
+export type CaloriesSchedule = z.infer<typeof CaloriesScheduleSchema>;
 
+// Food
 const FoodSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
@@ -26,22 +29,19 @@ const FoodSchema = z.object({
 export const FOOD_TABLE = 'food';
 export type Food = z.infer<typeof FoodSchema>;
 
-const FoodServingSize = z.object({
-  id: z.number(),
-  food_id: z.number(),
-  name: z.string(),
-  serving_size: z.string(),
-  unit: z.string(),
-});
-export const FOOD_SERVING_SIZES = 'food_serving_sizes';
-
-// Structure tables and values schemas
-// TODO: avoid repetition
-export const tablesSchema = createTablesSchema({
-  [CALORIES_SCHEDULE_TABLE]: CaloriesScheduleTableSchema,
-  [FOOD_TABLE]: FoodSchema,
-  [FOOD_SERVING_SIZES]: FoodServingSize,
-});
+// TinyBase schemas
+export const tablesSchema = {
+  [CALORIES_SCHEDULE_TABLE]: zodToSimpleSchema(CaloriesScheduleSchema),
+  [FOOD_TABLE]: zodToSimpleSchema(FoodSchema),
+} as const;
 export const valuesSchema = {} as const;
 
-// TODO: setRelationships(store)
+// const FoodServingSize = z.object({
+//   id: z.number(),
+//   food_id: z.number(),
+//   name: z.string(),
+//   serving_size: z.string(),
+//   unit: z.string(),
+// });
+// export const FOOD_SERVING_SIZES = 'food_serving_sizes';
+// setRelationships(store);

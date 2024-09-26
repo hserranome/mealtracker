@@ -20,7 +20,8 @@ export default function SetupWeekdays() {
 
   useEffect(() => {
     Object.keys(storedData).forEach((key) => {
-      methods.setValue(key, (storedData[key].calories ?? '').toString());
+      const value = storedData[key].calories;
+      methods.setValue(key, String(value));
     });
   }, [storedData]);
 
@@ -30,7 +31,7 @@ export default function SetupWeekdays() {
       const table = Object.keys(data).reduce(
         (acc, key) => ({
           ...acc,
-          [key]: { calories: parseInt(data[key], 10) },
+          [key]: { calories: data[key] },
         }),
         {}
       );
@@ -54,6 +55,7 @@ export default function SetupWeekdays() {
                 placeholder="Enter calorie intake"
                 keyboardType="numeric"
                 style={styles.input}
+                type="number"
                 onSubmitEditing={() => {
                   if (index < weekdays.length - 1) {
                     methods.setFocus(weekdays[index + 1].toLowerCase());

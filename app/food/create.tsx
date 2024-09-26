@@ -13,7 +13,6 @@ export default function CreateFood() {
   const { styles } = useStyles(stylesheet);
   const { useSetRowCallback } = useTinyBase();
 
-  // TODO: food schema type
   const methods = useForm<Food>({
     defaultValues: {
       serving_size: 100,
@@ -41,8 +40,8 @@ export default function CreateFood() {
     }
   }, [serving_sizes]);
 
-  // TODO: get default values from params
   useEffect(() => {
+    // TODO: get default values from params
     methods.setValue('id', Crypto.randomUUID());
   }, []);
 

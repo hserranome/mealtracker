@@ -1,4 +1,3 @@
-import { createTools } from 'tinybase/tools/with-schemas';
 import * as TBUIReact from 'tinybase/ui-react/with-schemas';
 import type { WithSchemas } from 'tinybase/ui-react/with-schemas';
 import { createStore } from 'tinybase/with-schemas';
@@ -14,8 +13,8 @@ export const useTinyBase = () => TinyBase;
 // Initialize store instance
 export const tbStore = createStore().setSchema(tablesSchema, valuesSchema);
 
-if (process.env.NODE_ENV === 'development') {
-  const tools = createTools(tbStore);
-  const [dTs, ts, uiReactDTs, uiReactTsx] = tools.getStoreApi(DB_NAME);
-  // TODO: Export to file. We can't do it here.
-}
+// if (process.env.NODE_ENV === 'development') {
+//   const tools = createTools(tbStore);
+//   const [dTs, ts, uiReactDTs, uiReactTsx] = tools.getStoreApi(DB_NAME);
+//   // TODO: Export to file. We can't do it here.
+// }
