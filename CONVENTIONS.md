@@ -22,11 +22,13 @@ For styling we use react-native-unistyles. Only use constants existing in theme/
   - (tabs): main application view
   - onboarding: ignore this for now
   - login: ignore this for now
+- components
+  - context
+    - TinyBaseContext: sets up TinyBase and configures schemas and persistors
+- constants
+  - index.ts: contains TinyBase schemas, table names, and some other constants
 - data: contains the following:
-  - database.ts: setup expo-sqlite db with drizzle-orm
   - types: ts types
-  - schemas: sql schemas used by drizzle-orm
-  - migrations: db migrations
   - actions: methods to execute read/changes on the db
 - theme:
   - unistyles.ts: setup up react-native-unistyles 

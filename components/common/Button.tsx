@@ -18,6 +18,7 @@ type ButtonProps = {
   disabled?: boolean;
   type?: ButtonType;
   icon?: ComponentProps<typeof FeatherIcon>['name'];
+  iconPosition?: 'left' | 'right';
   debounceRate?: number;
   style?: StyleProp<View>;
 } & TouchableNativeFeedbackProps;
@@ -29,6 +30,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       disabled,
       type = ButtonType.Solid,
       icon,
+      iconPosition = 'left',
       onPress,
       style,
       debounceRate,
@@ -40,9 +42,14 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       disabled: disabled ? type : undefined,
       type,
       hasTitle: !!title,
+      iconPosition,
     });
 
     const { debounce } = useDebounce(debounceRate);
+
+    const iconElement = icon && (
+      <FeatherIcon name={icon} size={24} color={styles.buttonText.color} style={styles.icon} />
+    );
 
     return (
       <View style={[styles.container, style]}>
@@ -53,15 +60,9 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
           {...touchableProps}
           onPress={onPress ? () => debounce(onPress) : undefined}>
           <View style={[styles.button]}>
-            {icon && (
-              <FeatherIcon
-                name={icon}
-                size={24}
-                color={styles.buttonText.color}
-                style={styles.icon}
-              />
-            )}
+            {iconPosition === 'left' && iconElement}
             {title && <Text style={styles.buttonText}>{title}</Text>}
+            {iconPosition === 'right' && iconElement}
           </View>
         </TouchableNativeFeedback>
       </View>
@@ -171,10 +172,16 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   icon: {
     variants: {
-      hasTitle: {
-        true: {
+      iconPosition: {
+        left: {
           marginRight: theme.margins[8],
         },
+        right: {
+          marginLeft: theme.margins[8],
+        },
+      },
+      hasTitle: {
+        true: {},
         false: {},
       },
     },

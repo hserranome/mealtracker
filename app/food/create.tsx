@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TextInput, Button, Separator } from '../../components/common';
@@ -35,6 +35,14 @@ export default function CreateFood() {
             variant="ghost"
             direction="horizontal"
           />
+          <TextInput
+            label="Barcode"
+            name="barcode"
+            placeholder="Optional"
+            variant="ghost"
+            direction="horizontal"
+          />
+          <Text>Serving Sizes</Text>
           <Separator title="Nutrition facts" right="For 100g" />
           <TextInput
             rules={{ required: 'Calories are required' }}
