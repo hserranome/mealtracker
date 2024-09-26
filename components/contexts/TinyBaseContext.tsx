@@ -4,22 +4,13 @@ import { useRouter } from 'expo-router';
 import { openDatabaseSync } from 'expo-sqlite';
 import React, { PropsWithChildren } from 'react';
 import { createExpoSqlitePersister } from 'tinybase/persisters/persister-expo-sqlite/with-schemas';
-import * as TBUIReact from 'tinybase/ui-react/with-schemas';
-import type { WithSchemas } from 'tinybase/ui-react/with-schemas';
-import { createStore } from 'tinybase/with-schemas';
 
-import { CALORIES_SCHEDULE_TABLE, DB_NAME, tablesSchema, valuesSchema } from '~/constants';
+import { CALORIES_SCHEDULE_TABLE, DB_NAME, tbStore, useTinyBase } from '~/data';
 
-// Cast the whole module to be schema-based
-const TinyBase = TBUIReact as WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
-export const useTinyBase = () => TinyBase;
-
-// Initialize store instance
-export const tbStore = createStore().setSchema(tablesSchema, valuesSchema);
-
-const useAndStartPersister = (store: typeof tbStore, callback: () => void) =>
+const useAndStartPersister = (store: typeof tbStore, callback: () => void) => {
+  const TinyBase = useTinyBase();
   // Persist store to Expo SQLite; load once, then auto-save.
-  TinyBase.useCreatePersister(
+  return TinyBase.useCreatePersister(
     store,
     (store) => createExpoSqlitePersister(store, openDatabaseSync(DB_NAME)),
     [],
@@ -33,9 +24,11 @@ const useAndStartPersister = (store: typeof tbStore, callback: () => void) =>
         callback?.();
       })
   );
+};
 
 export const TinyBaseProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
+  const TinyBase = useTinyBase();
   const store = TinyBase.useCreateStore(() => tbStore);
   useDrizzleStudio(openDatabaseSync(DB_NAME, { enableChangeListener: true }) as any); // Does this still work?
 

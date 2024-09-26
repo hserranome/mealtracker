@@ -1,3 +1,4 @@
+import * as Crypto from 'expo-crypto';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -6,8 +7,12 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TextInput, Button, Separator, InputContainer, ButtonType } from '../../components/common';
 
+import { FOOD_TABLE, useTinyBase } from '~/data';
+
 export default function CreateFood() {
   const { styles } = useStyles(stylesheet);
+  const { useSetRowCallback } = useTinyBase();
+
   // TODO: food schema type
   const methods = useForm({
     defaultValues: {
@@ -36,9 +41,25 @@ export default function CreateFood() {
     }
   }, [serving_sizes]);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  // TODO: get default values from params
+  useEffect(() => {
+    methods.setValue('id', Crypto.randomUUID());
+  }, []);
+
+  const onSubmit = useSetRowCallback(
+    FOOD_TABLE,
+    String(methods.getValues('id')),
+    (data) => {
+      console.log('data', data);
+      return data;
+    },
+    [],
+    undefined,
+    () => {
+      console.log('then');
+    },
+    []
+  );
 
   const serving_size = methods.getValues('serving_size');
   const unit = methods.getValues('unit');

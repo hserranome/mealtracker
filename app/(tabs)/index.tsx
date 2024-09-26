@@ -1,12 +1,12 @@
 import { useRouter } from 'expo-router';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { useTable } from 'tinybase/ui-react';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { NutrimentsRow } from '~/components/common/NutrimentsRow';
-import { CALORIES_SCHEDULE_TABLE } from '~/constants';
+import { CALORIES_SCHEDULE_TABLE } from '~/data';
 import { getDateName } from '~/utils/getDateName';
 
 const defaultMeals = ['Breakfast', 'Lunch', 'Dinner'];

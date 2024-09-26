@@ -8,7 +8,7 @@ import { useOnboardingData } from '~/components/onboarding/OnboardingDataProvide
 import { OnboardingFormStepContainer } from '~/components/onboarding/OnboardingFormStepContainer';
 import { OnboardingInputContainer } from '~/components/onboarding/OnboardingInputContainer';
 import { useSetOnboardingParams } from '~/components/onboarding/OnboardingParamsProvider';
-import { Goal } from '~/data/types';
+import { Goal } from '~/data';
 
 export default function Measures() {
   useSetOnboardingParams({ title: 'Measures', progress: 75 });

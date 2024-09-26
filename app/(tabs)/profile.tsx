@@ -3,8 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Button } from '~/components/common/Button';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
-import { useTinyBase } from '~/components/contexts/TinyBaseContext';
-import { CALORIES_SCHEDULE_TABLE } from '~/constants';
+import { useTinyBase, CALORIES_SCHEDULE_TABLE } from '~/data';
 
 export default function Profile() {
   const router = useRouter();

@@ -8,7 +8,7 @@ import {
   useContext,
 } from 'react';
 
-import { ActivityLevel, Goal, Sex } from '~/data/types';
+import { ActivityLevel, Goal, Sex } from '~/data';
 
 export type OnboardingData = {
   goal?: Goal;

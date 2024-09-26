@@ -1,4 +1,4 @@
-import { Sex, ActivityLevel } from '~/data/types';
+import { Sex, ActivityLevel } from '~/data';
 
 const round5 = (num: number) => Math.round(num / 5) * 5;
 const round05 = (num: number) => Math.round(num / 0.5) * 0.5;

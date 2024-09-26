@@ -7,7 +7,7 @@ import {
   calculateBaseTDEE,
 } from './calculateTDEE';
 
-import { Sex, ActivityLevel } from '~/data/types';
+import { Sex, ActivityLevel } from '~/data';
 
 describe('calculateBasalMetabolicRate', () => {
   it('should calculate BMR for a male', () => {

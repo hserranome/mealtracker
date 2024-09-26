@@ -5,8 +5,7 @@ import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TextInput, Button } from '~/components/common';
-import { useTinyBase } from '~/components/contexts/TinyBaseContext';
-import { CALORIES_SCHEDULE_TABLE } from '~/constants';
+import { CALORIES_SCHEDULE_TABLE, useTinyBase } from '~/data';
 
 export type WeekdayCalories = Record<string, string>;
 
