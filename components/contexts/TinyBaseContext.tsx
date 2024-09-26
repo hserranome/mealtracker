@@ -8,13 +8,7 @@ import * as TBUIReact from 'tinybase/ui-react/with-schemas';
 import type { WithSchemas } from 'tinybase/ui-react/with-schemas';
 import { createStore } from 'tinybase/with-schemas';
 
-import { CALORIES_SCHEDULE_TABLE, CALORIES_SCHEDULE_TABLE_SCHEMA, DB_NAME } from '~/constants';
-
-// TODO: Move this?
-const tablesSchema = {
-  [CALORIES_SCHEDULE_TABLE]: CALORIES_SCHEDULE_TABLE_SCHEMA,
-} as const;
-const valuesSchema = {} as const;
+import { CALORIES_SCHEDULE_TABLE, DB_NAME, tablesSchema, valuesSchema } from '~/constants';
 
 // Cast the whole module to be schema-based
 const TinyBase = TBUIReact as WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
