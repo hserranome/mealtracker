@@ -13,19 +13,29 @@ type TextInputProps = {
   rules?: ControllerProps['rules'];
   label?: InputContainerProps['label'];
   direction?: InputContainerProps['direction'];
+  type?: 'string' | 'number';
 } & BaseTextInputProps;
 
-// @todo: handle inputs other than strings. for example, numbers.
 export const TextInput = ({
   name,
   rules,
   variant = 'default',
   direction,
   label,
+  type = 'string',
   ...baseTextInputProps
 }: TextInputProps) => {
   const formContext = useFormContext();
   const control = formContext?.control;
+
+  const handleChange = (onChange: (value: any) => void) => (value: string) => {
+    if (type === 'number') {
+      const numValue = parseFloat(value);
+      onChange(isNaN(numValue) ? null : numValue);
+    } else {
+      onChange(value);
+    }
+  };
 
   return (
     <>
@@ -34,20 +44,22 @@ export const TextInput = ({
           control={control}
           name={name}
           rules={rules}
-          render={({ field: { onChange, ...field }, fieldState: { error } }) => (
+          render={({ field: { onChange, value, ...field }, fieldState: { error } }) => (
             <InputContainer name={name} label={label} direction={direction} error={error?.message}>
               <BaseTextInput
                 {...baseTextInputProps}
                 {...field}
-                onChangeText={onChange}
+                value={value?.toString() ?? ''}
+                onChangeText={handleChange(onChange)}
                 variant={variant}
+                type={type}
               />
             </InputContainer>
           )}
         />
       ) : (
         <InputContainer name={name || ''} label={label} direction={direction}>
-          <BaseTextInput {...baseTextInputProps} variant={variant} />
+          <BaseTextInput {...baseTextInputProps} variant={variant} type={type} />
         </InputContainer>
       )}
     </>

@@ -5,17 +5,21 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 type BaseTextInputProps = {
   suffix?: string | null;
   variant?: 'default' | 'ghost';
+  type?: 'string' | 'number';
 } & ComponentProps<typeof RNTextInput>;
 
 export const BaseTextInput = forwardRef<RNTextInput, BaseTextInputProps>(
-  // TODO: fix as any on variant
-  ({ suffix, variant = 'default' as any, ...textInputProps }, ref) => {
+  ({ suffix, variant = 'default', type = 'string', ...textInputProps }, ref) => {
     const { styles, theme } = useStyles(baseInputStyleSheet, { variant });
+
+    const keyboardType = type === 'number' ? 'numeric' : 'default';
+
     return (
       <View style={styles.container}>
         <RNTextInput
           placeholderTextColor={theme.colors.base600}
           style={styles.input}
+          keyboardType={keyboardType}
           {...textInputProps}
           ref={ref}
         />
