@@ -7,14 +7,14 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TextInput, Button, Separator, InputContainer, ButtonType } from '../../components/common';
 
-import { FOOD_TABLE, useTinyBase } from '~/data';
+import { FOOD_TABLE, Food, useTinyBase } from '~/data';
 
 export default function CreateFood() {
   const { styles } = useStyles(stylesheet);
   const { useSetRowCallback } = useTinyBase();
 
   // TODO: food schema type
-  const methods = useForm({
+  const methods = useForm<Food>({
     defaultValues: {
       serving_size: 100,
       unit: 'g',
@@ -49,7 +49,7 @@ export default function CreateFood() {
   const onSubmit = useSetRowCallback(
     FOOD_TABLE,
     String(methods.getValues('id')),
-    (data) => {
+    (data: Food) => {
       console.log('data', data);
       return data;
     },

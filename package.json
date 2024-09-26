@@ -46,7 +46,8 @@
     "react-native-unistyles": "^2.1.1",
     "react-native-web": "~0.19.10",
     "tinybase": "^5.3.1",
-    "ui-react": "^1.0.3"
+    "ui-react": "^1.0.3",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

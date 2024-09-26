@@ -1,39 +1,47 @@
+import { z } from 'zod';
+
+import { createTablesSchema } from '~/utils/createTablesSchema';
+
+export const CaloriesScheduleTableSchema = z.object({
+  calories: z.number(),
+});
 export const CALORIES_SCHEDULE_TABLE = 'calories_schedule';
-const CALORIES_SCHEDULE_TABLE_SCHEMA = { calories: { type: 'number' } } as const;
 
+const FoodSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  brand: z.string(),
+  barcode: z.string(),
+  serving_size: z.number(),
+  unit: z.string(),
+  image_url: z.string().url(),
+  image_thumb_url: z.string().url(),
+  image_ingredients: z.string().url(),
+  nutriment_basis: z.string(),
+  kcal: z.number(),
+  fat: z.number(),
+  proteins: z.number(),
+  carbohydrates: z.number(),
+});
 export const FOOD_TABLE = 'food';
-const FOOD_TABLE_SCHEMA = {
-  id: { type: 'number' },
-  name: { type: 'string' },
-  brand: { type: 'string' },
-  barcode: { type: 'string' },
-  serving_size: { type: 'string' },
-  unit: { type: 'string' },
-  image_url: { type: 'string' },
-  image_thumb_url: { type: 'string' },
-  image_ingredients: { type: 'string' },
-  nutriment_basis: { type: 'string' },
-  kcal: { type: 'number' },
-  fat: { type: 'number' },
-  proteins: { type: 'number' },
-  carbohydrates: { type: 'number' },
-} as const;
+export type Food = z.infer<typeof FoodSchema>;
 
-export const FOOD_SERVING_SIZES = 'food-serving-sizes';
-const FOOD_SERVING_SIZES_SCHEMA = {
-  id: { type: 'number' },
-  food_id: { type: 'number' },
-  name: { type: 'string' },
-  serving_size: { type: 'string' },
-  unit: { type: 'string' },
-} as const;
+const FoodServingSize = z.object({
+  id: z.number(),
+  food_id: z.number(),
+  name: z.string(),
+  serving_size: z.string(),
+  unit: z.string(),
+});
+export const FOOD_SERVING_SIZES = 'food_serving_sizes';
 
 // Structure tables and values schemas
-export const tablesSchema = {
-  [CALORIES_SCHEDULE_TABLE]: CALORIES_SCHEDULE_TABLE_SCHEMA,
-  [FOOD_TABLE]: FOOD_TABLE_SCHEMA,
-  [FOOD_SERVING_SIZES]: FOOD_SERVING_SIZES_SCHEMA,
-} as const;
+// TODO: avoid repetition
+export const tablesSchema = createTablesSchema({
+  [CALORIES_SCHEDULE_TABLE]: CaloriesScheduleTableSchema,
+  [FOOD_TABLE]: FoodSchema,
+  [FOOD_SERVING_SIZES]: FoodServingSize,
+});
 export const valuesSchema = {} as const;
 
 // TODO: setRelationships(store)
