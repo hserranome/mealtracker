@@ -20,7 +20,7 @@ type ButtonProps = {
   icon?: ComponentProps<typeof FeatherIcon>['name'];
   iconPosition?: 'left' | 'right';
   debounceRate?: number;
-  style?: StyleProp<View>;
+  style?: any;
 } & TouchableNativeFeedbackProps;
 
 export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
@@ -108,7 +108,6 @@ const stylesheet = createStyleSheet((theme) => ({
           borderWidth: 2,
           borderColor: theme.colors.base800,
           borderStyle: 'solid',
-          paddingVertical: theme.margins[12] - 2,
         },
         [ButtonType.Light]: {
           backgroundColor: theme.colors.background,
@@ -181,8 +180,10 @@ const stylesheet = createStyleSheet((theme) => ({
         },
       },
       hasTitle: {
-        true: {},
-        false: {},
+        false: {
+          marginRight: 0,
+          marginLeft: 0,
+        },
       },
     },
   },
