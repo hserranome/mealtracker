@@ -83,13 +83,15 @@ export default function CreateFood() {
             variant="ghost"
             direction="horizontal"
           />
-          <TextInput
-            label="Barcode"
-            name="barcode"
-            placeholder="Optional"
-            variant="ghost"
-            direction="horizontal"
-          />
+          <InputContainer name="barcode" direction="horizontal" label="Barcode">
+            <Button
+              title="Scan barcode"
+              icon="camera"
+              iconPosition="right"
+              onPress={navigateToServingSizes}
+              type={ButtonType.Ghost}
+            />
+          </InputContainer>
           <InputContainer name="serving_sizes" direction="horizontal" label="Serving sizes">
             <Button
               title="Edit Serving Sizes"
