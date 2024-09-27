@@ -99,12 +99,14 @@ export const lightTheme = {
   ...constants,
   colors: {
     background: '#ffffff',
+    foreground: '#000000',
     blue: '#34AFF7',
     red: '#FF5252',
     base200: '#EDF0F7',
     base400: '#CBD2E0',
     base600: '#717D96',
     base800: '#2D3648',
+    base900: '#1A202C',
   },
 } as const;
 
@@ -112,11 +114,13 @@ export const darkTheme = {
   ...constants,
   colors: {
     background: '#1E1E1E',
+    foreground: '#ffffff',
     blue: '#1E88E5',
     red: '#E53935',
     base200: '#4A4A4A',
     base400: '#6D6D6D',
     base600: '#A0A0A0',
     base800: '#D6D6D6',
+    base900: '#1A202C',
   },
 } as const;
