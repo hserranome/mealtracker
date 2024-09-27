@@ -5,7 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { useTable } from 'tinybase/ui-react';
 
 import { Button, ButtonType } from '~/components/common/Button';
-import { NutrimentsRow } from '~/components/common/NutrimentsRow';
+import { MacrosRow } from '~/components/common/MacrosRow';
 import { CALORIES_SCHEDULE_TABLE } from '~/data';
 import { getDateName } from '~/utils/getDateName';
 
@@ -28,8 +28,8 @@ export default function Dairy() {
 
   const { styles } = useStyles(stylesheet);
 
-  const handleAddFood = (meal: string) => {
-    router.push({ pathname: '/meal', params: { meal } });
+  const handleAddFood = ({ meal }: { meal: string }) => {
+    router.push({ pathname: '/meal', params: { meal, date: date.toISOString() } });
   };
 
   return (
@@ -45,19 +45,21 @@ export default function Dairy() {
       {/* MEAL LIST GOES HERE */}
       {defaultMeals.map((name, index) => {
         return (
-          <View key={`${name}-${index}`}>
-            <View style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#CBD2E0' }}>
-              <Text style={{ fontWeight: '800' }}>{name}</Text>
+          <View key={`${name}-${index}`} style={styles.meal}>
+            <View style={styles.mealHeader}>
+              <Text style={styles.mealHeaderTitle}>{name}</Text>
             </View>
-            <View style={{ justifyContent: 'center' }}>
+            <View style={styles.addFood}>
               <Button
                 type={ButtonType.Ghost}
                 title="Add food"
                 icon="plus-circle"
-                onPress={() => handleAddFood(name)}
+                onPress={() => handleAddFood({ meal: name })}
               />
             </View>
-            <NutrimentsRow />
+            <View style={styles.macros}>
+              <MacrosRow carbohydrate={0} calories={0} fat={0} protein={0} />
+            </View>
           </View>
         );
       })}
@@ -70,11 +72,17 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
   },
   header: {
-    backgroundColor: theme.colors.base400,
-    padding: theme.margins[16],
+    paddingHorizontal: theme.margins[16],
+    paddingVertical: theme.margins[16],
     flexDirection: 'row',
     alignItems: 'center',
   },
+  meal: {
+    paddingBottom: theme.margins[24],
+  },
+  mealHeader: { paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#CBD2E0' },
+  mealHeaderTitle: { fontWeight: '800' },
+  addFood: { justifyContent: 'center' },
   title: {
     ...theme.fonts.heading.xs,
     color: theme.colors.base800,
@@ -82,11 +90,11 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   calorieInfo: {
     padding: theme.margins[16],
-    backgroundColor: theme.colors.base200,
   },
   calorieText: {
     ...theme.fonts.body.m,
     color: theme.colors.base800,
     textAlign: 'center',
   },
+  macros: {},
 }));

@@ -4,9 +4,8 @@ import { View, Text, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/common/Button';
-import { CalorieCircle } from '~/components/common/CalorieCircle';
 import { FoodItem } from '~/components/common/FoodItem';
-import { MacroItem } from '~/components/common/MacroItem';
+import { MacrosRow } from '~/components/common/MacrosRow';
 
 const mockFoodItems = [
   { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
@@ -15,9 +14,6 @@ const mockFoodItems = [
   { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
   { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
 ];
-
-const totalCalories = 667;
-const calorieGoal = 2000;
 
 export default function MealScreen() {
   const { meal } = useLocalSearchParams<{ meal: string }>();
@@ -38,6 +34,7 @@ export default function MealScreen() {
         options={{
           title: '',
           headerTintColor: theme.colors.foreground,
+          headerShadowVisible: false,
           headerStyle: {
             backgroundColor: theme.colors.base900,
           },
@@ -45,17 +42,13 @@ export default function MealScreen() {
       />
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <CalorieCircle totalCalories={totalCalories} calorieGoal={calorieGoal} />
           <View style={styles.header}>
             <Text style={styles.title}>{meal}</Text>
             <Text style={styles.date}>10 JULY, 2024</Text>
           </View>
         </View>
-        <View style={styles.macroContainer}>
-          <MacroItem label="Carbohydrate" value="120g" color={theme.colors.red} />
-          <MacroItem label="Protein" value="78g" color={theme.colors.blue} />
-          <MacroItem label="Fat" value="0g" color={theme.colors.base600} />
-          <MacroItem label="Calories" value="420cal" color={theme.colors.base800} />
+        <View style={styles.macrosContainer}>
+          <MacrosRow fat={0} calories={0} carbohydrate={0} protein={0} />
         </View>
         <ScrollView style={styles.foodList}>
           {mockFoodItems.map((item, index) => (
@@ -102,12 +95,10 @@ const stylesheet = createStyleSheet((theme) => ({
     ...theme.fonts.body.xs,
     color: theme.colors.base600,
   },
-  macroContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: theme.margins[24],
-    paddingBottom: theme.margins[24],
-    backgroundColor: theme.colors.base900,
+  macrosContainer: {
+    paddingVertical: theme.margins[12],
+    borderBottomColor: theme.colors.base200,
+    borderBottomWidth: 3,
   },
   foodList: {
     flex: 1,
