@@ -1,6 +1,6 @@
 import FeatherIcon from '@expo/vector-icons/Feather';
 import { ComponentProps, forwardRef } from 'react';
-import { StyleProp, Text, TouchableNativeFeedbackProps, View } from 'react-native';
+import { Text, TouchableNativeFeedbackProps, View } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
