@@ -22,7 +22,7 @@ export const FoodItem: React.FC<FoodItemProps> = ({ name, brand, calories, weigh
         </Text>
         <Text style={styles.foodWeight}>{weight}g</Text>
       </View>
-      <Button type={ButtonType.Ghost} icon="x-circle" />
+      <Button type={ButtonType.Ghost} icon="close-circle-outline" />
     </View>
   );
 };

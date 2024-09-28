@@ -1,4 +1,4 @@
-import FeatherIcon from '@expo/vector-icons/Feather';
+import { Ionicons } from '@expo/vector-icons';
 import { ComponentProps, forwardRef } from 'react';
 import { Text, TouchableNativeFeedbackProps, View } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
@@ -17,7 +17,7 @@ type ButtonProps = {
   title?: string;
   disabled?: boolean;
   type?: ButtonType;
-  icon?: ComponentProps<typeof FeatherIcon>['name'];
+  icon?: ComponentProps<typeof Ionicons>['name'];
   iconPosition?: 'left' | 'right';
   debounceRate?: number;
   style?: any;
@@ -48,7 +48,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
     const { debounce } = useDebounce(debounceRate);
 
     const iconElement = icon && (
-      <FeatherIcon name={icon} size={24} color={styles.buttonText.color} style={styles.icon} />
+      <Ionicons name={icon} size={24} color={styles.buttonText.color} style={styles.icon} />
     );
 
     return (
@@ -97,7 +97,7 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: theme.radius[6],
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'baseline',
+    alignItems: 'center',
     variants: {
       type: {
         [ButtonType.Solid]: {

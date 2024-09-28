@@ -35,9 +35,14 @@ export default function Dairy() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Button type={ButtonType.Ghost} onPress={dateBack} icon="arrow-left" debounceRate={0} />
+        <Button type={ButtonType.Ghost} onPress={dateBack} icon="caret-back" debounceRate={0} />
         <Text style={styles.title}>{getDateName(date)}</Text>
-        <Button type={ButtonType.Ghost} onPress={dateForward} icon="arrow-right" debounceRate={0} />
+        <Button
+          type={ButtonType.Ghost}
+          onPress={dateForward}
+          icon="caret-forward"
+          debounceRate={0}
+        />
       </View>
       <View style={styles.calorieInfo}>
         <Text style={styles.calorieText}>{`N/A / ${currentDayCalories ?? 'N/A'} kcal`}</Text>
@@ -53,7 +58,7 @@ export default function Dairy() {
               <Button
                 type={ButtonType.Ghost}
                 title="Add food"
-                icon="plus-circle"
+                icon="add-circle-outline"
                 onPress={() => handleGoToMeal({ meal: name })}
               />
             </View>

@@ -66,7 +66,7 @@ export default function MealScreen() {
             style={styles.button}
           />
           <Button
-            icon="camera"
+            icon="barcode-outline"
             type={ButtonType.Outline}
             onPress={handleScanFood}
             style={[styles.button, styles.scanButton]}
