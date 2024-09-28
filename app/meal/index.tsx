@@ -1,11 +1,14 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { FoodItem } from '~/components/common/FoodItem';
 import { MacrosRow } from '~/components/common/MacrosRow';
+import { formatDate } from '~/utils/formatDate';
+
+type MealScreenSearchParams = { meal: string; date: string };
 
 const mockFoodItems = [
   { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
@@ -16,7 +19,8 @@ const mockFoodItems = [
 ];
 
 export default function MealScreen() {
-  const { meal } = useLocalSearchParams<{ meal: string }>();
+  const { meal, date: dateFromParams } = useLocalSearchParams<MealScreenSearchParams>();
+  const date = useMemo(() => new Date(dateFromParams), [dateFromParams]);
   const router = useRouter();
   const { styles, theme } = useStyles(stylesheet);
 
@@ -24,9 +28,8 @@ export default function MealScreen() {
     router.push({ pathname: '/meal/search', params: { meal } });
   };
 
-  const handleScanFood = () => {
-    // Implement scanner functionality
-  };
+  // TODO: navigate to search scan? maybe move the search screens somewhere else?
+  const handleScanFood = () => {};
 
   return (
     <>
@@ -44,7 +47,7 @@ export default function MealScreen() {
         <View style={styles.headerContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>{meal}</Text>
-            <Text style={styles.date}>10 JULY, 2024</Text>
+            <Text style={styles.date}>{formatDate(date)}</Text>
           </View>
         </View>
         <View style={styles.macrosContainer}>
