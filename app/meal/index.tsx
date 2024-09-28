@@ -25,7 +25,7 @@ export default function MealScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
   const handleAddFood = () => {
-    router.push({ pathname: '/meal/search', params: { meal } });
+    router.push({ pathname: '/search', params: { meal } });
   };
 
   // TODO: navigate to search scan? maybe move the search screens somewhere else?
