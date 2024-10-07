@@ -46,49 +46,38 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
   );
 
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: '',
-          headerTintColor: theme.colors.foreground,
-          headerStyle: {
-            backgroundColor: theme.colors.base900,
-          },
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.searchWrapper}>
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color={accentColor} style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search..."
-              placeholderTextColor={theme.colors.base600}
-            />
-          </View>
-        </View>
-        <View style={styles.buttonContainer}>
-          {buttons.map((button, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.button, { backgroundColor: accentColor }]}
-              onPress={button.onPress}>
-              <Ionicons name={button.icon as any} size={32} color={theme.colors.foreground} />
-              <Text style={styles.buttonText}>{button.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <View style={styles.listContainer}>
-          <Text style={styles.listTitle}>{listTitle}</Text>
-          <FlatList
-            data={listItems}
-            renderItem={renderListItem}
-            keyExtractor={(item, index) => index.toString()}
-            showsVerticalScrollIndicator={false}
+    <View style={styles.container}>
+      <View style={styles.searchWrapper}>
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color={accentColor} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search..."
+            placeholderTextColor={theme.colors.base600}
           />
         </View>
       </View>
-    </>
+      <View style={styles.buttonContainer}>
+        {buttons.map((button, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.button, { backgroundColor: accentColor }]}
+            onPress={button.onPress}>
+            <Ionicons name={button.icon as any} size={32} color={theme.colors.foreground} />
+            <Text style={styles.buttonText}>{button.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <View style={styles.listContainer}>
+        <Text style={styles.listTitle}>{listTitle}</Text>
+        <FlatList
+          data={listItems}
+          renderItem={renderListItem}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </View>
   );
 };
 
