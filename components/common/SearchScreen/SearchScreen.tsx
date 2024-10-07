@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Stack } from 'expo-router';
 import React from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
