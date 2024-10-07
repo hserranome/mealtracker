@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import { ScannerAction } from '../barcode-scanner';
+
 import { Button, ButtonType } from '~/components/common/Button';
 import { FoodItem } from '~/components/common/FoodItem';
 import { MacrosRow } from '~/components/common/MacrosRow';
@@ -10,13 +12,7 @@ import { formatDate } from '~/utils/formatDate';
 
 type MealScreenSearchParams = { meal: string; date: string };
 
-const mockFoodItems = [
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-];
+const mockFoodItems = [{ name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 }];
 
 export default function MealScreen() {
   const { meal, date: dateFromParams } = useLocalSearchParams<MealScreenSearchParams>();
@@ -29,7 +25,12 @@ export default function MealScreen() {
   };
 
   // TODO: navigate to search scan? maybe move the search screens somewhere else?
-  const handleScanFood = () => {};
+  const handleScanFood = () => {
+    // router.push({
+    //   pathname: '/meal/scanner',
+    //   params: { action: ScannerAction.SEARCH_FOOD },
+    // });
+  };
 
   return (
     <>

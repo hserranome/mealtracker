@@ -7,6 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { FoodFormData } from './_layout';
 import { TextInput, Button, Separator, InputContainer, ButtonType } from '../../components/common';
+import { ScannerAction } from '../barcode-scanner';
 
 import { FOOD_TABLE, useTinyBase } from '~/data';
 
@@ -16,6 +17,10 @@ export default function CreateFood() {
   const { useSetRowCallback } = useTinyBase();
 
   const router = useRouter();
+
+  const navigateToBarcodeScanner = () => {
+    router.push('/food/scanner');
+  };
 
   const navigateToServingSizes = () => {
     router.push({ pathname: '/food/serving-sizes' });
@@ -71,15 +76,22 @@ export default function CreateFood() {
           variant="ghost"
           direction="horizontal"
         />
-        <InputContainer name="barcode" direction="horizontal" label="Barcode">
+        <View>
+          <TextInput
+            label="Barcode"
+            name="barcode"
+            placeholder="Optional"
+            variant="ghost"
+            direction="horizontal"
+          />
           <Button
             title="Scan barcode"
             icon="camera"
             iconPosition="right"
-            onPress={navigateToServingSizes}
+            onPress={navigateToBarcodeScanner}
             type={ButtonType.Ghost}
           />
-        </InputContainer>
+        </View>
         <InputContainer name="serving_sizes" direction="horizontal" label="Serving sizes">
           <Button
             title="Edit Serving Sizes"
