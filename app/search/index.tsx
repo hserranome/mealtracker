@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import React from 'react';
 import { useStyles } from 'react-native-unistyles';
 
@@ -38,12 +38,23 @@ const SearchAllScreen = () => {
   ];
 
   return (
-    <SearchScreen
-      buttons={buttons}
-      listItems={historyItems}
-      listTitle="History"
-      accentColor={theme.colors.blue}
-    />
+    <>
+      <Stack.Screen
+        options={{
+          title: '',
+          headerTintColor: theme.colors.foreground,
+          headerStyle: {
+            backgroundColor: theme.colors.base900,
+          },
+        }}
+      />
+      <SearchScreen
+        buttons={buttons}
+        listItems={historyItems}
+        listTitle="History"
+        accentColor={theme.colors.blue}
+      />
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
@@ -27,18 +27,29 @@ const FoodScreen = () => {
         label: 'Create new food',
         onPress: () => handleNavigate('/food/create'),
       },
-      { icon: 'restaurant-outline', label: 'Create from barcode' },
+      { icon: 'barcode-outline', label: 'Create from barcode' },
     ],
     []
   );
 
   return (
-    <SearchScreen
-      buttons={buttons}
-      listItems={recipeItems}
-      listTitle="My Food"
-      accentColor={theme.colors.pink}
-    />
+    <>
+      <Stack.Screen
+        options={{
+          title: '',
+          headerTintColor: theme.colors.foreground,
+          headerStyle: {
+            backgroundColor: theme.colors.base900,
+          },
+        }}
+      />
+      <SearchScreen
+        buttons={buttons}
+        listItems={recipeItems}
+        listTitle="My Food"
+        accentColor={theme.colors.pink}
+      />
+    </>
   );
 };
 
