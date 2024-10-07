@@ -1,35 +1,35 @@
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { Stack, useRouter } from 'expo-router';
+import { useForm, FormProvider, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import { FoodFormData } from './_layout';
 import { TextInput, Button } from '../../components/common';
 
 type ServingSizesForm = {
   unit: string;
-  serving_size: string;
+  serving_size: number;
 };
 
 export default function ServingSizes() {
   const { styles } = useStyles(stylesheet);
   const router = useRouter();
-  const methods = useForm<ServingSizesForm>();
+  const formContextMethods = useFormContext<FoodFormData>();
+
+  const methods = useForm<ServingSizesForm>({
+    defaultValues: {
+      serving_size: formContextMethods.getValues('serving_size'),
+      unit: formContextMethods.getValues('unit'),
+    },
+  });
 
   const onSubmit = (data: ServingSizesForm) => {
+    formContextMethods.setValue('serving_size', data.serving_size);
+    formContextMethods.setValue('unit', data.unit);
     router.navigate({
       pathname: '/food/create',
-      params: {
-        serving_sizes: JSON.stringify(data),
-      },
     });
   };
-
-  const { serving_size, unit } = useLocalSearchParams();
-  useEffect(() => {
-    methods.setValue('serving_size', serving_size as string);
-    methods.setValue('unit', unit as string);
-  }, [serving_size, unit]);
 
   return (
     <>
@@ -51,7 +51,6 @@ export default function ServingSizes() {
             placeholder="e.g., g, ml, oz"
             variant="ghost"
             direction="horizontal"
-            type="number"
           />
         </FormProvider>
         <View style={styles.button}>
