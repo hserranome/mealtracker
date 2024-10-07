@@ -3,8 +3,6 @@ import React, { useMemo } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { ScannerAction } from '../barcode-scanner';
-
 import { Button, ButtonType } from '~/components/common/Button';
 import { FoodItem } from '~/components/common/FoodItem';
 import { MacrosRow } from '~/components/common/MacrosRow';
