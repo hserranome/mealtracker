@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { View, ScrollView } from 'react-native';
@@ -7,16 +7,36 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { FoodFormData } from './_layout';
 import { TextInput, Button, Separator, InputContainer, ButtonType } from '../../components/common';
-import { ScannerAction } from '../barcode-scanner';
 
 import { FOOD_TABLE, useTinyBase } from '~/data';
 
 export default function CreateFood() {
+  const router = useRouter();
   const form = useFormContext<FoodFormData>();
   const { styles, theme } = useStyles(stylesheet);
   const { useSetRowCallback } = useTinyBase();
+  const { meal, product } = useLocalSearchParams<{ meal: string; product: string }>();
 
-  const router = useRouter();
+  useEffect(() => {
+    if (product) {
+      const productData = JSON.parse(product);
+      form.setValue('name', productData.product_name_es || productData.product_name);
+      form.setValue('brand', productData.brands);
+      form.setValue('barcode', productData.code);
+      form.setValue('image_url', productData.image_url);
+      form.setValue('default_serving_size', parseFloat(productData.product_quantity) || 100);
+      form.setValue('default_serving_unit', 'g');
+      form.setValue('energy_kcal', productData.nutriments['energy-kcal_100g']);
+      form.setValue('fat', productData.nutriments.fat_100g);
+      form.setValue('saturated_fat', productData.nutriments['saturated-fat_100g']);
+      form.setValue('carbohydrates', productData.nutriments.carbohydrates_100g);
+      form.setValue('sugars', productData.nutriments.sugars_100g);
+      form.setValue('proteins', productData.nutriments.proteins_100g);
+      form.setValue('fiber', productData.nutriments.fiber_100g);
+      form.setValue('salt', productData.nutriments.salt_100g);
+      form.setValue('sodium', productData.nutriments.sodium_100g);
+    }
+  }, [product, form]);
 
   const navigateToBarcodeScanner = () => {
     router.push('/food/scanner');
@@ -105,7 +125,7 @@ export default function CreateFood() {
         <TextInput
           rules={{ required: 'Calories are required' }}
           label="Calories"
-          name="kcal"
+          name="energy_kcal"
           placeholder="Required"
           keyboardType="numeric"
           variant="ghost"
@@ -115,6 +135,15 @@ export default function CreateFood() {
         <TextInput
           name="fat"
           label="Fat (g)"
+          placeholder="Optional"
+          keyboardType="numeric"
+          variant="ghost"
+          direction="horizontal"
+          type="number"
+        />
+        <TextInput
+          name="saturated_fat"
+          label="Saturated Fat (g)"
           placeholder="Optional"
           keyboardType="numeric"
           variant="ghost"
@@ -133,6 +162,42 @@ export default function CreateFood() {
         <TextInput
           name="carbohydrates"
           label="Carbohydrates (g)"
+          placeholder="Optional"
+          keyboardType="numeric"
+          variant="ghost"
+          direction="horizontal"
+          type="number"
+        />
+        <TextInput
+          name="sugars"
+          label="Sugars (g)"
+          placeholder="Optional"
+          keyboardType="numeric"
+          variant="ghost"
+          direction="horizontal"
+          type="number"
+        />
+        <TextInput
+          name="fiber"
+          label="Fiber (g)"
+          placeholder="Optional"
+          keyboardType="numeric"
+          variant="ghost"
+          direction="horizontal"
+          type="number"
+        />
+        <TextInput
+          name="salt"
+          label="Salt (g)"
+          placeholder="Optional"
+          keyboardType="numeric"
+          variant="ghost"
+          direction="horizontal"
+          type="number"
+        />
+        <TextInput
+          name="sodium"
+          label="Sodium (g)"
           placeholder="Optional"
           keyboardType="numeric"
           variant="ghost"

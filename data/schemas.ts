@@ -15,24 +15,51 @@ const FoodSchema = z.object({
   name: z.string(),
   brand: z.string(),
   barcode: z.string(),
-  serving_size: z.number(),
-  unit: z.string(),
   image_url: z.string().url(),
-  image_thumb_url: z.string().url(),
-  image_ingredients: z.string().url(),
-  nutriment_basis: z.string(),
-  kcal: z.number(),
+  deleted: z.boolean(),
+  default_serving_size: z.number(),
+  default_serving_unit: z.string(),
+  energy_kcal: z.number(),
   fat: z.number(),
-  proteins: z.number(),
+  saturated_fat: z.number(),
   carbohydrates: z.number(),
+  sugars: z.number(),
+  proteins: z.number(),
+  fiber: z.number().optional(),
+  salt: z.number().optional(),
+  sodium: z.number().optional(),
 });
 export const FOOD_TABLE = 'food';
 export type Food = z.infer<typeof FoodSchema>;
+
+// Weight
+const WeightSchema = z.object({
+  weight: z.number(),
+});
+export const WEIGHT_TABLE = 'weight';
+
+// Meals
+const MealSchema = z.object({
+  date: z.string().date(),
+  name: z.string(),
+  order: z.number().int().positive(),
+});
+export const MEALS_TABLE = 'meals';
+
+const MealItemSchema = z.object({
+  meal_id: z.string().uuid(),
+  type: z.enum(['food', 'recipe', 'quick_add']),
+  quantity: z.number(),
+  unit: z.string(),
+  // TODO: support ingredients
+});
 
 // TinyBase schemas
 export const tablesSchema = {
   [CALORIES_SCHEDULE_TABLE]: zodToSimpleSchema(CaloriesScheduleSchema),
   [FOOD_TABLE]: zodToSimpleSchema(FoodSchema),
+  [WEIGHT_TABLE]: zodToSimpleSchema(WeightSchema),
+  [MEALS_TABLE]: zodToSimpleSchema(MealSchema),
 } as const;
 export const valuesSchema = {} as const;
 

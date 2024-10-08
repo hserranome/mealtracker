@@ -1,6 +1,6 @@
 import '../theme/unistyles';
 
-import { Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import { Suspense, useEffect } from 'react';
 import { useColorScheme } from 'react-native';

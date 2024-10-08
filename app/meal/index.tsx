@@ -22,12 +22,11 @@ export default function MealScreen() {
     router.push({ pathname: '/search', params: { meal } });
   };
 
-  // TODO: navigate to search scan? maybe move the search screens somewhere else?
   const handleScanFood = () => {
-    // router.push({
-    //   pathname: '/meal/scanner',
-    //   params: { action: ScannerAction.SEARCH_FOOD },
-    // });
+    router.push({
+      pathname: '/meal/scanner',
+      params: { meal },
+    });
   };
 
   return (
