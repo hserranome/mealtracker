@@ -19,7 +19,7 @@ type TextInputProps = {
 export const TextInput = ({
   name,
   rules,
-  variant = 'default',
+  variant,
   direction,
   label,
   type = 'string',

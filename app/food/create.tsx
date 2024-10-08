@@ -69,6 +69,20 @@ export default function CreateFood() {
   const serving_size = form.getValues('serving_size');
   const unit = form.getValues('unit');
 
+  const commonProps = {
+    variant: 'ghost' as const,
+    direction: 'horizontal' as const,
+    expand: false,
+    textAlign: 'right' as const,
+  };
+
+  const commonNumericProps = {
+    ...commonProps,
+    keyboardType: 'numeric' as const,
+    type: 'number' as const,
+    placeholder: 'Optional',
+  };
+
   return (
     <>
       <Stack.Screen
@@ -86,24 +100,11 @@ export default function CreateFood() {
           rules={{ required: 'Name is required' }}
           label="Name"
           placeholder="Required"
-          variant="ghost"
-          direction="horizontal"
+          {...commonProps}
         />
-        <TextInput
-          label="Brand"
-          name="brand"
-          placeholder="Optional"
-          variant="ghost"
-          direction="horizontal"
-        />
+        <TextInput label="Brand" name="brand" placeholder="Optional" {...commonProps} />
         <View>
-          <TextInput
-            label="Barcode"
-            name="barcode"
-            placeholder="Optional"
-            variant="ghost"
-            direction="horizontal"
-          />
+          <TextInput label="Barcode" name="barcode" placeholder="Optional" {...commonProps} />
           <Button
             title="Scan barcode"
             icon="camera"
@@ -126,84 +127,17 @@ export default function CreateFood() {
           rules={{ required: 'Calories are required' }}
           label="Calories"
           name="energy_kcal"
+          {...commonNumericProps}
           placeholder="Required"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
         />
-        <TextInput
-          name="fat"
-          label="Fat (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
-        <TextInput
-          name="saturated_fat"
-          label="Saturated Fat (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
-        <TextInput
-          name="proteins"
-          label="Proteins (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
-        <TextInput
-          name="carbohydrates"
-          label="Carbohydrates (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
-        <TextInput
-          name="sugars"
-          label="Sugars (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
-        <TextInput
-          name="fiber"
-          label="Fiber (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
-        <TextInput
-          name="salt"
-          label="Salt (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
-        <TextInput
-          name="sodium"
-          label="Sodium (g)"
-          placeholder="Optional"
-          keyboardType="numeric"
-          variant="ghost"
-          direction="horizontal"
-          type="number"
-        />
+        <TextInput name="fat" label="Fat (g)" {...commonNumericProps} />
+        <TextInput name="saturated_fat" label="Saturated Fat (g)" {...commonNumericProps} />
+        <TextInput name="proteins" label="Proteins (g)" {...commonNumericProps} />
+        <TextInput name="carbohydrates" label="Carbohydrates (g)" {...commonNumericProps} />
+        <TextInput name="sugars" label="Sugars (g)" {...commonNumericProps} />
+        <TextInput name="fiber" label="Fiber (g)" {...commonNumericProps} />
+        <TextInput name="salt" label="Salt (g)" {...commonNumericProps} />
+        <TextInput name="sodium" label="Sodium (g)" {...commonNumericProps} />
         <View style={styles.button}>
           <Button onPress={form.handleSubmit(onSubmit)} title="Next" />
         </View>

@@ -69,7 +69,8 @@ const inputContainerStyleSheet = createStyleSheet((theme) => ({
         },
         horizontal: {
           flex: 1,
-          // TODO: horizontal aligned inputs should stick to the right side and grow as filled
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
           marginRight: theme.margins[4],
         },
       },
