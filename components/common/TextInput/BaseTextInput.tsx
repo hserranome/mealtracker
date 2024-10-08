@@ -4,12 +4,12 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 type BaseTextInputProps = {
   suffix?: string | null;
-  variant?: 'default' | 'ghost';
+  variant?: 'ghost';
   type?: 'string' | 'number';
 } & ComponentProps<typeof RNTextInput>;
 
 export const BaseTextInput = forwardRef<RNTextInput, BaseTextInputProps>(
-  ({ suffix, variant = 'default', type = 'string', ...textInputProps }, ref) => {
+  ({ suffix, variant, type = 'string', ...textInputProps }, ref) => {
     const { styles, theme } = useStyles(baseInputStyleSheet, { variant });
 
     const keyboardType = type === 'number' ? 'numeric' : 'default';
