@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -10,8 +10,9 @@ type ButtonType = {
 };
 
 type ListItemType = {
+  id: string;
   name: string;
-  brand: string;
+  brands: string;
   calories: number;
   weight: number;
 };
@@ -20,6 +21,9 @@ type SearchScreenProps = {
   buttons: ButtonType[];
   listItems: ListItemType[];
   listTitle: string;
+  listActionIcon?: ComponentProps<typeof Ionicons>['name'];
+  listActionOnPress?: (item: ListItemType) => void;
+  onPressItem?: (item: ListItemType) => void;
   accentColor: string;
 };
 
@@ -28,19 +32,30 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
   listItems,
   listTitle,
   accentColor,
+  listActionIcon = 'heart-circle',
+  listActionOnPress,
+  onPressItem,
 }) => {
   const { styles, theme } = useStyles(stylesheet);
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <View style={styles.listItem}>
-      <View>
+      <TouchableOpacity
+        disabled={!onPressItem}
+        onPress={onPressItem ? () => onPressItem(item) : undefined}>
         <Text style={styles.listItemName}>{item.name}</Text>
-        <Text style={styles.listItemDetails}>{`${item.brand}-${item.calories} kcal`}</Text>
-        <Text style={styles.listItemWeight}>{`${item.weight}g`}</Text>
-      </View>
-      <TouchableOpacity style={styles.addButton}>
-        <Ionicons name="add" size={24} color={accentColor} />
+        <Text style={styles.listItemDetails}>{`${item.brands} - ${item.calories} kcal`}</Text>
+        <View style={styles.editContainer}>
+          <Ionicons name="pencil-outline" size={12} color={theme.colors.base800} />
+          <Text style={styles.listItemWeight}>{`${item.weight}g`}</Text>
+        </View>
       </TouchableOpacity>
+
+      {!!listActionOnPress && (
+        <TouchableOpacity style={styles.addButton} onPress={() => listActionOnPress(item)}>
+          <Ionicons name={listActionIcon} size={24} color={accentColor} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 
@@ -161,6 +176,14 @@ const stylesheet = createStyleSheet((theme) => ({
   listItemDetails: {
     ...theme.fonts.body.xs,
     color: theme.colors.base600,
+  },
+  editContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.margins[4],
+  },
+  editButton: {
+    padding: theme.margins[4],
   },
   listItemWeight: {
     ...theme.fonts.body.xs,
