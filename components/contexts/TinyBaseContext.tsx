@@ -21,7 +21,7 @@ const useAndStartPersister = (store: typeof tbStore, callback: () => void) => {
         } else {
           console.warn('Persister is undefined or null, auto-save not started.');
         }
-        callback?.();
+        callback();
       })
   );
 };

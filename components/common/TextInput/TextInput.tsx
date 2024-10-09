@@ -28,7 +28,7 @@ export const TextInput = ({
   ...baseTextInputProps
 }: TextInputProps) => {
   const formContext = useFormContext();
-  const control = formContext?.control;
+  const control = formContext ? formContext.control : undefined;
 
   const handleChange = (onChange: (value: any) => void) => (value: string) => {
     if (type === 'number') {
@@ -52,11 +52,11 @@ export const TextInput = ({
               label={label}
               direction={direction}
               labelStyle={labelStyle}
-              error={error?.message}>
+              error={error ? error.message : undefined}>
               <BaseTextInput
                 {...baseTextInputProps}
                 {...field}
-                value={value?.toString() ?? ''}
+                value={value ? value.toString() : ''}
                 onChangeText={handleChange(onChange)}
                 variant={variant}
                 type={type}

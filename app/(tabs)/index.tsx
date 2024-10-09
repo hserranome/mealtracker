@@ -20,7 +20,8 @@ export default function Dairy() {
     const selectedDay = new Date(date)
       .toLocaleDateString('en-US', { weekday: 'long' })
       .toLowerCase();
-    return caloriesSchedule[selectedDay]?.calories;
+    const day = caloriesSchedule[selectedDay];
+    return day ? day.calories : 'N/A';
   }, [caloriesSchedule, date]);
 
   const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
