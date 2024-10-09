@@ -10,9 +10,11 @@ const SearchAllScreen = () => {
   const [searchResults, setSearchResults] = useState<
     ComponentProps<typeof SearchScreen>['listItems']
   >([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCustomSearch = useCallback(async (query: string) => {
     try {
+      setIsLoading(true);
       const results = await searchProductBySearchTerm(query);
       setSearchResults(
         results.map((item) => ({
@@ -25,6 +27,8 @@ const SearchAllScreen = () => {
       );
     } catch (error) {
       console.error('Error searching external API:', error);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -43,6 +47,7 @@ const SearchAllScreen = () => {
         listItems={searchResults}
         accentColor={theme.colors.blue}
         onCustomSearch={handleCustomSearch}
+        isLoading={isLoading}
       />
     </>
   );

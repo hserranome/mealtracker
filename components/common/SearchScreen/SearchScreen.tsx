@@ -1,11 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { ComponentProps, useState, useCallback } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import React, { ComponentProps, useState, useCallback, useEffect, useMemo } from 'react';
+import { View, Text, TextInput, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useDebounce } from 'use-debounce';
 
 import { Button, ButtonType } from '../Button';
-
-import { useDebounce } from '~/utils/useDebounce';
 
 type SearchScreenButtonType = {
   icon: string;
@@ -33,6 +32,7 @@ type SearchScreenProps = {
   searchMoreLabel?: string;
   onSearchMore?: (query: string) => void;
   onCustomSearch?: (query: string) => void;
+  isLoading?: boolean;
 };
 
 export const SearchScreen: React.FC<SearchScreenProps> = ({
@@ -43,6 +43,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
   listActionIcon = 'heart-circle',
   listActionOnPress,
   onPressItem,
+  isLoading = false,
   showSearchMore = false,
   searchMoreLabel = 'Search More',
   onSearchMore,
@@ -50,21 +51,27 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
 }) => {
   const { styles, theme } = useStyles(stylesheet);
   const [searchQuery, setSearchQuery] = useState('');
-  const debounce = useDebounce();
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300); // 300ms delay
 
-  const listItems = onCustomSearch
-    ? listItemsProp
-    : listItemsProp.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
-
-  const handleSearch = useCallback(
-    (text: string) => {
-      setSearchQuery(text);
-      if (onCustomSearch && text.trim() !== '') {
-        debounce(() => onCustomSearch(text));
-      }
-    },
-    [onCustomSearch]
+  const listItems = useMemo(
+    () =>
+      onCustomSearch || debouncedSearchQuery.length < 3
+        ? listItemsProp
+        : listItemsProp.filter((item) =>
+            item.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+          ),
+    [onCustomSearch, listItemsProp, debouncedSearchQuery]
   );
+
+  useEffect(() => {
+    if (onCustomSearch && debouncedSearchQuery.trim().length >= 3) {
+      onCustomSearch(debouncedSearchQuery);
+    }
+  }, [debouncedSearchQuery, onCustomSearch]);
+
+  const handleSearch = useCallback((text: string) => {
+    setSearchQuery(text);
+  }, []);
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <View style={styles.listItem}>
@@ -130,6 +137,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
       )}
       <View style={styles.listContainer}>
         {listTitle && <Text style={styles.listTitle}>{listTitle}</Text>}
+        {isLoading ? <ActivityIndicator style={styles.loadingIndicator} /> : null}
         <FlatList
           data={listItems}
           renderItem={renderListItem}
@@ -245,6 +253,12 @@ const stylesheet = createStyleSheet((theme) => ({
     marginHorizontal: theme.margins[16],
   },
   loadingIndicator: {
-    marginTop: theme.margins[16],
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));
