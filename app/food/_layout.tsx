@@ -1,15 +1,16 @@
 import { Stack } from 'expo-router/stack';
 import { FormProvider, useForm } from 'react-hook-form';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Food, Macros } from '~/data';
+import { Food } from '~/data';
 
-export type FoodFormData = Food & Macros;
+export type FoodFormData = Food;
 
 export default function Layout() {
   const methods = useForm<FoodFormData>({
     defaultValues: {
-      serving_size: 100,
-      unit: 'g',
+      default_serving_size: 100,
+      default_serving_unit: 'g',
     },
   });
 

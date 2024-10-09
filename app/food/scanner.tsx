@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
@@ -9,13 +9,14 @@ const FoodScanner: React.FC = () => {
   const methods = useFormContext();
   const router = useRouter();
 
-  const handleBarcodeScan = async (barcode: string) => {
-    methods.setValue('barcode', barcode);
+  const handleBarcodeScan = async (code: string) => {
+    methods.setValue('code', code);
     router.back();
   };
 
   return (
     <View style={{ flex: 1 }}>
+      <Stack.Screen options={{ headerShown: false, presentation: 'modal' }} />
       <BarcodeScanner onSuccess={handleBarcodeScan} />
     </View>
   );

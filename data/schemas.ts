@@ -13,8 +13,8 @@ export type CaloriesSchedule = z.infer<typeof CaloriesScheduleSchema>;
 const FoodSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
-  brand: z.string(),
-  barcode: z.string(),
+  brands: z.string(),
+  code: z.string(),
   image_url: z.string().url(),
   deleted: z.boolean(),
   default_serving_size: z.number(),

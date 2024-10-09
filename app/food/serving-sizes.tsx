@@ -7,8 +7,8 @@ import { FoodFormData } from './_layout';
 import { TextInput, Button } from '../../components/common';
 
 type ServingSizesForm = {
-  unit: string;
-  serving_size: number;
+  default_serving_unit: string;
+  default_serving_size: number;
 };
 
 export default function ServingSizes() {
@@ -18,14 +18,14 @@ export default function ServingSizes() {
 
   const methods = useForm<ServingSizesForm>({
     defaultValues: {
-      serving_size: formContextMethods.getValues('serving_size'),
-      unit: formContextMethods.getValues('unit'),
+      default_serving_size: formContextMethods.getValues('default_serving_size'),
+      default_serving_unit: formContextMethods.getValues('default_serving_unit'),
     },
   });
 
   const onSubmit = (data: ServingSizesForm) => {
-    formContextMethods.setValue('serving_size', data.serving_size);
-    formContextMethods.setValue('unit', data.unit);
+    formContextMethods.setValue('default_serving_size', data.default_serving_size);
+    formContextMethods.setValue('default_serving_unit', data.default_serving_unit);
     router.navigate({
       pathname: '/food/create',
     });
@@ -38,7 +38,7 @@ export default function ServingSizes() {
       <View style={styles.container}>
         <FormProvider {...methods}>
           <TextInput
-            name="serving_size"
+            name="default_serving_size"
             label="Serving Size"
             placeholder="e.g., 100"
             variant="ghost"
@@ -46,7 +46,7 @@ export default function ServingSizes() {
             keyboardType="numeric"
           />
           <TextInput
-            name="unit"
+            name="default_serving_unit"
             label="Unit"
             placeholder="e.g., g, ml, oz"
             variant="ghost"
