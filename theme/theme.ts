@@ -108,6 +108,7 @@ export const lightTheme = {
     base200: '#EDF0F7',
     base400: '#CBD2E0',
     base600: '#717D96',
+    base700: '#4A5468',
     base800: '#2D3648',
     base900: '#1A202C',
   },
