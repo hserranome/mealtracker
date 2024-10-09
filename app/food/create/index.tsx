@@ -19,7 +19,7 @@ export default function CreateFood() {
     (data: FoodFormData) => ({
       ...data,
       name: capitalize(data.name.trim()),
-      brands: capitalize(data.brands.trim()),
+      brands: data.brands ? capitalize(data.brands.trim()) : undefined,
     }),
     [],
     undefined,
