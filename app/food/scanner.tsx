@@ -5,7 +5,7 @@ import { View } from 'react-native';
 
 import BarcodeScanner from '~/components/common/BarcodeScanner';
 
-const FoodScanner: React.FC = () => {
+export default function FoodScanner() {
   const methods = useFormContext();
   const router = useRouter();
 
@@ -20,6 +20,4 @@ const FoodScanner: React.FC = () => {
       <BarcodeScanner onSuccess={handleBarcodeScan} />
     </View>
   );
-};
-
-export default FoodScanner;
+}
