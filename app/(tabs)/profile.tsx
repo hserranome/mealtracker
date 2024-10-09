@@ -45,6 +45,12 @@ export default function Profile() {
           style={styles.button}
         />
         <Button
+          onPress={() => router.push('/search/food')}
+          title="Search food"
+          type={ButtonType.Outline}
+          style={styles.button}
+        />
+        <Button
           onPress={handleLogout}
           title="Logout"
           type={ButtonType.Ghost}
