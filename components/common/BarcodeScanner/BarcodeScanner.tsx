@@ -15,7 +15,6 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onSuccess }) => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     };
-
     getCameraPermissions();
   }, []);
 
@@ -23,11 +22,6 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onSuccess }) => {
     setScanned(true);
     onSuccess(barcode);
   };
-
-  // For testing purposes. TODO: remove
-  useEffect(() => {
-    handleBarCodeScanned({ data: '8480000168832' } as BarcodeScanningResult);
-  }, []);
 
   if (hasPermission === null) return <Text>Requesting camera permission</Text>;
   if (hasPermission === false) return <Text>No access to camera</Text>;
