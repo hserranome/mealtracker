@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { StyleProp, Text, TextStyle, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export type InputContainerProps = {
@@ -8,6 +8,7 @@ export type InputContainerProps = {
   error?: string;
   children: ReactNode;
   direction?: 'vertical' | 'horizontal';
+  labelStyle?: StyleProp<TextStyle>;
 };
 
 export const InputContainer = ({
@@ -16,6 +17,7 @@ export const InputContainer = ({
   error,
   children,
   direction = 'vertical',
+  labelStyle,
 }: InputContainerProps) => {
   const { styles } = useStyles(inputContainerStyleSheet, {
     direction,
@@ -23,7 +25,7 @@ export const InputContainer = ({
 
   return (
     <View key={name} style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
       <View style={styles.children}>{children}</View>
       {error && <Text style={styles.errorContainer}>{error}</Text>}
     </View>

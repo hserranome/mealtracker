@@ -13,6 +13,7 @@ type TextInputProps = {
   rules?: ControllerProps['rules'];
   label?: InputContainerProps['label'];
   direction?: InputContainerProps['direction'];
+  labelStyle?: InputContainerProps['labelStyle'];
   type?: 'string' | 'number';
 } & BaseTextInputProps;
 
@@ -22,6 +23,7 @@ export const TextInput = ({
   variant,
   direction,
   label,
+  labelStyle,
   type = 'string',
   ...baseTextInputProps
 }: TextInputProps) => {
@@ -45,7 +47,12 @@ export const TextInput = ({
           name={name}
           rules={rules}
           render={({ field: { onChange, value, ...field }, fieldState: { error } }) => (
-            <InputContainer name={name} label={label} direction={direction} error={error?.message}>
+            <InputContainer
+              name={name}
+              label={label}
+              direction={direction}
+              labelStyle={labelStyle}
+              error={error?.message}>
               <BaseTextInput
                 {...baseTextInputProps}
                 {...field}
