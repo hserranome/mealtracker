@@ -4,16 +4,6 @@ import { useStyles } from 'react-native-unistyles';
 
 import { SearchScreen } from '~/components/common/SearchScreen';
 
-const historyItems = [
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-  { name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 },
-];
-
 const SearchAllScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
@@ -50,7 +40,7 @@ const SearchAllScreen = () => {
       />
       <SearchScreen
         buttons={buttons}
-        listItems={historyItems}
+        listItems={[]}
         listTitle="History"
         accentColor={theme.colors.blue}
       />

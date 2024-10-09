@@ -4,13 +4,10 @@ import { View, Text, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/common/Button';
-import { FoodItem } from '~/components/common/FoodItem';
 import { MacrosRow } from '~/components/common/MacrosRow';
 import { formatDate } from '~/utils/formatDate';
 
 type MealScreenSearchParams = { meal: string; date: string };
-
-const mockFoodItems = [{ name: 'Arroz Basmati', brand: 'Hacendado', calories: 130, weight: 150 }];
 
 export default function MealScreen() {
   const { meal, date: dateFromParams } = useLocalSearchParams<MealScreenSearchParams>();
@@ -51,11 +48,7 @@ export default function MealScreen() {
         <View style={styles.macrosContainer}>
           <MacrosRow fat={0} calories={0} carbohydrate={0} protein={0} />
         </View>
-        <ScrollView style={styles.foodList}>
-          {mockFoodItems.map((item, index) => (
-            <FoodItem key={index} {...item} />
-          ))}
-        </ScrollView>
+        <ScrollView style={styles.foodList}>{/* IDK */}</ScrollView>
         <View style={styles.buttonContainer}>
           <Button
             title="Search for food"
