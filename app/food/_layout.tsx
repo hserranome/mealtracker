@@ -1,6 +1,5 @@
 import { Stack } from 'expo-router/stack';
 import { FormProvider, useForm } from 'react-hook-form';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Food } from '~/data';
 

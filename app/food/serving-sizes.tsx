@@ -23,27 +23,29 @@ export default function ServingSizes() {
     },
   });
 
-  const onSubmit = (data: ServingSizesForm) => {
+  const submit = methods.handleSubmit((data: ServingSizesForm) => {
     formContextMethods.setValue('default_serving_size', data.default_serving_size);
     formContextMethods.setValue('default_serving_unit', data.default_serving_unit);
-    router.navigate({
-      pathname: '/food/create',
-    });
-  };
+    router.back();
+  });
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Edit Serving Sizes', presentation: 'modal' }} />
-
+      <Stack.Screen options={{ title: 'Edit Serving Sizes' }} />
       <View style={styles.container}>
         <FormProvider {...methods}>
           <TextInput
+            autoFocus
             name="default_serving_size"
             label="Serving Size"
             placeholder="e.g., 100"
             variant="ghost"
             direction="horizontal"
+            type="number"
             keyboardType="numeric"
+            rules={{ required: 'Serving size is required' }}
+            returnKeyType="next"
+            onSubmitEditing={() => methods.setFocus('default_serving_unit')}
           />
           <TextInput
             name="default_serving_unit"
@@ -51,10 +53,12 @@ export default function ServingSizes() {
             placeholder="e.g., g, ml, oz"
             variant="ghost"
             direction="horizontal"
+            returnKeyType="done"
+            onSubmitEditing={submit}
           />
         </FormProvider>
         <View style={styles.button}>
-          <Button onPress={methods.handleSubmit(onSubmit)} title="Save" />
+          <Button onPress={submit} title="Save" />
         </View>
       </View>
     </>

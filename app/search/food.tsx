@@ -3,18 +3,30 @@ import React, { useMemo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
 import { SearchScreen } from '~/components/common/SearchScreen';
-import { FOOD_TABLE, tbStore, useTinyBase } from '~/data';
+import { FOOD_TABLE, useTinyBase } from '~/data';
 
 const FoodScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
-  const { useSortedRowIds } = useTinyBase();
+  const { useTable } = useTinyBase();
   const { meal } = useLocalSearchParams();
 
-  const foodItemsId = useSortedRowIds(FOOD_TABLE, 'name', false);
-  const foodItems = useMemo(() => {
-    return foodItemsId.map((id) => tbStore.getRow(FOOD_TABLE, id));
-  }, [foodItemsId]);
+  const foodItems = useTable(FOOD_TABLE);
+  const listItems = useMemo(
+    () =>
+      Object.entries(foodItems)
+        .map(([id, item]) => {
+          return {
+            id,
+            name: String(item.name),
+            brands: String(item.brands),
+            calories: Number(item.energy_kcal),
+            weight: Number(item.default_serving_size),
+          };
+        })
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [foodItems]
+  );
 
   const buttons = useMemo(
     () => [
@@ -41,34 +53,18 @@ const FoodScreen = () => {
       />
       <SearchScreen
         buttons={buttons}
-        listItems={foodItems.map((item) => ({
-          id: item.id as string,
-          name: item.name as string,
-          brands: item.brands as string,
-          calories: item.energy_kcal as number,
-          weight: item.default_serving_size as number,
-        }))}
+        listItems={listItems}
         listTitle="My Food"
         listActionIcon={meal ? 'add-circle-outline' : undefined}
         listActionOnPress={
           meal
             ? (item) => {
-                router.push({
-                  pathname: '/food/create',
-                  params: {
-                    product: JSON.stringify(item),
-                  },
-                });
+                console.log('TODO: ADD OR REMOVE FROM MEAL');
               }
             : undefined
         }
         onPressItem={(item) => {
-          router.push({
-            pathname: '/food/create',
-            params: {
-              product: JSON.stringify(item),
-            },
-          });
+          router.push(`/food/edit/${item.id}`);
         }}
         accentColor={theme.colors.pink}
       />
