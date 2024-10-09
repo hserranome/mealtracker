@@ -4,8 +4,6 @@ import { Text, TouchableNativeFeedbackProps, View } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { useDebounce } from '~/utils/useDebounce';
-
 export enum ButtonType {
   Solid = 'solid',
   Outline = 'outline',
@@ -45,8 +43,6 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       iconPosition,
     });
 
-    const debounce = useDebounce(debounceRate);
-
     const iconElement = icon && (
       <Ionicons name={icon} size={24} color={styles.buttonText.color} style={styles.icon} />
     );
@@ -58,7 +54,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
           disabled={disabled}
           background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
           {...touchableProps}
-          onPress={onPress ? () => debounce(onPress) : undefined}>
+          onPress={onPress ? onPress : undefined}>
           <View style={[styles.button]}>
             {iconPosition === 'left' && iconElement}
             {title && <Text style={styles.buttonText}>{title}</Text>}
