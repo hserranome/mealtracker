@@ -1,9 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, useState, useCallback } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-type ButtonType = {
+import { Button, ButtonType } from '../Button';
+
+import { useDebounce } from '~/utils/useDebounce';
+
+type SearchScreenButtonType = {
   icon: string;
   label: string;
   onPress?: () => void;
@@ -18,25 +22,49 @@ type ListItemType = {
 };
 
 type SearchScreenProps = {
-  buttons: ButtonType[];
+  buttons?: SearchScreenButtonType[];
   listItems: ListItemType[];
-  listTitle: string;
+  listTitle?: string;
   listActionIcon?: ComponentProps<typeof Ionicons>['name'];
   listActionOnPress?: (item: ListItemType) => void;
   onPressItem?: (item: ListItemType) => void;
   accentColor: string;
+  showSearchMore?: boolean;
+  searchMoreLabel?: string;
+  onSearchMore?: (query: string) => void;
+  onCustomSearch?: (query: string) => void;
 };
 
 export const SearchScreen: React.FC<SearchScreenProps> = ({
   buttons,
-  listItems,
+  listItems: listItemsProp,
   listTitle,
   accentColor,
   listActionIcon = 'heart-circle',
   listActionOnPress,
   onPressItem,
+  showSearchMore = false,
+  searchMoreLabel = 'Search More',
+  onSearchMore,
+  onCustomSearch,
 }) => {
   const { styles, theme } = useStyles(stylesheet);
+  const [searchQuery, setSearchQuery] = useState('');
+  const debounce = useDebounce();
+
+  const listItems = onCustomSearch
+    ? listItemsProp
+    : listItemsProp.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const handleSearch = useCallback(
+    (text: string) => {
+      setSearchQuery(text);
+      if (onCustomSearch && text.trim() !== '') {
+        debounce(() => onCustomSearch(text));
+      }
+    },
+    [onCustomSearch]
+  );
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <View style={styles.listItem}>
@@ -59,6 +87,20 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
     </View>
   );
 
+  const renderFooter = () => {
+    if (!showSearchMore) return null;
+    return (
+      <View style={styles.searchMoreButtonContainer}>
+        <Button
+          title={searchMoreLabel}
+          type={ButtonType.Ghost}
+          icon="search-outline"
+          onPress={() => onSearchMore && onSearchMore(searchQuery)}
+        />
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.searchWrapper}>
@@ -68,27 +110,32 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
             style={styles.searchInput}
             placeholder="Search..."
             placeholderTextColor={theme.colors.base600}
+            value={searchQuery}
+            onChangeText={handleSearch}
           />
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        {buttons.map((button, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.button, { backgroundColor: accentColor }]}
-            onPress={button.onPress}>
-            <Ionicons name={button.icon as any} size={32} color={theme.colors.foreground} />
-            <Text style={styles.buttonText}>{button.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {buttons && (
+        <View style={styles.buttonContainer}>
+          {buttons.map((button, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.button, { backgroundColor: accentColor }]}
+              onPress={button.onPress}>
+              <Ionicons name={button.icon as any} size={32} color={theme.colors.foreground} />
+              <Text style={styles.buttonText}>{button.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
       <View style={styles.listContainer}>
-        <Text style={styles.listTitle}>{listTitle}</Text>
+        {listTitle && <Text style={styles.listTitle}>{listTitle}</Text>}
         <FlatList
           data={listItems}
           renderItem={renderListItem}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           showsVerticalScrollIndicator={false}
+          ListFooterComponent={renderFooter}
         />
       </View>
     </View>
@@ -191,5 +238,13 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   addButton: {
     padding: theme.margins[8],
+  },
+  searchMoreButtonContainer: {
+    marginTop: theme.margins[16],
+    marginBottom: theme.margins[16],
+    marginHorizontal: theme.margins[16],
+  },
+  loadingIndicator: {
+    marginTop: theme.margins[16],
   },
 }));

@@ -8,18 +8,13 @@ const SearchAllScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
 
-  // TODO: fix type
-  const handleNavigate = (route: string) => {
-    router.push({ pathname: route as any });
-  };
-
   const buttons = [
     { icon: 'barcode-outline', label: 'Scan Barcode' },
     { icon: 'add-circle-outline', label: 'Quick add' },
     {
       icon: 'nutrition-outline',
       label: 'My food',
-      onPress: () => handleNavigate('/search/food'),
+      onPress: () => router.push('/search/food'),
     },
     {
       icon: 'restaurant-outline',
@@ -43,6 +38,9 @@ const SearchAllScreen = () => {
         listItems={[]}
         listTitle="History"
         accentColor={theme.colors.blue}
+        showSearchMore
+        searchMoreLabel="Search more in library"
+        onSearchMore={() => router.push('/search/library')}
       />
     </>
   );
