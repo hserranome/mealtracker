@@ -45,7 +45,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       iconPosition,
     });
 
-    const { debounce } = useDebounce(debounceRate);
+    const debounce = useDebounce(debounceRate);
 
     const iconElement = icon && (
       <Ionicons name={icon} size={24} color={styles.buttonText.color} style={styles.icon} />

@@ -16,5 +16,5 @@ export const useDebounce = (defaultRate = BOUNCE_RATE) => {
     }
   };
 
-  return { debounce };
+  return debounce;
 };
