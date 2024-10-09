@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 
@@ -16,6 +16,7 @@ const MealFoodScanner: React.FC = () => {
 
   return (
     <View style={{ flex: 1 }}>
+      <Stack.Screen options={{ headerShown: false }} />
       <BarcodeScanner onSuccess={handleBarcodeScan} />
     </View>
   );
