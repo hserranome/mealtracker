@@ -131,13 +131,15 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
       {buttons && (
         <View style={styles.buttonContainer}>
           {buttons.map((button, index) => (
-            <TouchableOpacity
+            <Button
               key={index}
-              style={[styles.button, { backgroundColor: accentColor }]}
-              onPress={button.onPress}>
-              <Ionicons name={button.icon as any} size={32} color={theme.colors.foreground} />
-              <Text style={styles.buttonText}>{button.label}</Text>
-            </TouchableOpacity>
+              title={button.label}
+              type={ButtonType.Ghost}
+              icon={button.icon as any}
+              onPress={button.onPress}
+              style={{ backgroundColor: accentColor, width: '48%' }}
+              justify="flex-start"
+            />
           ))}
         </View>
       )}
@@ -192,22 +194,7 @@ const stylesheet = createStyleSheet((theme) => ({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     backgroundColor: theme.colors.base900,
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: theme.radius[5],
-    paddingVertical: theme.margins[10],
-    paddingHorizontal: theme.margins[12],
-    width: '48%',
-    marginBottom: theme.margins[12],
-  },
-  buttonText: {
-    ...theme.fonts.heading.xxs,
-    textAlign: 'center',
-    color: theme.colors.foreground,
-    marginLeft: theme.margins[8],
-    flex: 1,
+    gap: theme.margins[12],
   },
   listContainer: {
     flex: 1,

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ComponentProps, forwardRef } from 'react';
-import { Text, View } from 'react-native';
+import { StyleProp, Text, View, ViewStyle } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -18,7 +18,8 @@ type ButtonProps = {
   icon?: ComponentProps<typeof Ionicons>['name'];
   iconPosition?: 'left' | 'right';
   debounceRate?: number;
-  style?: any;
+  justify?: 'center' | 'flex-start' | 'flex-end';
+  style?: StyleProp<ViewStyle>;
 } & ComponentProps<typeof TouchableNativeFeedback>;
 
 export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
@@ -32,6 +33,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       onPress,
       style,
       debounceRate,
+      justify = 'center',
       ...touchableProps
     },
     ref
@@ -55,7 +57,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
           background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
           {...touchableProps}
           onPress={onPress ? onPress : undefined}>
-          <View style={[styles.button]}>
+          <View style={[styles.button, { justifyContent: justify }]}>
             {iconPosition === 'left' && iconElement}
             {title && <Text style={styles.buttonText}>{title}</Text>}
             {iconPosition === 'right' && iconElement}
@@ -89,10 +91,10 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   button: {
     paddingVertical: theme.margins[12],
+    paddingHorizontal: theme.margins[12],
     backgroundColor: theme.colors.base800,
     borderRadius: theme.radius[6],
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     variants: {
       type: {
