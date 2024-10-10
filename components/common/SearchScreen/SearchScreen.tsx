@@ -129,17 +129,19 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
         </View>
       </View>
       {buttons && (
-        <View style={styles.buttonContainer}>
+        <View style={styles.buttonsWrapper}>
           {buttons.map((button, index) => (
-            <Button
-              key={index}
-              title={button.label}
-              type={ButtonType.Ghost}
-              icon={button.icon as any}
-              onPress={button.onPress}
-              style={{ backgroundColor: accentColor, width: '48%' }}
-              justify="left"
-            />
+            <View key={index} style={styles.buttonContainer}>
+              <Button
+                title={button.label}
+                type={ButtonType.Ghost}
+                icon={button.icon as any}
+                onPress={button.onPress}
+                style={{ backgroundColor: accentColor }}
+                justify="left"
+                grow
+              />
+            </View>
           ))}
         </View>
       )}
@@ -186,7 +188,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.colors.foreground,
     ...theme.fonts.body.m,
   },
-  buttonContainer: {
+  buttonsWrapper: {
     paddingTop: theme.margins[16],
     paddingHorizontal: theme.margins[16],
     paddingBottom: theme.margins[14],
@@ -195,6 +197,9 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: 'space-between',
     backgroundColor: theme.colors.base900,
     gap: theme.margins[12],
+  },
+  buttonContainer: {
+    flexBasis: '48%',
   },
   listContainer: {
     flex: 1,
