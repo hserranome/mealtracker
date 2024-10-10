@@ -51,24 +51,30 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
     );
 
     return (
-      <TouchableNativeFeedback
-        ref={ref}
-        disabled={disabled}
-        background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
-        {...touchableProps}
-        style={[styles.container, style]}
-        onPress={onPress ? onPress : undefined}>
-        <View style={styles.buttonContent}>
-          {iconPosition === 'left' && iconElement}
-          {title && <Text style={styles.buttonText}>{title}</Text>}
-          {iconPosition === 'right' && iconElement}
-        </View>
-      </TouchableNativeFeedback>
+      <View style={styles.wrapper}>
+        <TouchableNativeFeedback
+          ref={ref}
+          disabled={disabled}
+          background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
+          {...touchableProps}
+          style={[styles.container, style]}
+          onPress={onPress ? onPress : undefined}>
+          <View style={styles.buttonContent}>
+            {iconPosition === 'left' && iconElement}
+            {title && <Text style={styles.buttonText}>{title}</Text>}
+            {iconPosition === 'right' && iconElement}
+          </View>
+        </TouchableNativeFeedback>
+      </View>
     );
   }
 );
 
 const stylesheet = createStyleSheet((theme) => ({
+  wrapper: {
+    overflow: 'hidden',
+    borderRadius: theme.radius[6],
+  },
   container: {
     borderRadius: theme.radius[6],
     paddingVertical: theme.margins[12],
