@@ -19,6 +19,7 @@ type ButtonProps = {
   iconPosition?: 'left' | 'right';
   debounceRate?: number;
   justify?: 'center' | 'left' | 'right';
+  grow?: boolean;
   style?: StyleProp<ViewStyle>;
 } & ComponentProps<typeof TouchableNativeFeedback>;
 
@@ -34,6 +35,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       style,
       debounceRate,
       justify = 'center',
+      grow = false,
       ...touchableProps
     },
     ref
@@ -44,6 +46,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       hasTitle: !!title,
       iconPosition,
       justify,
+      grow,
     });
 
     const iconElement = icon && (
@@ -51,20 +54,17 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
     );
 
     return (
-      <View style={[styles.container, style]}>
-        <TouchableNativeFeedback
-          ref={ref}
-          disabled={disabled}
-          background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
-          {...touchableProps}
-          onPress={onPress ? onPress : undefined}>
-          <View style={styles.button}>
-            {iconPosition === 'left' && iconElement}
-            {title && <Text style={styles.buttonText}>{title}</Text>}
-            {iconPosition === 'right' && iconElement}
-          </View>
-        </TouchableNativeFeedback>
-      </View>
+      <TouchableNativeFeedback
+        ref={ref}
+        disabled={disabled}
+        background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
+        {...touchableProps}
+        style={[styles.container, style]}
+        onPress={onPress ? onPress : undefined}>
+        {iconPosition === 'left' && iconElement}
+        {title && <Text style={styles.buttonText}>{title}</Text>}
+        {iconPosition === 'right' && iconElement}
+      </TouchableNativeFeedback>
     );
   }
 );
@@ -72,31 +72,10 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     borderRadius: theme.radius[6],
-    overflow: 'hidden',
-    justifyContent: 'center',
-    variants: {
-      type: {
-        [ButtonType.Solid]: {},
-        [ButtonType.Outline]: {},
-        [ButtonType.Light]: {},
-        [ButtonType.Ghost]: {},
-      },
-      disabled: {
-        [ButtonType.Solid]: {},
-        [ButtonType.Outline]: {
-          borderColor: theme.colors.base400,
-        },
-        [ButtonType.Light]: {},
-        [ButtonType.Ghost]: {},
-      },
-    },
-  },
-  button: {
     paddingVertical: theme.margins[12],
     paddingHorizontal: theme.margins[12],
-    backgroundColor: theme.colors.base800,
-    borderRadius: theme.radius[6],
     flexDirection: 'row',
+    overflow: 'hidden',
     alignItems: 'center',
     variants: {
       type: {
@@ -144,7 +123,6 @@ const stylesheet = createStyleSheet((theme) => ({
     },
   },
   buttonText: {
-    flex: 1,
     color: theme.colors.background,
     fontSize: 16,
     fontWeight: '800',
@@ -186,6 +164,11 @@ const stylesheet = createStyleSheet((theme) => ({
         },
         right: {
           textAlign: 'right',
+        },
+      },
+      grow: {
+        true: {
+          flex: 1,
         },
       },
     },
