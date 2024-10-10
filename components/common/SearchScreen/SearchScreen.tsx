@@ -15,7 +15,7 @@ type SearchScreenButtonType = {
 type ListItemType = {
   id: string;
   name: string;
-  brands: string;
+  brands?: string;
   calories: number;
   weight: number;
 };
@@ -75,16 +75,21 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <View style={styles.listItem}>
-      <TouchableOpacity
-        disabled={!onPressItem}
-        onPress={onPressItem ? () => onPressItem(item) : undefined}>
+      <View>
         <Text style={styles.listItemName}>{item.name}</Text>
-        <Text style={styles.listItemDetails}>{`${item.brands} - ${item.calories} kcal`}</Text>
-        <View style={styles.editContainer}>
+        <Text
+          style={
+            styles.listItemDetails
+          }>{`${item.brands ? item.brands + ' - ' : ''}${item.calories} kcal`}</Text>
+        <TouchableOpacity
+          style={styles.editContainer}
+          disabled={!onPressItem}
+          onPress={onPressItem ? () => onPressItem(item) : undefined}
+          hitSlop={30}>
           <Ionicons name="pencil-outline" size={12} color={theme.colors.base800} />
           <Text style={styles.listItemWeight}>{`${item.weight}g`}</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
 
       {!!listActionOnPress && (
         <TouchableOpacity style={styles.addButton} onPress={() => listActionOnPress(item)}>
