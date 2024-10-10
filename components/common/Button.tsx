@@ -19,7 +19,6 @@ type ButtonProps = {
   iconPosition?: 'left' | 'right';
   debounceRate?: number;
   justify?: 'center' | 'left' | 'right';
-  grow?: boolean;
   style?: StyleProp<ViewStyle>;
 } & ComponentProps<typeof TouchableNativeFeedback>;
 
@@ -35,7 +34,6 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       style,
       debounceRate,
       justify = 'center',
-      grow = false,
       ...touchableProps
     },
     ref
@@ -46,7 +44,6 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       hasTitle: !!title,
       iconPosition,
       justify,
-      grow,
     });
 
     const iconElement = icon && (
@@ -61,9 +58,11 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
         {...touchableProps}
         style={[styles.container, style]}
         onPress={onPress ? onPress : undefined}>
-        {iconPosition === 'left' && iconElement}
-        {title && <Text style={styles.buttonText}>{title}</Text>}
-        {iconPosition === 'right' && iconElement}
+        <View style={styles.buttonContent}>
+          {iconPosition === 'left' && iconElement}
+          {title && <Text style={styles.buttonText}>{title}</Text>}
+          {iconPosition === 'right' && iconElement}
+        </View>
       </TouchableNativeFeedback>
     );
   }
@@ -122,6 +121,11 @@ const stylesheet = createStyleSheet((theme) => ({
       },
     },
   },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   buttonText: {
     color: theme.colors.background,
     fontSize: 16,
@@ -164,11 +168,6 @@ const stylesheet = createStyleSheet((theme) => ({
         },
         right: {
           textAlign: 'right',
-        },
-      },
-      grow: {
-        true: {
-          flex: 1,
         },
       },
     },
