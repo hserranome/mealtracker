@@ -19,7 +19,7 @@ const FoodScreen = () => {
           return {
             id,
             name: String(item.name),
-            brands: String(item.brands),
+            brands: item.brands ? String(item.brands) : undefined,
             calories: Number(item.energy_kcal),
             weight: Number(item.default_serving_size),
           };
@@ -33,7 +33,7 @@ const FoodScreen = () => {
       {
         icon: 'add-circle-outline',
         label: 'Create new food',
-        onPress: () => router.push('/food/create'),
+        onPress: () => router.push('/food/new'),
       },
       { icon: 'barcode-outline', label: 'Create from barcode' },
     ],
