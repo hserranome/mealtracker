@@ -81,7 +81,7 @@ const LoginEmailScreen = () => {
               // @todo: Should be a button with type ghost
             }}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
-          </TouchableOpa>
+          </TouchableOpacity>
           <Button
             disabled={isSubmitting}
             title="Login"
