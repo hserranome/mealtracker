@@ -2,7 +2,8 @@ import { router } from 'expo-router';
 import { ClientResponseError } from 'pocketbase';
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Text, KeyboardAvoidingView } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button } from '~/components/common/Button';
@@ -80,7 +81,7 @@ const LoginEmailScreen = () => {
               // @todo: Should be a button with type ghost
             }}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
-          </TouchableOpacity>
+          </TouchableOpa>
           <Button
             disabled={isSubmitting}
             title="Login"

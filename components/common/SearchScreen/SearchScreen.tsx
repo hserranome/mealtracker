@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { ComponentProps, useState, useCallback, useEffect, useMemo } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, FlatList, ActivityIndicator } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { useDebounce } from 'use-debounce';
 

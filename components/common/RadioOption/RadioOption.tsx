@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
-import { StyleProp, Text, TextStyle, TouchableNativeFeedbackProps } from 'react-native';
+import { ComponentProps, forwardRef } from 'react';
+import { StyleProp, Text, TextStyle } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -8,7 +8,7 @@ type RadioOptionProps = {
   subtitle?: string;
   selected?: boolean;
   subtitleStyle?: StyleProp<TextStyle>;
-} & TouchableNativeFeedbackProps;
+} & ComponentProps<typeof TouchableNativeFeedback>;
 
 export const RadioOption = forwardRef<TouchableNativeFeedback, RadioOptionProps>(
   ({ title, subtitle, selected = false, subtitleStyle, ...touchableProps }, ref) => {

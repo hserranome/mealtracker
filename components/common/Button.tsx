@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ComponentProps, forwardRef } from 'react';
-import { Text, TouchableNativeFeedbackProps, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -19,7 +19,7 @@ type ButtonProps = {
   iconPosition?: 'left' | 'right';
   debounceRate?: number;
   style?: any;
-} & TouchableNativeFeedbackProps;
+} & ComponentProps<typeof TouchableNativeFeedback>;
 
 export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
   (
