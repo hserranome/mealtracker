@@ -50,18 +50,10 @@ export default function MealScreen() {
         </View>
         <ScrollView style={styles.foodList}>{/* IDK */}</ScrollView>
         <View style={styles.buttonContainer}>
-          <Button
-            title="Search for food"
-            icon="search"
-            onPress={handleAddFood}
-            style={styles.button}
-          />
-          <Button
-            icon="barcode-outline"
-            type={ButtonType.Outline}
-            onPress={handleScanFood}
-            style={[styles.button, styles.scanButton]}
-          />
+          <View style={styles.searchButtonContainer}>
+            <Button title="Search for food" icon="search" onPress={handleAddFood} />
+          </View>
+          <Button icon="barcode-outline" type={ButtonType.Outline} onPress={handleScanFood} />
         </View>
       </View>
     </>
@@ -99,15 +91,14 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.colors.background,
   },
   buttonContainer: {
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingTop: theme.margins[12],
     paddingBottom: theme.margins[32],
     paddingHorizontal: theme.margins[18],
     gap: theme.margins[8],
   },
-  button: {
+  searchButtonContainer: {
     flex: 1,
   },
-  scanButton: { flex: 0, width: '15%' },
 }));
