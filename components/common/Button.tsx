@@ -18,7 +18,7 @@ type ButtonProps = {
   icon?: ComponentProps<typeof Ionicons>['name'];
   iconPosition?: 'left' | 'right';
   debounceRate?: number;
-  justify?: 'center' | 'flex-start' | 'flex-end';
+  justify?: 'center' | 'left' | 'right';
   style?: StyleProp<ViewStyle>;
 } & ComponentProps<typeof TouchableNativeFeedback>;
 
@@ -43,6 +43,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       type,
       hasTitle: !!title,
       iconPosition,
+      justify,
     });
 
     const iconElement = icon && (
@@ -57,7 +58,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
           background={TouchableNativeFeedback.Ripple(theme.colors.base600, false)}
           {...touchableProps}
           onPress={onPress ? onPress : undefined}>
-          <View style={[styles.button, { justifyContent: justify }]}>
+          <View style={styles.button}>
             {iconPosition === 'left' && iconElement}
             {title && <Text style={styles.buttonText}>{title}</Text>}
             {iconPosition === 'right' && iconElement}
@@ -72,6 +73,7 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     borderRadius: theme.radius[6],
     overflow: 'hidden',
+    justifyContent: 'center',
     variants: {
       type: {
         [ButtonType.Solid]: {},
@@ -128,13 +130,23 @@ const stylesheet = createStyleSheet((theme) => ({
           backgroundColor: 'transparent',
         },
       },
+      justify: {
+        center: {
+          justifyContent: 'center',
+        },
+        left: {
+          justifyContent: 'flex-start',
+        },
+        right: {
+          justifyContent: 'flex-end',
+        },
+      },
     },
   },
   buttonText: {
-    textAlign: 'center',
+    flex: 1,
     color: theme.colors.background,
     fontSize: 16,
-    lineHeight: 24,
     fontWeight: '800',
     variants: {
       type: {
@@ -163,6 +175,17 @@ const stylesheet = createStyleSheet((theme) => ({
         },
         [ButtonType.Ghost]: {
           color: theme.colors.base400,
+        },
+      },
+      justify: {
+        center: {
+          textAlign: 'center',
+        },
+        left: {
+          textAlign: 'left',
+        },
+        right: {
+          textAlign: 'right',
         },
       },
     },

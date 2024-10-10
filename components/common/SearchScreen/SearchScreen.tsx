@@ -138,7 +138,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
               icon={button.icon as any}
               onPress={button.onPress}
               style={{ backgroundColor: accentColor, width: '48%' }}
-              justify="flex-start"
+              justify="left"
             />
           ))}
         </View>
