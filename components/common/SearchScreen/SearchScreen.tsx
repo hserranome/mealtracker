@@ -8,7 +8,7 @@ import { useDebounce } from 'use-debounce';
 import { Button, ButtonType } from '../Button';
 
 type SearchScreenButtonType = {
-  icon: string;
+  icon: ComponentProps<typeof Button>['icon'];
   label: string;
   onPress?: () => void;
 };
@@ -135,11 +135,10 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
               <Button
                 title={button.label}
                 type={ButtonType.Ghost}
-                icon={button.icon as any}
+                icon={button.icon}
                 onPress={button.onPress}
                 style={{ backgroundColor: accentColor }}
                 justify="left"
-                grow
               />
             </View>
           ))}
