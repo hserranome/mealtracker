@@ -9,6 +9,14 @@ const CaloriesScheduleSchema = z.object({
 export const CALORIES_SCHEDULE_TABLE = 'calories_schedule';
 export type CaloriesSchedule = z.infer<typeof CaloriesScheduleSchema>;
 
+// Weight
+const WeightEntrySchema = z.object({
+  date: z.string().date(),
+  weight: z.number(),
+});
+export const WEIGHT_ENTRY_TABLE = 'weight_entry';
+export type WeightEntry = z.infer<typeof WeightEntrySchema>;
+
 // Food
 const FoodSchema = z.object({
   id: z.string().uuid(),
@@ -32,33 +40,32 @@ const FoodSchema = z.object({
 export const FOOD_TABLE = 'food';
 export type Food = z.infer<typeof FoodSchema>;
 
-// Weight
-const WeightSchema = z.object({
-  weight: z.number(),
-});
-export const WEIGHT_TABLE = 'weight';
-
 // Meals
 const MealSchema = z.object({
+  id: z.string().uuid(),
   date: z.string().date(),
   name: z.string(),
   order: z.number().int().positive(),
 });
 export const MEALS_TABLE = 'meals';
 
-const MealItemSchema = z.object({
-  meal_id: z.string().uuid(),
-  type: z.enum(['food', 'recipe', 'quick_add']),
-  quantity: z.number(),
-  unit: z.string(),
-  // TODO: support ingredients
-});
+// Meal food
+const MealFoodSchema = z
+  .object({
+    meal_id: MealSchema.shape.id,
+    type: z.enum(['food', 'recipe', 'quick_add']),
+    quantity: z.number(),
+    unit: z.string(),
+  })
+  .merge(FoodSchema);
+export const MEAL_FOOD_TABLE = 'meal_food';
+export type MealFood = z.infer<typeof MealFoodSchema>;
 
 // TinyBase schemas
 export const tablesSchema = {
   [CALORIES_SCHEDULE_TABLE]: zodToSimpleSchema(CaloriesScheduleSchema),
   [FOOD_TABLE]: zodToSimpleSchema(FoodSchema),
-  [WEIGHT_TABLE]: zodToSimpleSchema(WeightSchema),
+  [WEIGHT_ENTRY_TABLE]: zodToSimpleSchema(WeightEntrySchema),
   [MEALS_TABLE]: zodToSimpleSchema(MealSchema),
 } as const;
 export const valuesSchema = {} as const;
