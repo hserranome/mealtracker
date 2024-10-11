@@ -12,8 +12,8 @@ const MealFoodScanner: React.FC = () => {
   const handleBarcodeScan = async (barcode: string) => {
     const product = await fetchProductByBarcode(barcode);
     router.push({
-      pathname: '/food/new' as any,
-      params: { meal, product: JSON.stringify(product) },
+      pathname: '/food/[id]',
+      params: { id: 'new', meal, product: JSON.stringify(product) },
     });
   };
 
