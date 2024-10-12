@@ -7,13 +7,13 @@ import { fetchProductByBarcode } from '~/utils/api';
 
 const MealFoodScanner: React.FC = () => {
   const router = useRouter();
-  const { meal } = useLocalSearchParams<{ meal: string }>();
+  const { mealId } = useLocalSearchParams<{ mealId: string }>();
 
   const handleBarcodeScan = async (barcode: string) => {
     const product = await fetchProductByBarcode(barcode);
     router.push({
       pathname: '/food/[id]',
-      params: { id: 'new', meal, product: JSON.stringify(product) },
+      params: { id: 'new', mealId, product: JSON.stringify(product) },
     });
   };
 

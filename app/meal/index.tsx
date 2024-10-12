@@ -7,22 +7,25 @@ import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow';
 import { formatDate } from '~/utils/formatDate';
 
-type MealScreenSearchParams = { meal: string; date: string };
+type MealScreenSearchParams = { mealName: string; date: string };
 
 export default function MealScreen() {
-  const { meal, date: dateFromParams } = useLocalSearchParams<MealScreenSearchParams>();
-  const date = useMemo(() => new Date(dateFromParams), [dateFromParams]);
   const router = useRouter();
   const { styles, theme } = useStyles(stylesheet);
 
+  const { mealName, date } = useLocalSearchParams<MealScreenSearchParams>();
+  const mealId = mealName && date ? `${date.split('T')[0]}-${mealName.toLowerCase()}` : undefined;
+
+  const jsDate = useMemo(() => new Date(date), [date]);
+
   const handleAddFood = () => {
-    router.push({ pathname: '/search', params: { meal } });
+    router.push({ pathname: '/search', params: { mealId } });
   };
 
   const handleScanFood = () => {
     router.push({
       pathname: '/meal/scanner',
-      params: { meal },
+      params: { mealId },
     });
   };
 
@@ -41,8 +44,8 @@ export default function MealScreen() {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
-            <Text style={styles.title}>{meal}</Text>
-            <Text style={styles.date}>{formatDate(date)}</Text>
+            <Text style={styles.title}>{mealName}</Text>
+            <Text style={styles.date}>{formatDate(jsDate)}</Text>
           </View>
         </View>
         <View style={styles.macrosContainer}>

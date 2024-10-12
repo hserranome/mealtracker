@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo } from 'react';
+import React, { ComponentProps, useMemo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
 import { SearchScreen } from '~/components/common/SearchScreen';
@@ -9,7 +9,7 @@ const FoodScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
   const { useTable } = useTinyBase();
-  const { meal } = useLocalSearchParams();
+  const { mealId } = useLocalSearchParams();
 
   const foodItems = useTable(FOOD_TABLE);
   const listItems = useMemo(
@@ -28,7 +28,7 @@ const FoodScreen = () => {
     [foodItems]
   );
 
-  const buttons = useMemo(
+  const buttons: ComponentProps<typeof SearchScreen>['buttons'] = useMemo(
     () => [
       {
         icon: 'add-circle-outline',
@@ -55,16 +55,23 @@ const FoodScreen = () => {
         buttons={buttons}
         listItems={listItems}
         listTitle="My Food"
-        listActionIcon={meal ? 'add-circle-outline' : undefined}
+        listActionIcon={mealId ? 'add-circle-outline' : undefined}
         listActionOnPress={
-          meal
+          mealId
             ? (item) => {
-                console.log('TODO: ADD OR REMOVE FROM MEAL');
+                console.log('TODO: ADD OR REMOVE FROM MEAL', item);
+                router.push({
+                  pathname: '/meal/add/food/[id]',
+                  params: { id: item.id, mealId },
+                });
               }
             : undefined
         }
         onPressItem={(item) => {
-          router.push(`/food/edit/${item.id}`);
+          router.push({
+            pathname: '/food/[id]',
+            params: { id: item.id, mealId },
+          });
         }}
         accentColor={theme.colors.pink}
       />
