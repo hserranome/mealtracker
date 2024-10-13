@@ -19,7 +19,7 @@ export type WeightEntry = z.infer<typeof WeightEntrySchema>;
 
 // Food
 const FoodSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(), // can be barcode or generated uuid
   name: z.string(),
   brands: z.string(),
   code: z.string(),
@@ -43,7 +43,6 @@ export type Food = z.infer<typeof FoodSchema>;
 // Meals
 const MealSchema = z.object({
   id: z.string().uuid(),
-  item_id: z.string().optional(),
   date: z.string().date(),
   name: z.string(),
   order: z.number().int().positive().optional(),
@@ -54,6 +53,7 @@ export type Meal = z.infer<typeof MealSchema>;
 // Meal food
 const MealItemSchema = z
   .object({
+    item_id: FoodSchema.shape.id.optional(),
     meal_id: MealSchema.shape.id,
     type: z.enum(['food', 'recipe', 'quick_add']),
     quantity: z.number(),
