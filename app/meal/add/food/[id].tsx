@@ -1,3 +1,4 @@
+import * as Crypto from 'expo-crypto';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
@@ -6,25 +7,41 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow/MacrosRow';
 import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
-import { FOOD_TABLE, useTinyBase } from '~/data';
+import { FOOD_TABLE, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, tbStore, useTinyBase } from '~/data';
 
 export default function AddFoodToMeal() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, meal: mealString } = useLocalSearchParams<{ id: string; meal: string }>();
   const [quantity, setQuantity] = useState(100);
   const { styles, theme } = useStyles(stylesheet);
   const { useRow } = useTinyBase();
 
   const foodItem = useRow(FOOD_TABLE, id);
+  const [unit] = useState(foodItem.default_serving_unit);
+  const meal: Meal = useMemo(() => JSON.parse(mealString), [mealString]);
 
   const handleAdd = () => {
-    // TODO: Implement add functionality
-    console.log('Add button pressed');
+    // Get current meal and set it
+    const currentMeal = tbStore.getRow(MEALS_TABLE, meal.id);
+    tbStore.setRow(MEALS_TABLE, meal.id, {
+      ...currentMeal,
+      ...meal,
+    });
+    // Add meal item
+    tbStore.setRow(MEAL_ITEMS_TABLE, `${meal.id}-${Crypto.randomUUID()}`, {
+      ...foodItem,
+      meal_id: meal.id,
+      type: 'food',
+      quantity,
+      unit,
+    });
+    // Navigate to meal
+    router.push({
+      pathname: '/meal',
+      params: meal,
+    });
   };
 
-  const handleEdit = () => {
-    // TODO: Implement edit functionality
-    router.push(`/food/${id}`);
-  };
+  const handleEdit = () => router.push(`/food/${id}`);
 
   const quantityMacros = useMemo(() => {
     return {
@@ -69,7 +86,7 @@ export default function AddFoodToMeal() {
             />
           </View>
           <View style={styles.unitTextContainer}>
-            <Text style={styles.unitText}>g</Text>
+            <Text style={styles.unitText}>{unit}</Text>
           </View>
         </View>
 

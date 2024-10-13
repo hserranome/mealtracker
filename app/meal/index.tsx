@@ -2,33 +2,54 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { createQueries } from 'tinybase/with-schemas';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow';
+import { Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, useTinyBase } from '~/data';
 import { formatDate } from '~/utils/formatDate';
 
-type MealScreenSearchParams = { mealName: string; date: string };
+type MealScreenSearchParams = { name: string; date: string; id: string };
 
 export default function MealScreen() {
   const router = useRouter();
   const { styles, theme } = useStyles(stylesheet);
+  const { useCreateQueries, useStore, useRow } = useTinyBase();
+  const params = useLocalSearchParams<MealScreenSearchParams>();
 
-  const { mealName, date } = useLocalSearchParams<MealScreenSearchParams>();
-  const mealId = mealName && date ? `${date.split('T')[0]}-${mealName.toLowerCase()}` : undefined;
+  const meal: Meal = useMemo(getMealObject(useRow(MEALS_TABLE, params.id) as Meal, params), [
+    params,
+  ]);
+  const mealString = JSON.stringify(meal);
 
-  const jsDate = useMemo(() => new Date(date), [date]);
+  const queries = useCreateQueries(
+    useStore(),
+    (store) => {
+      return createQueries(store).setQueryDefinition(
+        'mealItems',
+        MEAL_ITEMS_TABLE,
+        ({ select, where }) => {
+          select('name');
+          where('meal_id', meal.id ?? 'none');
+        }
+      );
+    },
+    [meal.id]
+  );
 
   const handleAddFood = () => {
-    router.push({ pathname: '/search', params: { mealId } });
+    router.push({ pathname: '/search', params: { meal: mealString } });
   };
 
   const handleScanFood = () => {
     router.push({
       pathname: '/meal/scanner',
-      params: { mealId },
+      params: { meal: mealString },
     });
   };
 
+  const mealItems = queries?.getResultTable('mealItems');
+  const jsDate = useMemo(() => new Date(meal.date), [meal.date]);
   return (
     <>
       <Stack.Screen
@@ -44,14 +65,18 @@ export default function MealScreen() {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
-            <Text style={styles.title}>{mealName}</Text>
+            <Text style={styles.title}>{meal.name}</Text>
             <Text style={styles.date}>{formatDate(jsDate)}</Text>
           </View>
         </View>
         <View style={styles.macrosContainer}>
           <MacrosRow fat={0} calories={0} carbohydrate={0} protein={0} />
         </View>
-        <ScrollView style={styles.foodList}>{/* IDK */}</ScrollView>
+        <ScrollView style={styles.foodList}>
+          {Object.entries(mealItems ?? {}).map(([id, item]) => (
+            <Text key={id}>{item.name}</Text>
+          ))}
+        </ScrollView>
         <View style={styles.buttonContainer}>
           <View style={styles.searchButtonContainer}>
             <Button title="Search for food" icon="search" onPress={handleAddFood} />
@@ -105,3 +130,25 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
   },
 }));
+
+const getMealObject = (mealItem: Meal, params: MealScreenSearchParams): (() => Meal) => {
+  return () => {
+    if (mealItem && Object.keys(mealItem).length > 0) {
+      // Use existing meal data if available and not empty
+      return {
+        id: String(mealItem.id),
+        name: String(mealItem.name),
+        date: String(mealItem.date),
+      };
+    }
+
+    // If no meal found or it's an empty object, use params and construct mealId
+    const paramDate = params.date?.split('T')[0];
+    const paramMealName = params.name?.toLowerCase();
+    return {
+      id: paramDate && paramMealName ? `${paramDate}-${paramMealName}` : '',
+      name: params.name || '',
+      date: paramDate || '',
+    };
+  };
+};

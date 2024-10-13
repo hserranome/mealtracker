@@ -9,7 +9,7 @@ const FoodScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
   const { useTable } = useTinyBase();
-  const { mealId } = useLocalSearchParams();
+  const { meal } = useLocalSearchParams<{ meal: string }>();
 
   const foodItems = useTable(FOOD_TABLE);
   const listItems = useMemo(
@@ -55,13 +55,13 @@ const FoodScreen = () => {
         buttons={buttons}
         listItems={listItems}
         listTitle="My Food"
-        listActionIcon={mealId ? 'add-circle-outline' : undefined}
+        listActionIcon={meal ? 'add-circle-outline' : undefined}
         listActionOnPress={
-          mealId
+          meal
             ? (item) => {
                 router.push({
                   pathname: '/meal/add/food/[id]',
-                  params: { id: item.id, mealId },
+                  params: { meal, id: item.id },
                 });
               }
             : undefined
@@ -69,7 +69,7 @@ const FoodScreen = () => {
         onPressItem={(item) => {
           router.push({
             pathname: '/food/[id]',
-            params: { id: item.id, mealId },
+            params: { id: item.id },
           });
         }}
         accentColor={theme.colors.pink}

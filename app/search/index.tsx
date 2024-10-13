@@ -7,7 +7,7 @@ import { SearchScreen } from '~/components/common/SearchScreen';
 const SearchAllScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
-  const { mealId } = useLocalSearchParams();
+  const { meal } = useLocalSearchParams<{ meal: string }>();
 
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = [
     { icon: 'barcode-outline', label: 'Scan Barcode' },
@@ -18,7 +18,7 @@ const SearchAllScreen = () => {
       onPress: () =>
         router.push({
           pathname: '/search/food',
-          params: { mealId },
+          params: { meal },
         }),
     },
     {
@@ -48,7 +48,7 @@ const SearchAllScreen = () => {
         onSearchMore={() =>
           router.push({
             pathname: '/search/library',
-            params: { mealId },
+            params: { meal },
           })
         }
       />
