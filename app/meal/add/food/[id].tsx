@@ -1,6 +1,6 @@
 import * as Crypto from 'expo-crypto';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -9,34 +9,53 @@ import { MacrosRow } from '~/components/common/MacrosRow/MacrosRow';
 import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
 import { FOOD_TABLE, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, tbStore, useTinyBase } from '~/data';
 
-export default function AddFoodToMeal() {
-  const { id, meal: mealString } = useLocalSearchParams<{ id: string; meal: string }>();
-  const [quantity, setQuantity] = useState(100);
-  const { styles, theme } = useStyles(stylesheet);
+// Custom hook
+function useAddFoodToMeal() {
+  const {
+    id: foodId,
+    meal: mealString,
+    product: productString,
+  } = useLocalSearchParams<{
+    id: string;
+    meal: string;
+    product?: string;
+  }>();
   const { useRow } = useTinyBase();
   const router = useRouter();
 
-  const foodItem = useRow(FOOD_TABLE, id);
-  const [unit] = useState(foodItem.default_serving_unit);
-  const meal: Meal = useMemo(() => JSON.parse(mealString), [mealString]);
+  const [quantity, setQuantity] = React.useState(100);
+
+  const foodRow = useRow(FOOD_TABLE, foodId);
+  const product = React.useMemo(
+    () => (productString ? JSON.parse(productString) : null),
+    [productString]
+  );
+  const foodItem = React.useMemo(() => {
+    return foodRow && Object.keys(foodRow).length > 0 ? foodRow : product || {};
+  }, [foodRow, product]);
+
+  const [unit] = React.useState(foodItem.default_serving_unit || 'g');
+  const meal: Meal = React.useMemo(() => JSON.parse(mealString), [mealString]);
 
   const handleAdd = () => {
-    // Get current meal and set it
+    // Set meal
     const currentMeal = tbStore.getRow(MEALS_TABLE, meal.id);
     tbStore.setRow(MEALS_TABLE, meal.id, {
       ...currentMeal,
       ...meal,
     });
-    // Add meal item
+    // Set food item
+    tbStore.setRow(FOOD_TABLE, foodId, foodItem);
+    // Set meal item
     tbStore.setRow(MEAL_ITEMS_TABLE, `${meal.id}-${Crypto.randomUUID()}`, {
       ...foodItem,
-      item_id: id,
+      item_id: foodId,
       meal_id: meal.id,
       type: 'food',
       quantity,
       unit,
     });
-    // Navigate to meal while dismissing all other screens
+    // Navigate to meal
     router.dismissAll();
     router.navigate({
       pathname: '/meal',
@@ -44,9 +63,9 @@ export default function AddFoodToMeal() {
     });
   };
 
-  const handleEdit = () => router.push(`/food/${id}`);
+  const handleEdit = () => router.push(`/food/${foodId}`);
 
-  const quantityMacros = useMemo(() => {
+  const macros = React.useMemo(() => {
     return {
       carbohydrate: (Number(foodItem.carbohydrates) * quantity) / 100,
       protein: (Number(foodItem.proteins) * quantity) / 100,
@@ -54,6 +73,22 @@ export default function AddFoodToMeal() {
       calories: (Number(foodItem.energy_kcal) * quantity) / 100,
     };
   }, [foodItem, quantity]);
+
+  return {
+    foodItem,
+    quantity,
+    setQuantity,
+    unit,
+    macros,
+    handleAdd,
+    handleEdit,
+  };
+}
+
+export default function AddFoodToMeal() {
+  const { styles, theme } = useStyles(stylesheet);
+  const { foodItem, quantity, setQuantity, unit, macros, handleAdd, handleEdit } =
+    useAddFoodToMeal();
 
   return (
     <>
@@ -70,11 +105,11 @@ export default function AddFoodToMeal() {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.foodName}>{foodItem.name}</Text>
-          <Text style={styles.brandName}>{foodItem.brand}</Text>
+          <Text style={styles.brandName}>{foodItem.brands}</Text>
         </View>
 
         <View style={styles.macrosContainer}>
-          <MacrosRow {...quantityMacros} />
+          <MacrosRow {...macros} />
         </View>
 
         <View style={styles.quantityContainer}>
