@@ -50,9 +50,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           <View style={styles.container}>
             <TextInput
               name="name"
-              rules={{ required: 'Name is required' }}
               label="Name"
-              placeholder="Required"
               {...commonProps}
               autoFocus
               onSubmitEditing={() => form.setFocus('brands')}
@@ -94,12 +92,11 @@ export const FoodForm: React.FC<FoodFormProps> = ({
               right={`For ${form.getValues('default_serving_size')} ${form.getValues('default_serving_unit')}`}
             />
             <TextInput
-              rules={{ required: 'Calories are required' }}
               label="Calories (kcal)"
               name="energy_kcal"
               labelStyle={{ ...boldLabelStyles, color: theme.colors.orange }}
               {...commonNumericProps}
-              placeholder="Required"
+              {...requiredProps}
               onSubmitEditing={() => form.setFocus('fat')}
             />
             <TextInput
@@ -107,6 +104,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
               label="Fat (g)"
               labelStyle={{ ...boldLabelStyles, color: theme.colors.green }}
               {...commonNumericProps}
+              {...requiredProps}
               onSubmitEditing={() => form.setFocus('saturated_fat')}
             />
             <TextInput
@@ -120,6 +118,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
               label="Proteins (g)"
               labelStyle={{ ...boldLabelStyles, color: theme.colors.blue }}
               {...commonNumericProps}
+              {...requiredProps}
               onSubmitEditing={() => form.setFocus('carbohydrates')}
             />
             <TextInput
@@ -127,6 +126,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
               label="Carbohydrates (g)"
               labelStyle={{ ...boldLabelStyles, color: theme.colors.red }}
               {...commonNumericProps}
+              {...requiredProps}
               onSubmitEditing={() => form.setFocus('sugars')}
             />
             <TextInput
@@ -194,4 +194,9 @@ const commonNumericProps = {
 
 const boldLabelStyles = {
   fontWeight: 'bold',
+} as const;
+
+const requiredProps = {
+  rules: { required: '' },
+  placeholder: 'Required',
 } as const;
