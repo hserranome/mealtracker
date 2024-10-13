@@ -11,7 +11,8 @@ const SearchAllScreen = () => {
     ComponentProps<typeof SearchScreen>['listItems']
   >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { meal } = useLocalSearchParams<{ meal?: string }>();
+  const { meal, searchQuery } = useLocalSearchParams<{ meal?: string; searchQuery?: string }>();
+  // TODO: use searchQuery for initial search
 
   const handleCustomSearch = useCallback(async (query: string) => {
     try {

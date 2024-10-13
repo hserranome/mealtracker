@@ -84,10 +84,10 @@ const SearchAllScreen = () => {
             params: { id: item.id },
           });
         }}
-        onSearchMore={() =>
+        onSearchMore={(searchQuery) =>
           router.push({
             pathname: '/search/library',
-            params: { meal },
+            params: { meal, searchQuery },
           })
         }
       />
