@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -14,6 +14,7 @@ export default function AddFoodToMeal() {
   const [quantity, setQuantity] = useState(100);
   const { styles, theme } = useStyles(stylesheet);
   const { useRow } = useTinyBase();
+  const router = useRouter();
 
   const foodItem = useRow(FOOD_TABLE, id);
   const [unit] = useState(foodItem.default_serving_unit);
@@ -34,8 +35,9 @@ export default function AddFoodToMeal() {
       quantity,
       unit,
     });
-    // Navigate to meal
-    router.push({
+    // Navigate to meal while dismissing all other screens
+    router.dismissAll();
+    router.navigate({
       pathname: '/meal',
       params: meal,
     });
