@@ -77,11 +77,13 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   container: {
     borderRadius: theme.radius[6],
-    paddingVertical: theme.margins[12],
+    paddingVertical: theme.margins[10],
     paddingHorizontal: theme.margins[12],
     flexDirection: 'row',
     overflow: 'hidden',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
     variants: {
       type: {
         [ButtonType.Solid]: {
