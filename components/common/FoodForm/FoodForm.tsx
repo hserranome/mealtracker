@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
-import { View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TextInput, Button, Separator, InputContainer, ButtonType } from '../';
@@ -30,6 +30,14 @@ interface FoodFormProps {
   submitButtonText?: string;
 }
 
+// Add this new type definition
+type NutritionField = {
+  name: keyof FoodFormData;
+  label: string;
+  color?: string;
+  required?: boolean;
+};
+
 export const FoodForm: React.FC<FoodFormProps> = ({
   form,
   onSubmit,
@@ -43,122 +51,87 @@ export const FoodForm: React.FC<FoodFormProps> = ({
 
   const submit = form.handleSubmit(onSubmit);
 
+  const nutritionFields: NutritionField[] = [
+    { name: 'energy_kcal', label: 'Calories (kcal)', color: theme.colors.orange, required: true },
+    { name: 'fat', label: 'Fat (g)', color: theme.colors.green, required: true },
+    { name: 'saturated_fat', label: 'Saturated Fat (g)' },
+    { name: 'proteins', label: 'Proteins (g)', color: theme.colors.blue, required: true },
+    { name: 'carbohydrates', label: 'Carbohydrates (g)', color: theme.colors.red, required: true },
+    { name: 'sugars', label: 'Sugars (g)' },
+    { name: 'fiber', label: 'Fiber (g)' },
+    { name: 'salt', label: 'Salt (g)' },
+    { name: 'sodium', label: 'Sodium (mg)' },
+  ];
+
   return (
     <ScrollView>
       <FormProvider {...form}>
-        <KeyboardAvoidingView>
-          <View style={styles.container}>
+        <View style={styles.container}>
+          <TextInput
+            name="name"
+            label="Name"
+            {...commonProps}
+            autoFocus
+            onSubmitEditing={() => form.setFocus('brands')}
+          />
+          <TextInput
+            label="Brand"
+            name="brands"
+            placeholder="Optional"
+            {...commonProps}
+            onSubmitEditing={() => form.setFocus('code')}
+          />
+          <View>
             <TextInput
-              name="name"
-              label="Name"
-              {...commonProps}
-              autoFocus
-              onSubmitEditing={() => form.setFocus('brands')}
-            />
-            <TextInput
-              label="Brand"
-              name="brands"
+              label="Barcode"
+              name="code"
               placeholder="Optional"
               {...commonProps}
-              onSubmitEditing={() => form.setFocus('code')}
+              onSubmitEditing={() => form.setFocus('energy_kcal')}
             />
-            <View>
-              <TextInput
-                label="Barcode"
-                name="code"
-                placeholder="Optional"
-                {...commonProps}
-                onSubmitEditing={() => form.setFocus('energy_kcal')}
-              />
-              <Button
-                title="Scan barcode"
-                icon="camera"
-                iconPosition="right"
-                onPress={navigateToBarcodeScanner}
-                type={ButtonType.Ghost}
-              />
-            </View>
-            <InputContainer direction="horizontal" label="Serving sizes">
-              <Button
-                title="Edit Serving Sizes"
-                icon="caret-forward"
-                iconPosition="right"
-                onPress={navigateToServingSizes}
-                type={ButtonType.Ghost}
-              />
-            </InputContainer>
-            <Separator
-              title="Nutrition facts"
-              right={`For ${form.getValues('default_serving_size')} ${form.getValues('default_serving_unit')}`}
+            <Button
+              title="Scan barcode"
+              icon="camera"
+              iconPosition="right"
+              onPress={navigateToBarcodeScanner}
+              type={ButtonType.Ghost}
             />
-            <TextInput
-              label="Calories (kcal)"
-              name="energy_kcal"
-              labelStyle={{ ...boldLabelStyles, color: theme.colors.orange }}
-              {...commonNumericProps}
-              {...requiredProps}
-              onSubmitEditing={() => form.setFocus('fat')}
-            />
-            <TextInput
-              name="fat"
-              label="Fat (g)"
-              labelStyle={{ ...boldLabelStyles, color: theme.colors.green }}
-              {...commonNumericProps}
-              {...requiredProps}
-              onSubmitEditing={() => form.setFocus('saturated_fat')}
-            />
-            <TextInput
-              name="saturated_fat"
-              label="Saturated Fat (g)"
-              {...commonNumericProps}
-              onSubmitEditing={() => form.setFocus('proteins')}
-            />
-            <TextInput
-              name="proteins"
-              label="Proteins (g)"
-              labelStyle={{ ...boldLabelStyles, color: theme.colors.blue }}
-              {...commonNumericProps}
-              {...requiredProps}
-              onSubmitEditing={() => form.setFocus('carbohydrates')}
-            />
-            <TextInput
-              name="carbohydrates"
-              label="Carbohydrates (g)"
-              labelStyle={{ ...boldLabelStyles, color: theme.colors.red }}
-              {...commonNumericProps}
-              {...requiredProps}
-              onSubmitEditing={() => form.setFocus('sugars')}
-            />
-            <TextInput
-              name="sugars"
-              label="Sugars (g)"
-              {...commonNumericProps}
-              onSubmitEditing={() => form.setFocus('fiber')}
-            />
-            <TextInput
-              name="fiber"
-              label="Fiber (g)"
-              {...commonNumericProps}
-              onSubmitEditing={() => form.setFocus('salt')}
-            />
-            <TextInput
-              name="salt"
-              label="Salt (g)"
-              {...commonNumericProps}
-              onSubmitEditing={() => form.setFocus('sodium')}
-            />
-            <TextInput
-              name="sodium"
-              label="Sodium (mg)"
-              {...commonNumericProps}
-              returnKeyType="done"
-              onSubmitEditing={submit}
-            />
-            <View style={styles.button}>
-              <Button onPress={submit} title={submitButtonText} />
-            </View>
           </View>
-        </KeyboardAvoidingView>
+          <InputContainer direction="horizontal" label="Serving sizes">
+            <Button
+              title="Edit Serving Sizes"
+              icon="caret-forward"
+              iconPosition="right"
+              onPress={navigateToServingSizes}
+              type={ButtonType.Ghost}
+            />
+          </InputContainer>
+          <Separator
+            title="Nutrition facts"
+            right={`For ${form.getValues('default_serving_size')} ${form.getValues('default_serving_unit')}`}
+          />
+          {nutritionFields.map((field, index) => (
+            <TextInput
+              key={field.name}
+              name={field.name}
+              label={field.label}
+              labelStyle={{
+                ...(field.color && { ...boldLabelStyles, color: field.color }),
+              }}
+              {...commonNumericProps}
+              {...(field.required && requiredProps)}
+              onSubmitEditing={() => {
+                const nextField = nutritionFields[index + 1];
+                if (nextField) form.setFocus(nextField.name);
+                else submit();
+              }}
+              returnKeyType={index === nutritionFields.length - 1 ? 'done' : 'next'}
+            />
+          ))}
+          <View style={styles.button}>
+            <Button onPress={submit} title={submitButtonText} />
+          </View>
+        </View>
       </FormProvider>
     </ScrollView>
   );
