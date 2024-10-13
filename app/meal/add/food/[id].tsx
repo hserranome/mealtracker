@@ -23,7 +23,7 @@ export default function AddFoodToMeal() {
 
   const handleEdit = () => {
     // TODO: Implement edit functionality
-    console.log('Edit button pressed');
+    router.push(`/food/${id}`);
   };
 
   const quantityMacros = useMemo(() => {
