@@ -15,7 +15,7 @@ type MealScreenSearchParams = { name: string; date: string; id: string };
 export default function MealScreen() {
   const router = useRouter();
   const { styles, theme } = useStyles(stylesheet);
-  const { useCreateQueries, useStore, useRow, useDelRowCallback } = useTinyBase();
+  const { useCreateQueries, useResultTable, useStore, useRow, useDelRowCallback } = useTinyBase();
   const params = useLocalSearchParams<MealScreenSearchParams>();
 
   const meal: Meal = useMemo(getMealObject(useRow(MEALS_TABLE, params.id) as Meal, params), [
@@ -57,7 +57,7 @@ export default function MealScreen() {
 
   const deleteMealItem = useDelRowCallback(MEAL_ITEMS_TABLE, (id: string) => id);
 
-  const mealItems = queries?.getResultTable('mealItems');
+  const mealItems = useResultTable('mealItems', queries);
   const listItems: ListItemType[] = useMemo(
     () =>
       Object.entries(mealItems ?? {})
