@@ -59,7 +59,6 @@ const FoodScreen = () => {
         listActionOnPress={
           mealId
             ? (item) => {
-                console.log('TODO: ADD OR REMOVE FROM MEAL', item);
                 router.push({
                   pathname: '/meal/add/food/[id]',
                   params: { id: item.id, mealId },
