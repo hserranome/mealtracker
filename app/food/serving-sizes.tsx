@@ -12,7 +12,7 @@ type ServingSizesForm = {
 };
 
 export default function ServingSizes() {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const router = useRouter();
   const formContextMethods = useFormContext<FoodFormData>();
 
@@ -31,7 +31,15 @@ export default function ServingSizes() {
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Edit Serving Sizes' }} />
+      <Stack.Screen
+        options={{
+          title: 'Edit Serving Sizes',
+          headerTintColor: theme.colors.foreground,
+          headerStyle: {
+            backgroundColor: theme.colors.base900,
+          },
+        }}
+      />
       <View style={styles.container}>
         <FormProvider {...methods}>
           <TextInput
