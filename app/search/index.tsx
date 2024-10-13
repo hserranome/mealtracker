@@ -72,8 +72,8 @@ const SearchAllScreen = () => {
           meal
             ? (item) => {
                 router.push({
-                  pathname: '/meal/add/food/[id]',
-                  params: { meal, id: item.id },
+                  pathname: '/meal/set/food',
+                  params: { meal, foodId: item.id },
                 });
               }
             : undefined

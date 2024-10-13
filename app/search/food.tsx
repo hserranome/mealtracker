@@ -61,8 +61,8 @@ const FoodScreen = () => {
           meal
             ? (item) => {
                 router.push({
-                  pathname: '/meal/add/food/[id]',
-                  params: { meal, id: item.id },
+                  pathname: '/meal/set/food',
+                  params: { foodId: item.id, meal, mealItemId: item.id },
                 });
               }
             : undefined

@@ -79,6 +79,12 @@ export default function MealScreen() {
       accentColor={theme.colors.blue}
       listActionIcon="close-circle-outline"
       listActionOnPress={() => deleteMealItem(item.id)}
+      onPressItem={() =>
+        router.push({
+          pathname: '/meal/set/food',
+          params: { mealItemId: item.id, meal: mealString },
+        })
+      }
     />
   );
 

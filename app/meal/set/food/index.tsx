@@ -12,30 +12,46 @@ import { FOOD_TABLE, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, tbStore, useTinyBase }
 // Custom hook
 const useAddFoodToMeal = () => {
   const {
-    id: foodId,
     meal: mealString,
+    foodId,
+    mealItemId,
     product: productString,
   } = useLocalSearchParams<{
-    id: string;
     meal: string;
+    foodId?: string;
     product?: string;
+    mealItemId?: string;
   }>();
   const { useRow } = useTinyBase();
   const router = useRouter();
-
-  const [quantity, setQuantity] = React.useState(100);
-
-  const foodRow = useRow(FOOD_TABLE, foodId);
-  const product = React.useMemo(
-    () => (productString ? JSON.parse(productString) : null),
-    [productString]
-  );
-  const foodItem = React.useMemo(() => {
-    return foodRow && Object.keys(foodRow).length > 0 ? foodRow : product || {};
-  }, [foodRow, product]);
-
-  const [unit] = React.useState(foodItem.default_serving_unit || 'g');
+  // Required. Otherwise we can't do anything
   const meal: Meal = React.useMemo(() => JSON.parse(mealString), [mealString]);
+
+  // Fetch the existing meal item if mealItemId is provided
+  const mealItem = useRow(MEAL_ITEMS_TABLE, mealItemId ?? 'none');
+
+  // Use quantity from meal item, or default to 100
+  const [quantity, setQuantity] = React.useState(
+    mealItem?.quantity ? Number(mealItem.quantity) : 100
+  );
+
+  // Try to find food row by foodId, or by mealItem id
+  const foodRow = useRow(FOOD_TABLE, foodId ?? (mealItem?.id ? String(mealItem.id) : 'none'));
+
+  // Use found food row, or provided product object
+  const foodItem = React.useMemo(() => {
+    return foodRow && Object.keys(foodRow).length > 0
+      ? foodRow
+      : productString
+        ? JSON.parse(productString)
+        : null || {};
+  }, [foodRow, productString]);
+  const foodItemId = foodItem.id ?? foodItem.code;
+
+  console.log('foodItem', foodItem);
+
+  // Use unit from meal item, or use foodItem default serving unit, or default to 'g'
+  const [unit] = React.useState(mealItem?.unit || foodItem.default_serving_unit || 'g');
 
   const handleAdd = () => {
     // Set meal
@@ -45,9 +61,11 @@ const useAddFoodToMeal = () => {
       ...meal,
     });
     // Set food item
-    tbStore.setRow(FOOD_TABLE, foodId, foodItem);
-    // Set meal item
-    tbStore.setRow(MEAL_ITEMS_TABLE, `${meal.id}-${Crypto.randomUUID()}`, {
+    tbStore.setRow(FOOD_TABLE, foodItemId, foodItem);
+
+    // Update or create meal item
+    const mealItemRowId = mealItemId || `${meal.id}-${Crypto.randomUUID()}`;
+    tbStore.setRow(MEAL_ITEMS_TABLE, mealItemRowId, {
       ...foodItem,
       item_id: foodId,
       meal_id: meal.id,
@@ -55,6 +73,7 @@ const useAddFoodToMeal = () => {
       quantity,
       unit,
     });
+
     // Navigate to meal
     router.dismissAll();
     router.navigate({
@@ -65,12 +84,13 @@ const useAddFoodToMeal = () => {
 
   const handleEdit = () => router.push(`/food/${foodId}`);
 
+  const calculateMacro = (value: number) => Math.ceil((Number(value) * quantity) / 100);
   const macros = React.useMemo(() => {
     return {
-      carbohydrate: (Number(foodItem.carbohydrates) * quantity) / 100,
-      protein: (Number(foodItem.proteins) * quantity) / 100,
-      fat: (Number(foodItem.fat) * quantity) / 100,
-      calories: (Number(foodItem.energy_kcal) * quantity) / 100,
+      carbohydrate: calculateMacro(foodItem.carbohydrates),
+      protein: calculateMacro(foodItem.proteins),
+      fat: calculateMacro(foodItem.fat),
+      calories: calculateMacro(foodItem.energy_kcal),
     };
   }, [foodItem, quantity]);
 
@@ -82,19 +102,20 @@ const useAddFoodToMeal = () => {
     macros,
     handleAdd,
     handleEdit,
+    isEditing: !!mealItemId, // New property to indicate if we're editing
   };
 };
 
 export default function AddFoodToMeal() {
   const { styles, theme } = useStyles(stylesheet);
-  const { foodItem, quantity, setQuantity, unit, macros, handleAdd, handleEdit } =
+  const { foodItem, quantity, setQuantity, unit, macros, handleAdd, handleEdit, isEditing } =
     useAddFoodToMeal();
 
   return (
     <>
       <Stack.Screen
         options={{
-          title: '',
+          title: isEditing ? 'Edit Food' : 'Add Food',
           headerTintColor: theme.colors.foreground,
           headerShadowVisible: false,
           headerStyle: {
@@ -131,7 +152,7 @@ export default function AddFoodToMeal() {
         <View style={styles.buttonContainer}>
           <View style={styles.button}>
             <Button
-              title="Add"
+              title={isEditing ? 'Update' : 'Add'}
               onPress={handleAdd}
               style={{ backgroundColor: theme.colors.pink }}
               textStyle={{ color: theme.colors.foreground }}
@@ -139,7 +160,7 @@ export default function AddFoodToMeal() {
           </View>
           <View style={styles.button}>
             <Button
-              title="Edit"
+              title="Edit Food"
               onPress={handleEdit}
               type={ButtonType.Ghost}
               style={{ borderColor: theme.colors.pink }}
