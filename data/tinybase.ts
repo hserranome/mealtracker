@@ -7,8 +7,8 @@ import { tablesSchema, valuesSchema } from './schemas';
 export const DB_NAME = 'local.db';
 
 // Cast the whole module to be schema-based
-const TinyBase = TBUIReact as WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
-export const useTinyBase = () => TinyBase;
+const TinyBaseUIWithSchemas = TBUIReact as WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
+export const useTinyBase = () => TinyBaseUIWithSchemas;
 
 // Initialize store instance
 export const tbStore = createStore().setSchema(tablesSchema, valuesSchema);
