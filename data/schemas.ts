@@ -43,6 +43,7 @@ export type Food = z.infer<typeof FoodSchema>;
 // Meals
 const MealSchema = z.object({
   id: z.string().uuid(),
+  item_id: z.string().optional(),
   date: z.string().date(),
   name: z.string(),
   order: z.number().int().positive().optional(),

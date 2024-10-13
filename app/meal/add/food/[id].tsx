@@ -30,6 +30,7 @@ export default function AddFoodToMeal() {
     // Add meal item
     tbStore.setRow(MEAL_ITEMS_TABLE, `${meal.id}-${Crypto.randomUUID()}`, {
       ...foodItem,
+      item_id: id,
       meal_id: meal.id,
       type: 'food',
       quantity,
