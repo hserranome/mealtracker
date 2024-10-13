@@ -37,7 +37,7 @@ export const ListItem: React.FC<ListItemProps> = ({
         <TouchableOpacity
           style={styles.editContainer}
           disabled={!onPressItem}
-          onPress={onPressItem ? () => onPressItem(item) : undefined}
+          onPress={() => onPressItem?.(item)}
           hitSlop={30}>
           <Ionicons name="pencil-outline" size={12} color={theme.colors.base800} />
           <Text style={styles.listItemWeight}>{`${item.mainValue} ${item.unit}`}</Text>
