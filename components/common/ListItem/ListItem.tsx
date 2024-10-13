@@ -6,9 +6,10 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 export type ListItemType = {
   id: string;
   name: string;
-  brands?: string;
-  calories: number;
-  weight: number;
+  subtitle?: string;
+  mainValue: number;
+  secondaryValue?: number;
+  unit: string;
 };
 
 type ListItemProps = {
@@ -32,17 +33,14 @@ export const ListItem: React.FC<ListItemProps> = ({
     <View style={styles.listItem}>
       <View>
         <Text style={styles.listItemName}>{item.name}</Text>
-        <Text
-          style={
-            styles.listItemDetails
-          }>{`${item.brands ? item.brands + ' - ' : ''}${item.calories} kcal`}</Text>
+        {item.subtitle && <Text style={styles.listItemDetails}>{item.subtitle}</Text>}
         <TouchableOpacity
           style={styles.editContainer}
           disabled={!onPressItem}
           onPress={onPressItem ? () => onPressItem(item) : undefined}
           hitSlop={30}>
           <Ionicons name="pencil-outline" size={12} color={theme.colors.base800} />
-          <Text style={styles.listItemWeight}>{`${item.weight}g`}</Text>
+          <Text style={styles.listItemWeight}>{`${item.mainValue} ${item.unit}`}</Text>
         </TouchableOpacity>
       </View>
 

@@ -14,7 +14,14 @@ const SearchAllScreen = () => {
   const recentMealItems = useTable(MEAL_ITEMS_TABLE);
 
   const listItems: ListItemType[] = useMemo(() => {
-    return Object.entries(recentMealItems ?? {}).map(([id, item]) => ({ id, ...item }));
+    return Object.values(recentMealItems ?? {}).map((item) => ({
+      id: String(item.id),
+      name: String(item.name),
+      subtitle: item.brands ? String(item.brands) : undefined,
+      mainValue: Number(item.energy_kcal),
+      secondaryValue: Number(item.quantity),
+      unit: 'kcal',
+    }));
   }, [recentMealItems]);
 
   console.log('listItems', listItems);
@@ -55,6 +62,24 @@ const SearchAllScreen = () => {
         accentColor={theme.colors.blue}
         showSearchMore
         searchMoreLabel="Search more in library"
+        listActionIcon={meal ? 'add-circle-outline' : undefined}
+        listActionOnPress={
+          meal
+            ? (item) => {
+                console.log('item', item);
+                router.push({
+                  pathname: '/meal/add/food/[id]',
+                  params: { meal, id: item.id },
+                });
+              }
+            : undefined
+        }
+        onPressItem={(item) => {
+          router.push({
+            pathname: '/food/[id]',
+            params: { id: item.id },
+          });
+        }}
         onSearchMore={() =>
           router.push({
             pathname: '/search/library',

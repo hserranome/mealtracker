@@ -20,9 +20,10 @@ const SearchAllScreen = () => {
         results.map((item) => ({
           id: item.id,
           name: item.name,
-          brands: item.brands,
-          calories: item.energy_kcal,
-          weight: item.default_serving_size,
+          subtitle: item.brands,
+          mainValue: item.energy_kcal,
+          secondaryValue: item.default_serving_size,
+          unit: 'kcal',
         }))
       );
     } catch (error) {

@@ -19,9 +19,10 @@ const FoodScreen = () => {
           return {
             id,
             name: String(item.name),
-            brands: item.brands ? String(item.brands) : undefined,
-            calories: Number(item.energy_kcal),
-            weight: Number(item.default_serving_size),
+            subtitle: item.brands ? String(item.brands) : undefined,
+            mainValue: Number(item.energy_kcal),
+            secondaryValue: Number(item.default_serving_size),
+            unit: 'kcal',
           };
         })
         .sort((a, b) => a.name.localeCompare(b.name)),

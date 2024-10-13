@@ -64,9 +64,10 @@ export default function MealScreen() {
         .map(([id, item]) => ({
           id,
           name: String(item.name),
-          brands: item?.brands ? String(item.brands) : undefined,
-          calories: Number(item.energy_kcal),
-          weight: Number(item.quantity),
+          subtitle: item?.brands ? String(item.brands) : undefined,
+          mainValue: Number(item.energy_kcal),
+          secondaryValue: Number(item.quantity),
+          unit: 'kcal',
         }))
         .filter((item) => item.name),
     [mealItems]
