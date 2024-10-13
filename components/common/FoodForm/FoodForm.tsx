@@ -123,9 +123,9 @@ export const FoodForm: React.FC<FoodFormProps> = ({
               onSubmitEditing={() => {
                 const nextField = nutritionFields[index + 1];
                 if (nextField) form.setFocus(nextField.name);
-                else submit();
               }}
               returnKeyType={index === nutritionFields.length - 1 ? 'done' : 'next'}
+              blurOnSubmit={index === nutritionFields.length - 1}
             />
           ))}
           <View style={styles.button}>
@@ -156,6 +156,7 @@ const commonProps = {
   expand: false,
   textAlign: 'right' as const,
   returnKeyType: 'next' as const,
+  blurOnSubmit: false,
 };
 
 const commonNumericProps = {
