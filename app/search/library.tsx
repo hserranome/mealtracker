@@ -1,9 +1,9 @@
-import { Stack } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import React, { ComponentProps, useCallback, useState } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
 import { SearchScreen } from '~/components/common/SearchScreen';
-import { searchProductBySearchTerm } from '~/utils/api';
+import { fetchProductByBarcode, searchProductBySearchTerm } from '~/utils/api';
 
 const SearchAllScreen = () => {
   const { theme } = useStyles();
@@ -11,6 +11,7 @@ const SearchAllScreen = () => {
     ComponentProps<typeof SearchScreen>['listItems']
   >([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { meal } = useLocalSearchParams<{ meal?: string }>();
 
   const handleCustomSearch = useCallback(async (query: string) => {
     try {
@@ -49,6 +50,16 @@ const SearchAllScreen = () => {
         accentColor={theme.colors.blue}
         onCustomSearch={handleCustomSearch}
         isLoading={isLoading}
+        listActionIcon="add-circle-outline"
+        listActionOnPress={async (item) => {
+          setIsLoading(true);
+          const product = await fetchProductByBarcode(item.id);
+          setIsLoading(false);
+          router.push({
+            pathname: '/meal/set/food',
+            params: { foodId: product.code, meal, product: JSON.stringify(product) },
+          });
+        }}
       />
     </>
   );
