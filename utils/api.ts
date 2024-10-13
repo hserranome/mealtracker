@@ -9,24 +9,25 @@ export const fetchProductByBarcode = async (barcode: string): Promise<Food> => {
     }
 
     const data = await response.json();
+    const item = data.product ?? {};
 
     return {
-      id: data.product.id,
-      name: data.product.product_name_es || data.product.product_name,
-      brands: data.product.brands,
-      code: data.product.code,
-      image_url: data.product.image_url,
-      default_serving_size: parseFloat(data.product.product_quantity) || 100,
+      id: item.id,
+      name: item.product_name_es || item.product_name || item.ecoscore_data.agribalyse.name_en,
+      brands: item.brands,
+      code: item.code,
+      image_url: item.image_url,
+      default_serving_size: parseFloat(item.product_quantity) || 100,
       default_serving_unit: 'g',
-      energy_kcal: data.product.nutriments['energy-kcal_100g'],
-      fat: data.product.nutriments.fat_100g,
-      saturated_fat: data.product.nutriments['saturated-fat_100g'],
-      carbohydrates: data.product.nutriments.carbohydrates_100g,
-      sugars: data.product.nutriments.sugars_100g,
-      proteins: data.product.nutriments.proteins_100g,
-      fiber: data.product.nutriments.fiber_100g,
-      salt: data.product.nutriments.salt_100g,
-      sodium: data.product.nutriments.sodium_100g,
+      energy_kcal: item.nutriments['energy-kcal_100g'],
+      fat: item.nutriments.fat_100g,
+      saturated_fat: item.nutriments['saturated-fat_100g'],
+      carbohydrates: item.nutriments.carbohydrates_100g,
+      sugars: item.nutriments.sugars_100g,
+      proteins: item.nutriments.proteins_100g,
+      fiber: item.nutriments.fiber_100g,
+      salt: item.nutriments.salt_100g,
+      sodium: item.nutriments.sodium_100g,
       deleted: false,
     };
   } catch (error) {
