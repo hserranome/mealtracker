@@ -1,6 +1,6 @@
 import * as Crypto from 'expo-crypto';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -9,107 +9,16 @@ import { MacrosRow } from '~/components/common/MacrosRow/MacrosRow';
 import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
 import { FOOD_TABLE, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, tbStore, useTinyBase } from '~/data';
 
-// Custom hook
-const useAddFoodToMeal = () => {
-  const {
-    meal: mealString,
-    foodId,
-    mealItemId,
-    product: productString,
-  } = useLocalSearchParams<{
-    meal: string;
-    foodId?: string;
-    product?: string;
-    mealItemId?: string;
-  }>();
-  const { useRow } = useTinyBase();
-  const router = useRouter();
-  // Required. Otherwise we can't do anything
-  const meal: Meal = React.useMemo(() => JSON.parse(mealString), [mealString]);
-
-  // Fetch the existing meal item if mealItemId is provided
-  const mealItem = useRow(MEAL_ITEMS_TABLE, mealItemId ?? 'none');
-
-  // Use quantity from meal item, or default to 100
-  const [quantity, setQuantity] = React.useState(
-    mealItem?.quantity ? Number(mealItem.quantity) : 100
-  );
-
-  // Try to find food row by foodId, or by mealItem id
-  const foodRow = useRow(FOOD_TABLE, foodId ?? (mealItem?.id ? String(mealItem.id) : 'none'));
-
-  // Use found food row, or provided product object
-  const foodItem = React.useMemo(() => {
-    return foodRow && Object.keys(foodRow).length > 0
-      ? foodRow
-      : productString
-        ? JSON.parse(productString)
-        : null || {};
-  }, [foodRow, productString]);
-  const foodItemId = foodItem.id ?? foodItem.code;
-
-  console.log('foodItem', foodItem);
-
-  // Use unit from meal item, or use foodItem default serving unit, or default to 'g'
-  const [unit] = React.useState(mealItem?.unit || foodItem.default_serving_unit || 'g');
-
-  const handleAdd = () => {
-    // Set meal
-    const currentMeal = tbStore.getRow(MEALS_TABLE, meal.id);
-    tbStore.setRow(MEALS_TABLE, meal.id, {
-      ...currentMeal,
-      ...meal,
-    });
-    // Set food item
-    tbStore.setRow(FOOD_TABLE, foodItemId, foodItem);
-
-    // Update or create meal item
-    const mealItemRowId = mealItemId || `${meal.id}-${Crypto.randomUUID()}`;
-    tbStore.setRow(MEAL_ITEMS_TABLE, mealItemRowId, {
-      ...foodItem,
-      item_id: foodId,
-      meal_id: meal.id,
-      type: 'food',
-      quantity,
-      unit,
-    });
-
-    // Navigate to meal
-    router.dismissAll();
-    router.navigate({
-      pathname: '/meal',
-      params: meal,
-    });
-  };
-
-  const handleEdit = () => router.push(`/food/${foodId}`);
-
-  const calculateMacro = (value: number) => Math.ceil((Number(value) * quantity) / 100);
-  const macros = React.useMemo(() => {
-    return {
-      carbohydrate: calculateMacro(foodItem.carbohydrates),
-      protein: calculateMacro(foodItem.proteins),
-      fat: calculateMacro(foodItem.fat),
-      calories: calculateMacro(foodItem.energy_kcal),
-    };
-  }, [foodItem, quantity]);
-
-  return {
-    foodItem,
-    quantity,
-    setQuantity,
-    unit,
-    macros,
-    handleAdd,
-    handleEdit,
-    isEditing: !!mealItemId, // New property to indicate if we're editing
-  };
-};
-
 export default function AddFoodToMeal() {
   const { styles, theme } = useStyles(stylesheet);
-  const { foodItem, quantity, setQuantity, unit, macros, handleAdd, handleEdit, isEditing } =
-    useAddFoodToMeal();
+  const { foodItem, foodItemId, mealItem } = useFoodData();
+  const { quantity, setQuantity, unit } = useQuantityAndUnit(
+    mealItem?.quantity ? Number(mealItem.quantity) : 100,
+    mealItem?.unit || foodItem.default_serving_unit
+  );
+  const { handleAdd, handleEdit, isEditing } = useAddEditFood(foodItem, foodItemId, quantity, unit);
+
+  const macros = useQuantityMacros(foodItem, quantity);
 
   return (
     <>
@@ -174,6 +83,88 @@ export default function AddFoodToMeal() {
     </>
   );
 }
+
+// Hook to fetch and manage food data
+const useFoodData = () => {
+  const {
+    foodId,
+    mealItemId,
+    product: productString,
+  } = useLocalSearchParams<{
+    foodId?: string;
+    mealItemId?: string;
+    product?: string;
+    productId?: string;
+  }>();
+  const { useRow } = useTinyBase();
+
+  const mealItem = useRow(MEAL_ITEMS_TABLE, mealItemId ?? 'none');
+  const foodRow = useRow(FOOD_TABLE, foodId ?? (mealItem?.id ? String(mealItem.id) : 'none'));
+
+  const foodItem = useMemo(() => {
+    if (foodRow && Object.keys(foodRow).length > 0) return foodRow;
+    if (productString) return JSON.parse(productString);
+    return {};
+  }, [foodRow, productString]);
+
+  const foodItemId = foodItem.id ?? foodItem.code;
+
+  return { foodItem, foodItemId, mealItem };
+};
+
+const useQuantityAndUnit = (defaultQuantity: number, defaultUnit: string = 'g') => {
+  const [quantity, setQuantity] = React.useState(defaultQuantity);
+  const [unit, setUnit] = React.useState(defaultUnit);
+  return { quantity, setQuantity, unit, setUnit };
+};
+
+const useQuantityMacros = (
+  foodItem: { carbohydrates: number; proteins: number; fat: number; energy_kcal: number },
+  quantity: number
+) => {
+  const calculateMacro = (value: number) => Math.ceil((Number(value) * quantity) / 100);
+  return React.useMemo(
+    () => ({
+      carbohydrate: calculateMacro(foodItem.carbohydrates),
+      protein: calculateMacro(foodItem.proteins),
+      fat: calculateMacro(foodItem.fat),
+      calories: calculateMacro(foodItem.energy_kcal),
+    }),
+    [foodItem, quantity]
+  );
+};
+
+const useAddEditFood = (foodItem: any, foodItemId: string, quantity: number, unit: string) => {
+  const { meal: mealString, mealItemId } = useLocalSearchParams<{
+    meal: string;
+    mealItemId?: string;
+  }>();
+  const router = useRouter();
+  const meal: Meal = React.useMemo(() => JSON.parse(mealString), [mealString]);
+
+  const handleAdd = () => {
+    const currentMeal = tbStore.getRow(MEALS_TABLE, meal.id);
+    tbStore.setRow(MEALS_TABLE, meal.id, { ...currentMeal, ...meal });
+    tbStore.setRow(FOOD_TABLE, foodItemId, foodItem);
+
+    const mealItemRowId = mealItemId || `${meal.id}-${Crypto.randomUUID()}`;
+    tbStore.setRow(MEAL_ITEMS_TABLE, mealItemRowId, {
+      ...foodItem,
+      item_id: foodItemId,
+      meal_id: meal.id,
+      type: 'food',
+      quantity,
+      unit,
+    });
+
+    router.dismissAll();
+    router.navigate({ pathname: '/meal', params: meal });
+  };
+
+  const handleEdit = () => router.push(`/food/${foodItemId}`);
+
+  return { handleAdd, handleEdit, isEditing: !!mealItemId };
+};
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
