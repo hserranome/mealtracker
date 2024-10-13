@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router/stack';
 import { FormProvider, useForm } from 'react-hook-form';
+import { KeyboardAvoidingView } from 'react-native';
 
 import { Food } from '~/data';
 
@@ -14,8 +15,10 @@ export default function Layout() {
   });
 
   return (
-    <FormProvider {...methods}>
-      <Stack />
-    </FormProvider>
+    <KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
+      <FormProvider {...methods}>
+        <Stack />
+      </FormProvider>
+    </KeyboardAvoidingView>
   );
 }
