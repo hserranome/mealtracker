@@ -48,7 +48,7 @@ export const TextInput = ({
           rules={rules}
           render={({ field: { onChange, value, ...field }, fieldState: { error } }) => (
             <InputContainer
-              name={name}
+              key={name}
               label={label}
               direction={direction}
               labelStyle={labelStyle}
@@ -65,7 +65,7 @@ export const TextInput = ({
           )}
         />
       ) : (
-        <InputContainer name={name || ''} label={label} direction={direction}>
+        <InputContainer label={label} direction={direction}>
           <BaseTextInput {...baseTextInputProps} variant={variant} type={type} />
         </InputContainer>
       )}

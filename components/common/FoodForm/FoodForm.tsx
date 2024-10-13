@@ -80,7 +80,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
                 type={ButtonType.Ghost}
               />
             </View>
-            <InputContainer name="serving_sizes" direction="horizontal" label="Serving sizes">
+            <InputContainer direction="horizontal" label="Serving sizes">
               <Button
                 title="Edit Serving Sizes"
                 icon="caret-forward"

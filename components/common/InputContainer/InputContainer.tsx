@@ -3,7 +3,6 @@ import { StyleProp, Text, TextStyle, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export type InputContainerProps = {
-  name: string;
   label?: string;
   error?: string;
   children: ReactNode;
@@ -12,7 +11,6 @@ export type InputContainerProps = {
 };
 
 export const InputContainer = ({
-  name,
   label,
   error,
   children,
@@ -24,7 +22,7 @@ export const InputContainer = ({
   });
 
   return (
-    <View key={name} style={styles.container}>
+    <View style={styles.container}>
       {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
       <View style={styles.children}>{children}</View>
       {error && <Text style={styles.errorContainer}>{error}</Text>}
