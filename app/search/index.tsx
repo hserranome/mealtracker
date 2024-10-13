@@ -71,7 +71,6 @@ const SearchAllScreen = () => {
         listActionOnPress={
           meal
             ? (item) => {
-                console.log('item', item);
                 router.push({
                   pathname: '/meal/add/food/[id]',
                   params: { meal, id: item.id },
