@@ -1,10 +1,11 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { createQueries } from 'tinybase/with-schemas';
 
 import { Button, ButtonType } from '~/components/common/Button';
+import { ListItem, ListItemType } from '~/components/common/ListItem';
 import { MacrosRow } from '~/components/common/MacrosRow';
 import { Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, useTinyBase } from '~/data';
 import { formatDate } from '~/utils/formatDate';
@@ -14,7 +15,7 @@ type MealScreenSearchParams = { name: string; date: string; id: string };
 export default function MealScreen() {
   const router = useRouter();
   const { styles, theme } = useStyles(stylesheet);
-  const { useCreateQueries, useStore, useRow } = useTinyBase();
+  const { useCreateQueries, useStore, useRow, useDelRowCallback } = useTinyBase();
   const params = useLocalSearchParams<MealScreenSearchParams>();
 
   const meal: Meal = useMemo(getMealObject(useRow(MEALS_TABLE, params.id) as Meal, params), [
@@ -30,6 +31,12 @@ export default function MealScreen() {
         MEAL_ITEMS_TABLE,
         ({ select, where }) => {
           select('name');
+          select('brands');
+          select('energy_kcal');
+          select('fat');
+          select('carbohydrates');
+          select('proteins');
+          select('quantity');
           where('meal_id', meal.id ?? 'none');
         }
       );
@@ -48,8 +55,34 @@ export default function MealScreen() {
     });
   };
 
+  const deleteMealItem = useDelRowCallback(MEAL_ITEMS_TABLE, (id: string) => id);
+
   const mealItems = queries?.getResultTable('mealItems');
+  const listItems: ListItemType[] = useMemo(
+    () =>
+      Object.entries(mealItems ?? {})
+        .map(([id, item]) => ({
+          id,
+          name: String(item.name),
+          brands: item?.brands ? String(item.brands) : undefined,
+          calories: Number(item.energy_kcal),
+          weight: Number(item.quantity),
+        }))
+        .filter((item) => item.name),
+    [mealItems]
+  );
+
+  const renderListItem = ({ item }: { item: ListItemType }) => (
+    <ListItem
+      item={item}
+      accentColor={theme.colors.blue}
+      listActionIcon="close-circle-outline"
+      listActionOnPress={() => deleteMealItem(item.id)}
+    />
+  );
+
   const jsDate = useMemo(() => new Date(meal.date), [meal.date]);
+
   return (
     <>
       <Stack.Screen
@@ -72,11 +105,12 @@ export default function MealScreen() {
         <View style={styles.macrosContainer}>
           <MacrosRow fat={0} calories={0} carbohydrate={0} protein={0} />
         </View>
-        <ScrollView style={styles.foodList}>
-          {Object.entries(mealItems ?? {}).map(([id, item]) => (
-            <Text key={id}>{item.name}</Text>
-          ))}
-        </ScrollView>
+        <FlatList
+          style={styles.foodList}
+          data={listItems}
+          renderItem={renderListItem}
+          keyExtractor={(item) => item.id}
+        />
         <View style={styles.buttonContainer}>
           <View style={styles.searchButtonContainer}>
             <Button title="Search for food" icon="search" onPress={handleAddFood} />
