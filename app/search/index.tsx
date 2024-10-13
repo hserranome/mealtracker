@@ -13,6 +13,7 @@ const SearchAllScreen = () => {
   const { useTable } = useTinyBase();
   const recentMealItems = useTable(MEAL_ITEMS_TABLE);
 
+  // TODO: we should recover the original food item from the meal_items id, but not use the one stored in meal_items
   const listItems: ListItemType[] = useMemo(() => {
     return Object.values(recentMealItems ?? {}).map((item) => ({
       id: String(item.id),
@@ -23,8 +24,6 @@ const SearchAllScreen = () => {
       unit: 'kcal',
     }));
   }, [recentMealItems]);
-
-  console.log('listItems', listItems);
 
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = [
     { icon: 'barcode-outline', label: 'Scan Barcode' },
