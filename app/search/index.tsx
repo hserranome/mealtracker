@@ -4,26 +4,32 @@ import { useStyles } from 'react-native-unistyles';
 
 import { ListItemType } from '~/components/common/ListItem';
 import { SearchScreen } from '~/components/common/SearchScreen';
-import { MEAL_ITEMS_TABLE, useTinyBase } from '~/data';
+import { FOOD_TABLE, MEAL_ITEMS_TABLE, useTinyBase } from '~/data';
 
 const SearchAllScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
   const { meal } = useLocalSearchParams<{ meal: string }>();
   const { useTable } = useTinyBase();
-  const recentMealItems = useTable(MEAL_ITEMS_TABLE);
 
-  // TODO: we should recover the original food item from the meal_items id, but not use the one stored in meal_items
+  const recentMealItems = useTable(MEAL_ITEMS_TABLE);
+  const foodItems = useTable(FOOD_TABLE);
+
+  const recentFoodItemsIds = Object.keys(foodItems).filter((id) =>
+    Object.values(recentMealItems).some((mealItem) => mealItem.id === id)
+  );
+  const recentFoodItems = recentFoodItemsIds.map((id) => foodItems[id]);
+
   const listItems: ListItemType[] = useMemo(() => {
-    return Object.values(recentMealItems ?? {}).map((item) => ({
+    return Object.values(recentFoodItems ?? {}).map((item) => ({
       id: String(item.id),
       name: String(item.name),
       subtitle: item.brands ? String(item.brands) : undefined,
       mainValue: Number(item.energy_kcal),
-      secondaryValue: Number(item.quantity),
-      unit: 'kcal',
+      secondaryValue: Number(item.default_serving_size),
+      unit: String(item.default_serving_unit),
     }));
-  }, [recentMealItems]);
+  }, [foodItems]);
 
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = [
     { icon: 'barcode-outline', label: 'Scan Barcode' },
