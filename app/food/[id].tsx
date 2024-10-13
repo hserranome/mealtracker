@@ -1,6 +1,6 @@
 import * as Crypto from 'expo-crypto';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { useStyles } from 'react-native-unistyles';
 
@@ -9,6 +9,7 @@ import { FOOD_TABLE, useTinyBase } from '~/data';
 import { capitalize } from '~/utils/capitalize';
 
 export default function FoodPage() {
+  const [initialized, setInitialized] = useState(false);
   const router = useRouter();
   const { theme } = useStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,10 +21,11 @@ export default function FoodPage() {
   const form = useFormContext<FoodFormData>();
 
   useEffect(() => {
-    if (!isNewFood && existingFood) {
+    if (!isNewFood && existingFood && !initialized) {
       form.reset(existingFood);
+      setInitialized(true);
     }
-  }, [isNewFood, existingFood, form]);
+  }, [isNewFood, existingFood, form, initialized]);
 
   const onSubmit = useSetRowCallback(
     FOOD_TABLE,
