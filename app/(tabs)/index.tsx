@@ -30,7 +30,10 @@ export default function Dairy() {
   const { styles } = useStyles(stylesheet);
 
   const handleGoToMeal = (name: string) => {
-    router.push({ pathname: '/meal', params: { name, date: date.toISOString() } });
+    router.push({
+      pathname: '/meal',
+      params: { name, date: date.toISOString().split('T')[0] },
+    });
   };
 
   return (
