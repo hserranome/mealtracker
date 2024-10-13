@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ComponentProps, forwardRef } from 'react';
-import { StyleProp, Text, View, ViewStyle } from 'react-native';
+import { StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -20,6 +20,7 @@ type ButtonProps = {
   debounceRate?: number;
   justify?: 'center' | 'left' | 'right';
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 } & ComponentProps<typeof TouchableNativeFeedback>;
 
 export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
@@ -32,6 +33,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
       iconPosition = 'left',
       onPress,
       style,
+      textStyle,
       debounceRate,
       justify = 'center',
       ...touchableProps
@@ -61,7 +63,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
           onPress={onPress ? onPress : undefined}>
           <View style={styles.buttonContent}>
             {iconPosition === 'left' && iconElement}
-            {title && <Text style={styles.buttonText}>{title}</Text>}
+            {title && <Text style={[styles.buttonText, textStyle]}>{title}</Text>}
             {iconPosition === 'right' && iconElement}
           </View>
         </TouchableNativeFeedback>
