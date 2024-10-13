@@ -10,7 +10,7 @@ import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
 import { FOOD_TABLE, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, tbStore, useTinyBase } from '~/data';
 
 // Custom hook
-function useAddFoodToMeal() {
+const useAddFoodToMeal = () => {
   const {
     id: foodId,
     meal: mealString,
@@ -83,7 +83,7 @@ function useAddFoodToMeal() {
     handleAdd,
     handleEdit,
   };
-}
+};
 
 export default function AddFoodToMeal() {
   const { styles, theme } = useStyles(stylesheet);
