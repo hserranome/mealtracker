@@ -1,7 +1,9 @@
+import { Ionicons } from '@expo/vector-icons';
 import * as Crypto from 'expo-crypto';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useFormContext } from 'react-hook-form';
+import { TouchableOpacity } from 'react-native';
 import { useStyles } from 'react-native-unistyles';
 
 import { FoodForm, FoodFormData } from '~/components/common/FoodForm';
@@ -13,7 +15,7 @@ export default function FoodPage() {
   const router = useRouter();
   const { theme } = useStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { useSetRowCallback, useRow } = useTinyBase();
+  const { useSetRowCallback, useRow, useDelRowCallback } = useTinyBase();
 
   const isNewFood = id === 'new';
   const existingFood = useRow(FOOD_TABLE, id);
@@ -43,6 +45,10 @@ export default function FoodPage() {
     []
   );
 
+  const handleDelete = useDelRowCallback(FOOD_TABLE, id, undefined, () => {
+    router.back();
+  });
+
   return (
     <FormProvider {...form}>
       <Stack.Screen
@@ -52,6 +58,13 @@ export default function FoodPage() {
           headerStyle: {
             backgroundColor: theme.colors.base900,
           },
+          headerRight: isNewFood
+            ? undefined
+            : () => (
+                <TouchableOpacity onPress={handleDelete}>
+                  <Ionicons name="trash-outline" size={24} color={theme.colors.foreground} />
+                </TouchableOpacity>
+              ),
         }}
       />
       <FoodForm form={form} onSubmit={onSubmit} submitButtonText={isNewFood ? 'Next' : 'Save'} />
