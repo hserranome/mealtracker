@@ -36,7 +36,13 @@ const FoodScreen = () => {
         label: 'Create new food',
         onPress: () => router.push('/food/new'),
       },
-      { icon: 'barcode-outline', label: 'Create from barcode' },
+      {
+        icon: 'barcode-outline',
+        label: 'Create from barcode',
+        onPress: () => {
+          // TODO: implement create from barcode
+        },
+      },
     ],
     []
   );
