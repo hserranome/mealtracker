@@ -29,8 +29,8 @@ export default function Dairy() {
 
   const { styles } = useStyles(stylesheet);
 
-  const handleGoToMeal = ({ mealName }: { mealName: string }) => {
-    router.push({ pathname: '/meal', params: { mealName, date: date.toISOString() } });
+  const handleGoToMeal = (name: string) => {
+    router.push({ pathname: '/meal', params: { name, date: date.toISOString() } });
   };
 
   return (
@@ -60,7 +60,7 @@ export default function Dairy() {
                 type={ButtonType.Ghost}
                 title="Add food"
                 icon="add-circle-outline"
-                onPress={() => handleGoToMeal({ mealName: name })}
+                onPress={() => handleGoToMeal(name)}
               />
             </View>
             <View style={styles.macros}>
