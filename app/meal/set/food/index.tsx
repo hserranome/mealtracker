@@ -161,7 +161,11 @@ const useAddEditFood = (foodItem: any, foodItemId: string, quantity: number, uni
     router.navigate({ pathname: '/meal', params: meal });
   };
 
-  const handleEdit = () => router.push(`/food/${foodItemId}`);
+  const handleEdit = () =>
+    router.push({
+      pathname: '/food/[id]',
+      params: { id: foodItemId, values: JSON.stringify(foodItem) },
+    });
 
   return { handleAdd, handleEdit, isEditing: !!mealItemId };
 };

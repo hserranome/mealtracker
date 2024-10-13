@@ -14,20 +14,21 @@ export default function FoodPage() {
   const [initialized, setInitialized] = useState(false);
   const router = useRouter();
   const { theme } = useStyles();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, values } = useLocalSearchParams<{ id: string; values?: string }>();
   const { useSetRowCallback, useRow, useDelRowCallback } = useTinyBase();
 
   const isNewFood = id === 'new';
-  const existingFood = useRow(FOOD_TABLE, id);
+  const rowFood = useRow(FOOD_TABLE, id);
+  const food = { ...rowFood, ...(values ? JSON.parse(values) : {}) };
 
   const form = useFormContext<FoodFormData>();
 
   useEffect(() => {
-    if (!isNewFood && existingFood && !initialized) {
-      form.reset(existingFood);
+    if (!initialized) {
+      form.reset(food);
       setInitialized(true);
     }
-  }, [isNewFood, existingFood, form, initialized]);
+  }, [food, form, initialized]);
 
   const onSubmit = useSetRowCallback(
     FOOD_TABLE,
