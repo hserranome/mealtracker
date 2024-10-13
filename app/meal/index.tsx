@@ -37,6 +37,7 @@ export default function MealScreen() {
           select('carbohydrates');
           select('proteins');
           select('quantity');
+          select('default_serving_unit');
           where('meal_id', meal.id ?? 'none');
         }
       );
@@ -64,10 +65,9 @@ export default function MealScreen() {
         .map(([id, item]) => ({
           id,
           name: String(item.name),
-          subtitle: item?.brands ? String(item.brands) : undefined,
-          mainValue: Number(item.energy_kcal),
-          secondaryValue: Number(item.quantity),
-          unit: 'kcal',
+          subtitle: `${item?.brands ? String(item.brands) : undefined} - ${(Number(item.energy_kcal) * Number(item.quantity)) / 100} kcal`,
+          mainValue: Number(item.quantity),
+          unit: String(item.default_serving_unit),
         }))
         .filter((item) => item.name),
     [mealItems]
