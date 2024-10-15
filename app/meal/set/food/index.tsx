@@ -1,3 +1,4 @@
+import { observer } from '@legendapp/state/react';
 import * as Crypto from 'expo-crypto';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
@@ -7,10 +8,20 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow/MacrosRow';
 import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
-import { FOOD_TABLE, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, tbStore, useTinyBase } from '~/data';
+import {
+  Food,
+  FOOD_TABLE,
+  foods$,
+  Meal,
+  MEAL_ITEMS_TABLE,
+  MEALS_TABLE,
+  tbStore,
+  useTinyBase,
+} from '~/data';
 
 export default function AddFoodToMeal() {
   const { styles, theme } = useStyles(stylesheet);
+
   const { foodItem, foodItemId, mealItem } = useFoodData();
   const { quantity, setQuantity, unit } = useQuantityAndUnit(
     mealItem?.quantity ? Number(mealItem.quantity) : 100,
@@ -99,17 +110,15 @@ const useFoodData = () => {
   const { useRow } = useTinyBase();
 
   const mealItem = useRow(MEAL_ITEMS_TABLE, mealItemId ?? 'none');
-  const foodRow = useRow(FOOD_TABLE, foodId ?? (mealItem?.id ? String(mealItem.id) : 'none'));
 
-  const foodItem = useMemo(() => {
-    if (foodRow && Object.keys(foodRow).length > 0) return foodRow;
-    if (productString) return JSON.parse(productString);
-    return {};
-  }, [foodRow, productString]);
+  const food: Food = {
+    ...foods$.getFood(foodId),
+    ...(productString ? JSON.parse(productString) : {}),
+  };
 
-  const foodItemId = foodItem.id ?? foodItem.code;
+  const foodItemId = food.id ?? food.code;
 
-  return { foodItem, foodItemId, mealItem };
+  return { food, foodItemId, mealItem };
 };
 
 const useQuantityAndUnit = (defaultQuantity: number, defaultUnit: string = 'g') => {

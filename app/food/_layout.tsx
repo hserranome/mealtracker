@@ -9,16 +9,14 @@ export type FoodFormData = Food;
 export default function Layout() {
   const methods = useForm<FoodFormData>({
     defaultValues: {
-      default_serving_size: 100,
-      default_serving_unit: 'g',
+      base_serving_size: 100,
+      base_serving_unit: 'g',
     },
   });
 
   return (
-    <KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
-      <FormProvider {...methods}>
-        <Stack />
-      </FormProvider>
-    </KeyboardAvoidingView>
+    <FormProvider {...methods}>
+      <Stack />
+    </FormProvider>
   );
 }

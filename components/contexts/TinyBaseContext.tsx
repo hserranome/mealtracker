@@ -1,11 +1,10 @@
 // TinyBaseProvider.js
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { useRouter } from 'expo-router';
 import { openDatabaseSync } from 'expo-sqlite';
 import React, { PropsWithChildren } from 'react';
 import { createExpoSqlitePersister } from 'tinybase/persisters/persister-expo-sqlite/with-schemas';
 
-import { CALORIES_SCHEDULE_TABLE, DB_NAME, tbStore, useTinyBase } from '~/data';
+import { DB_NAME, tbStore, useTinyBase } from '~/data';
 
 const useAndStartPersister = (store: typeof tbStore, callback: () => void) => {
   const TinyBase = useTinyBase();
@@ -27,19 +26,11 @@ const useAndStartPersister = (store: typeof tbStore, callback: () => void) => {
 };
 
 export const TinyBaseProvider = ({ children }: PropsWithChildren) => {
-  const router = useRouter();
   const TinyBase = useTinyBase();
   const store = TinyBase.useCreateStore(() => tbStore);
   useDrizzleStudio(openDatabaseSync(DB_NAME, { enableChangeListener: true }) as any); // Does this still work?
 
-  const checkHasNecessaryData = () => {
-    const caloriesSchedule = store.getTable(CALORIES_SCHEDULE_TABLE);
-    const missingDays = Object.keys(caloriesSchedule).length < 7;
-    if (missingDays) return router.replace('/welcome');
-    return router.replace('/(tabs)');
-  };
-
-  useAndStartPersister(store, checkHasNecessaryData);
+  useAndStartPersister(store, () => {});
 
   return <TinyBase.Provider store={store}>{children}</TinyBase.Provider>;
 };

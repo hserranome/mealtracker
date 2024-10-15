@@ -1,32 +1,41 @@
+import { observable } from '@legendapp/state';
+import { ObservablePersistMMKV } from '@legendapp/state/persist-plugins/mmkv';
+import { syncObservable } from '@legendapp/state/sync';
 import { z } from 'zod';
 
 import { zodToSimpleSchema } from '~/utils/zodToSimpleSchema';
 
-// CaloriesSchedule
-const CaloriesScheduleSchema = z.object({
-  calories: z.number(),
+// Calories schedule
+// // Types
+export type Days =
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday'
+  | 'sunday';
+export type CaloriesSchedule = Record<Days, number>;
+// // Observable
+export const caloriesSchedule$ = observable({
+  schedule: {} as CaloriesSchedule,
+  setSchedule: (newSchedule: CaloriesSchedule) => caloriesSchedule$.schedule.set(newSchedule),
+  getDateCalories: (date: Date) => {
+    const day = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase() as Days;
+    return caloriesSchedule$.schedule.get()[day];
+  },
 });
-export const CALORIES_SCHEDULE_TABLE = 'calories_schedule';
-export type CaloriesSchedule = z.infer<typeof CaloriesScheduleSchema>;
-
-// Weight
-const WeightEntrySchema = z.object({
-  date: z.string().date(),
-  weight: z.number(),
+// // Persist
+syncObservable(caloriesSchedule$, {
+  persist: {
+    name: 'caloriesSchedule',
+    plugin: ObservablePersistMMKV,
+  },
 });
-export const WEIGHT_ENTRY_TABLE = 'weight_entry';
-export type WeightEntry = z.infer<typeof WeightEntrySchema>;
 
-// Food
-const FoodSchema = z.object({
-  id: z.string(), // can be barcode or generated uuid
-  name: z.string(),
-  brands: z.string(),
-  code: z.string(),
-  image_url: z.string().url(),
-  deleted: z.boolean(),
-  default_serving_size: z.number(),
-  default_serving_unit: z.string(),
+// Nutriments
+const NutrimentsSchema = z.object({
+  nutriment_basis: z.string(), // per 100g, 100ml, etc.
   energy_kcal: z.number(),
   fat: z.number(),
   saturated_fat: z.number(),
@@ -37,15 +46,71 @@ const FoodSchema = z.object({
   salt: z.number().optional(),
   sodium: z.number().optional(),
 });
-export const FOOD_TABLE = 'food';
+export type Nutriments = z.infer<typeof NutrimentsSchema>;
+
+// Serving Size
+const ServingSizeSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  quantity: z.number(),
+});
+export type ServingSize = z.infer<typeof ServingSizeSchema>;
+
+// Food
+// // Types
+const FoodSchema = z.object({
+  id: z.string(), // can be barcode or generated uuid
+  name: z.string(),
+  brands: z.string().optional(),
+  code: z.string(),
+  image_url: z.string().url(),
+  deleted: z.boolean(),
+  base_nutriments: NutrimentsSchema,
+  base_serving_size: z.number(),
+  base_serving_unit: z.string(),
+  extra_serving_sizes: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      quantity: z.number(),
+    })
+  ),
+});
 export type Food = z.infer<typeof FoodSchema>;
+// // Observable
+export const foods$ = observable({
+  foods: {} as Record<string, Food>,
+  setFood: (foodId: string, newFood: Food) => foods$.foods.assign({ [foodId]: newFood }),
+  getFood: (foodId?: string) => foods$.foods.get()[foodId ?? ''],
+  deleteFood: (foodId: string) => foods$.foods[foodId].delete(),
+});
+// // Persist
+syncObservable(foods$, {
+  persist: {
+    name: 'foods',
+    plugin: ObservablePersistMMKV,
+  },
+});
+// // Tinybase - TODO: remove
+export const FOOD_TABLE = 'food';
 
 // Meals
 const MealSchema = z.object({
   id: z.string().uuid(),
-  date: z.string().date(),
+  date: z.string().date(), // YYYY-MM-DD
   name: z.string(),
   order: z.number().int().positive().optional(),
+  items: z.array(
+    z.object({
+      quantity: z.number(),
+      unit: z.string(),
+      item: z.object({ type: z.literal('food') }).merge(FoodSchema),
+      // TODO: RecipeSchema
+      // .or(z.object({ type: z.literal('recipe') }).merge(RecipeSchema))
+      // TODO: QuickAddSchema
+      // .or(z.object({ type: z.literal('quick_add') }).merge(QuickAddSchema))
+    })
+  ),
 });
 export const MEALS_TABLE = 'meals';
 export type Meal = z.infer<typeof MealSchema>;
@@ -65,20 +130,8 @@ export type MealItem = z.infer<typeof MealItemSchema>;
 
 // TinyBase schemas
 export const tablesSchema = {
-  [CALORIES_SCHEDULE_TABLE]: zodToSimpleSchema(CaloriesScheduleSchema),
   [FOOD_TABLE]: zodToSimpleSchema(FoodSchema),
-  [WEIGHT_ENTRY_TABLE]: zodToSimpleSchema(WeightEntrySchema),
   [MEALS_TABLE]: zodToSimpleSchema(MealSchema),
   [MEAL_ITEMS_TABLE]: zodToSimpleSchema(MealItemSchema),
 } as const;
 export const valuesSchema = {} as const;
-
-// const FoodServingSize = z.object({
-//   id: z.number(),
-//   food_id: z.number(),
-//   name: z.string(),
-//   serving_size: z.string(),
-//   unit: z.string(),
-// });
-// export const FOOD_SERVING_SIZES = 'food_serving_sizes';
-// setRelationships(store);

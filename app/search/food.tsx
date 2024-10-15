@@ -1,33 +1,29 @@
+import { observer } from '@legendapp/state/react';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { ComponentProps, useMemo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
 import { SearchScreen } from '~/components/common/SearchScreen';
-import { FOOD_TABLE, useTinyBase } from '~/data';
+import { foods$ } from '~/data';
 
-const FoodScreen = () => {
+const FoodScreen = observer(() => {
   const { theme } = useStyles();
   const router = useRouter();
-  const { useTable } = useTinyBase();
   const { meal } = useLocalSearchParams<{ meal: string }>();
 
-  const foodItems = useTable(FOOD_TABLE);
-  const listItems = useMemo(
-    () =>
-      Object.entries(foodItems)
-        .map(([id, item]) => {
-          return {
-            id,
-            name: String(item.name),
-            subtitle: item.brands ? String(item.brands) : undefined,
-            mainValue: Number(item.energy_kcal),
-            secondaryValue: Number(item.default_serving_size),
-            unit: 'kcal',
-          };
-        })
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    [foodItems]
-  );
+  const foods = foods$.foods.get();
+  const listItems = Object.entries(foods)
+    .map(([id, item]) => {
+      return {
+        id,
+        name: String(item.name),
+        subtitle: item.brands ? String(item.brands) : undefined,
+        mainValue: Number(item.base_nutriments.energy_kcal),
+        secondaryValue: Number(item.base_serving_size),
+        unit: 'kcal',
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = useMemo(
     () => [
@@ -83,6 +79,6 @@ const FoodScreen = () => {
       />
     </>
   );
-};
+});
 
 export default FoodScreen;

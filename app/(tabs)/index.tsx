@@ -1,28 +1,119 @@
+import { observer } from '@legendapp/state/react';
 import { useRouter } from 'expo-router';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useTable } from 'tinybase/ui-react';
+import { createQueries } from 'tinybase/with-schemas';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow';
-import { CALORIES_SCHEDULE_TABLE } from '~/data';
+import { caloriesSchedule$, Days, MEAL_ITEMS_TABLE, MEALS_TABLE, useTinyBase } from '~/data';
 import { getDateName } from '~/utils/getDateName';
 
 const defaultMeals = ['Breakfast', 'Lunch', 'Dinner'];
 
-export default function Dairy() {
-  const [date, setDate] = useState(new Date());
-  const router = useRouter();
-  const caloriesSchedule = useTable(CALORIES_SCHEDULE_TABLE);
+const useDateMeals = (date: Date) => {
+  const dateString = date.toISOString().split('T')[0];
+  const { useCreateQueries, useStore, useResultTable } = useTinyBase();
 
-  const currentDayCalories = useMemo(() => {
-    const selectedDay = new Date(date)
-      .toLocaleDateString('en-US', { weekday: 'long' })
-      .toLowerCase();
-    const day = caloriesSchedule[selectedDay];
-    return day ? day.calories : 'N/A';
-  }, [caloriesSchedule, date]);
+  const queries = useCreateQueries(
+    useStore(),
+    (store) => {
+      return createQueries(store)
+        .setQueryDefinition('dateMeals', MEALS_TABLE, ({ select, where }) => {
+          select('id');
+          select('name');
+          select('order');
+          select('date');
+          where('date', dateString);
+        })
+        .setQueryDefinition('dateItems', MEAL_ITEMS_TABLE, ({ select, where, join }) => {
+          select('name');
+          select('brands');
+          select('energy_kcal');
+          select('fat');
+          select('carbohydrates');
+          select('proteins');
+          select('meal_id');
+          join(MEALS_TABLE, 'meal_id').as('meal');
+          where('meal', 'date', dateString);
+        });
+    },
+    [date]
+  );
+
+  const mealsTable = useResultTable('dateMeals', queries);
+  const meals = Object.keys(mealsTable).map((key) => mealsTable[key]);
+
+  const items = useResultTable('dateItems', queries);
+
+  const mealWithItems = meals.map((meal) => {
+    const mealItems = Object.values(items).filter((item) => item.meal_id === meal.id);
+    // TODO: calculate macros
+    return {
+      ...meal,
+      macros: {
+        calories: 0,
+        fat: 0,
+        carbohydrates: 0,
+        protein: 0,
+      },
+      items: mealItems,
+    };
+  });
+
+  console.log(
+    'items',
+    JSON.stringify(
+      {
+        mealWithItems,
+      },
+      null,
+      2
+    )
+  );
+
+  /* TODO: we need to generate the following object:
+    result = {
+      macros: {
+        carbohydrate: number;
+        fat: number;
+        protein: number;
+        calories: number;
+      }, // total amount of macros of all items of all meals in this date
+      meals: {
+        [mealName: string]: {
+          macros: {
+            carbohydrate: number;
+            fat: number;
+            protein: number;
+            calories: number;
+          }; // total amount of macros of all items of this meal
+          items: {
+            name: string;
+            brands: string;
+            energy_kcal: number;
+            fat: number;
+            carbohydrates: number;
+            proteins: number;
+            quantity: number;
+            unit: string;
+          }[];
+      }
+      }
+    }
+  */
+
+  return {};
+};
+
+export default observer(function Dairy() {
+  const [date, setDate] = useState(new Date());
+  const dateMeals = useDateMeals(date);
+  const router = useRouter();
+  const caloriesSchedule = caloriesSchedule$.schedule.get();
+  const dayOfWeek = new Date(date).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  const calories = caloriesSchedule[dayOfWeek as Days] ?? 'N/A';
 
   const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
   const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
@@ -49,7 +140,7 @@ export default function Dairy() {
         />
       </View>
       <View style={styles.calorieInfo}>
-        <Text style={styles.calorieText}>{`N/A / ${currentDayCalories ?? 'N/A'} kcal`}</Text>
+        <Text style={styles.calorieText}>{`N/A / ${calories} kcal`}</Text>
       </View>
       {/* MEAL LIST GOES HERE */}
       {defaultMeals.map((name, index) => {
@@ -74,7 +165,7 @@ export default function Dairy() {
       })}
     </View>
   );
-}
+});
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {

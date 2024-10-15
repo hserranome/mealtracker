@@ -20,9 +20,9 @@ export const BaseTextInput = forwardRef<RNTextInput, BaseTextInputProps>(
       <View style={styles.container}>
         <RNTextInput
           placeholderTextColor={theme.colors.base600}
-          style={[styles.input, { textAlign }, expand && { flex: 1 }]}
           keyboardType={keyboardType}
           {...textInputProps}
+          style={[styles.input, { textAlign }, expand && { flex: 1 }, textInputProps.style]}
           ref={ref}
         />
         {suffix && <Text style={styles.suffix}>{suffix}</Text>}
@@ -40,7 +40,7 @@ const baseInputStyleSheet = createStyleSheet((theme) => ({
     padding: theme.margins[10],
     borderRadius: theme.radius[5],
     backgroundColor: theme.colors.background,
-    color: theme.colors.base800,
+    color: theme.colors.foreground,
     variants: {
       variant: {
         default: {

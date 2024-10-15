@@ -30,7 +30,7 @@ export const TextInput = ({
   const formContext = useFormContext();
   const control = formContext ? formContext.control : undefined;
 
-  const handleChange = (onChange: (value: any) => void) => (value: string) => {
+  const handleChange = (onChange: (value: string | number | null) => void) => (value: string) => {
     if (type === 'number') {
       const numValue = parseFloat(value);
       onChange(isNaN(numValue) ? null : numValue);
