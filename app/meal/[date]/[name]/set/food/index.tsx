@@ -11,15 +11,13 @@ import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow/MacrosRow';
 import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
 import { dairy$, library$, MealItem } from '~/data';
+import { calculateNutrientValue } from '~/utils/calculateProportionalNutrientValue';
 
 type AddFoodToMealParams = MealScreenParams & {
   foodId?: string;
   mealItemId?: string;
   defaultValues?: string;
 };
-
-const calculateQuantityMacro = (macroValue: number | undefined, quantity: number) =>
-  macroValue ? Math.ceil((Number(macroValue) * quantity) / 100) : 0;
 
 export default observer(function AddFoodToMeal() {
   const { styles, theme } = useStyles(stylesheet);
@@ -41,10 +39,10 @@ export default observer(function AddFoodToMeal() {
   const [unit] = useState(mealItem?.unit ?? 'g');
 
   const macros = {
-    carbohydrate: calculateQuantityMacro(food.base_nutriments?.carbohydrates, quantity),
-    protein: calculateQuantityMacro(food.base_nutriments?.proteins, quantity),
-    fat: calculateQuantityMacro(food.base_nutriments?.fat, quantity),
-    calories: calculateQuantityMacro(food.base_nutriments?.energy_kcal, quantity),
+    carbohydrate: calculateNutrientValue(food.base_nutriments?.carbohydrates, quantity),
+    protein: calculateNutrientValue(food.base_nutriments?.proteins, quantity),
+    fat: calculateNutrientValue(food.base_nutriments?.fat, quantity),
+    calories: calculateNutrientValue(food.base_nutriments?.energy_kcal, quantity),
   };
 
   // Actions
