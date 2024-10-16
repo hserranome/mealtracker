@@ -3,7 +3,11 @@ import { ObservablePersistMMKV } from '@legendapp/state/persist-plugins/mmkv';
 import { syncObservable } from '@legendapp/state/sync';
 import { z } from 'zod';
 
-import { calculateNutrientValue } from '~/utils/calculateProportionalNutrientValue';
+import {
+  calculateNutrientValue,
+  calculateNutriments,
+} from '~/utils/calculateProportionalNutrientValue';
+import { sumNutrimentsRecords } from '~/utils/sumNutrimentsRecords';
 
 // // Calories schedule
 // Types
@@ -88,6 +92,7 @@ syncObservable(library$, {
 const MealItemSchema = z.object({
   quantity: z.number(),
   unit: z.string(),
+  nutriments: NutrimentsSchema.optional(),
   item: z.object({ type: z.literal('food') }).merge(FoodSchema),
   // TODO: RecipeSchema
   // .or(z.object({ type: z.literal('recipe') }).merge(RecipeSchema))
@@ -106,6 +111,7 @@ const MealSchema = z.object({
 export type Meal = z.infer<typeof MealSchema>;
 const DairyEntrySchema = z.object({
   weight: z.number(),
+  nutriments: NutrimentsSchema,
   meals: z.record(MealSchema),
 });
 export type DairyEntry = z.infer<typeof DairyEntrySchema>;
@@ -113,35 +119,35 @@ export type DairyEntry = z.infer<typeof DairyEntrySchema>;
 export const dairy$ = observable({
   entries: {} as Record<string, DairyEntry>, // string is always an ISO date string YYYY-MM-DD
 
-  getEntry: (date?: string) => dairy$.entries.get()[date ?? ''],
+  deleteAllEntries: () => dairy$.entries.set({}),
+  getEntry: (date?: string) => dairy$.entries.get()[date ?? ''] ?? {},
 
   getDateMeal: (date: string, mealName: string) =>
     dairy$.entries[date].meals[mealName.toLowerCase()].get(),
 
-  generateMealNutriments: (date: string, mealName: string) => {
-    const meal = dairy$.getDateMeal(date, mealName.toLowerCase());
-    const nutriments: Nutriments = Object.values(meal.items).reduce(
-      (acc, item) => {
-        const baseNutriments = item.item.base_nutriments;
-        Object.keys(baseNutriments).forEach((key) => {
-          const nutrientKey = key as keyof Nutriments;
-          acc[nutrientKey] += calculateNutrientValue(baseNutriments[nutrientKey], item.quantity);
-        });
-        return acc;
+  generateEntryNutriments: (date: string) => {
+    const entry = dairy$.getEntry(date);
+    const entry$ = dairy$.entries[date];
+
+    const entryNutriments = Object.entries(entry.meals).reduce(
+      (accEntryNutriments, [mealName, meal]) => {
+        const meal$ = entry$.meals[mealName];
+
+        const mealNutriments = Object.entries(meal.items).reduce(
+          (accMealNutriments, [itemId, { item, quantity }]) => {
+            const foodNutriments = calculateNutriments(item?.base_nutriments, quantity);
+            meal$.items[itemId].nutriments.set(foodNutriments);
+            return sumNutrimentsRecords(accMealNutriments, foodNutriments);
+          },
+          {} as Nutriments
+        );
+        meal$.nutriments.set(mealNutriments);
+
+        return sumNutrimentsRecords(accEntryNutriments, mealNutriments);
       },
-      {
-        energy_kcal: 0,
-        fat: 0,
-        saturated_fat: 0,
-        carbohydrates: 0,
-        sugars: 0,
-        proteins: 0,
-        fiber: 0,
-        salt: 0,
-        sodium: 0,
-      }
+      {} as Nutriments
     );
-    dairy$.entries[date].meals[mealName.toLowerCase()].nutriments.set(nutriments);
+    entry$.nutriments.set(entryNutriments);
   },
 
   getMealItem: (date: string, mealName: string, mealItemId?: string): MealItem | undefined =>
@@ -156,12 +162,12 @@ export const dairy$ = observable({
     item: DairyEntry['meals'][number]['items'][number]
   ) => {
     dairy$.entries[date].meals[mealName.toLowerCase()].items.assign({ [itemId]: item });
-    dairy$.generateMealNutriments(date, mealName);
+    dairy$.generateEntryNutriments(date);
   },
 
   deleteMealItem: (date: string, mealName: string, mealItemId: string) => {
     dairy$.entries[date].meals[mealName.toLowerCase()].items[mealItemId].delete();
-    dairy$.generateMealNutriments(date, mealName);
+    dairy$.generateEntryNutriments(date);
   },
 });
 // Persist

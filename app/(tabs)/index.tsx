@@ -14,9 +14,12 @@ export default observer(function DairyScreen() {
   const [date, setDate] = useState(new Date());
   const dateString = date.toISOString().split('T')[0];
   const router = useRouter();
-  const caloriesSchedule = caloriesSchedule$.schedule.get();
+
   const dayOfWeek = new Date(date).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-  const calories = caloriesSchedule[dayOfWeek as Days] ?? 'N/A';
+
+  const caloriesSchedule = caloriesSchedule$.schedule.get();
+  const estimatedCalories = caloriesSchedule[dayOfWeek as Days] ?? 'N/A';
+  const consumedCalories = dairy$.getEntry(dateString).nutriments?.energy_kcal ?? 'N/A';
 
   const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
   const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
@@ -43,7 +46,7 @@ export default observer(function DairyScreen() {
         />
       </View>
       <View style={styles.calorieInfo}>
-        <Text style={styles.calorieText}>{`N/A / ${calories} kcal`}</Text>
+        <Text style={styles.calorieText}>{`${consumedCalories} / ${estimatedCalories} kcal`}</Text>
       </View>
       {defaultMealNames.map((name, index) => {
         const meal = dairy$.getDateMeal(dateString, name);
