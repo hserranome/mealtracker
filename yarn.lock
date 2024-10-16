@@ -9643,11 +9643,6 @@ tiny-queue@^0.2.1:
   resolved "https://registry.npmjs.org/tiny-queue/-/tiny-queue-0.2.1.tgz"
   integrity sha512-EijGsv7kzd9I9g0ByCl6h42BWNGUZrlCSejfrb3AKeHC33SGbASu1VDf5O3rRiiUOhAC9CHdZxFPbZu0HmR70A==
 
-tinybase@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/tinybase/-/tinybase-5.3.1.tgz#e9a7f21d998aea77687d1f8f2f5410e165353789"
-  integrity sha512-4Ig5PAF9uYxsteDQGBP3IMU+MeGCc9nzBy+Xr4Uq5N4Zc6ABbCNgwoLgEBmV64unNUhRRax85o7n79QSeKJMeg==
-
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.npmjs.org/tmp/-/tmp-0.0.33.tgz"

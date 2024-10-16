@@ -12,7 +12,6 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { LoadingScreen } from '~/components/common/LoadingScreen';
 import { PocketProvider } from '~/components/contexts/PocketbaseContext';
-import { TinyBaseProvider } from '~/components/contexts/TinyBaseContext';
 import { caloriesSchedule$ } from '~/data';
 
 export default function Layout() {
@@ -25,17 +24,15 @@ export default function Layout() {
 
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <TinyBaseProvider>
-        <PocketProvider>
-          <KeyboardProvider>
-            <SafeAreaProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <RootLayoutNav />
-              </GestureHandlerRootView>
-            </SafeAreaProvider>
-          </KeyboardProvider>
-        </PocketProvider>
-      </TinyBaseProvider>
+      <PocketProvider>
+        <KeyboardProvider>
+          <SafeAreaProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <RootLayoutNav />
+            </GestureHandlerRootView>
+          </SafeAreaProvider>
+        </KeyboardProvider>
+      </PocketProvider>
     </Suspense>
   );
 }
