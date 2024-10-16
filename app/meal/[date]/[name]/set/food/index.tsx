@@ -10,18 +10,7 @@ import { MealScreenParams } from '../..';
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow/MacrosRow';
 import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
-import {
-  dairy$,
-  Food,
-  FOOD_TABLE,
-  foods$,
-  Meal,
-  MEAL_ITEMS_TABLE,
-  MealItem,
-  MEALS_TABLE,
-  tbStore,
-  useTinyBase,
-} from '~/data';
+import { dairy$, foods$, MealItem } from '~/data';
 
 type AddFoodToMealParams = MealScreenParams & {
   foodId?: string;
@@ -29,35 +18,37 @@ type AddFoodToMealParams = MealScreenParams & {
   defaultValues?: string;
 };
 
-const calculateQuantityMacro = (macroValue: number, quantity: number) =>
-  Math.ceil((Number(macroValue) * quantity) / 100);
+const calculateQuantityMacro = (macroValue: number | undefined, quantity: number) =>
+  macroValue ? Math.ceil((Number(macroValue) * quantity) / 100) : 0;
 
 export default observer(function AddFoodToMeal() {
   const { styles, theme } = useStyles(stylesheet);
 
   const isEditing = false;
 
-  const { foodId, defaultValues, date, name } = useLocalSearchParams<AddFoodToMealParams>();
+  const { foodId, mealItemId, defaultValues, date, name } =
+    useLocalSearchParams<AddFoodToMealParams>();
+
+  const mealItem = dairy$.getMealItem(date, name, mealItemId);
 
   const food = {
     ...foods$.getFood(foodId),
-    // TODO: get meal item from meal item id
+    ...(mealItem ? mealItem.item : {}),
     ...(defaultValues ? JSON.parse(defaultValues) : {}),
   };
 
-  const [quantity, setQuantity] = useState(100);
-  const [unit] = useState('g');
+  const [quantity, setQuantity] = useState(mealItem?.quantity ?? 100);
+  const [unit] = useState(mealItem?.unit ?? 'g');
 
   const macros = {
-    carbohydrate: calculateQuantityMacro(food.base_nutriments.carbohydrates, quantity),
-    protein: calculateQuantityMacro(food.base_nutriments.proteins, quantity),
-    fat: calculateQuantityMacro(food.base_nutriments.fat, quantity),
-    calories: calculateQuantityMacro(food.base_nutriments.energy_kcal, quantity),
+    carbohydrate: calculateQuantityMacro(food.base_nutriments?.carbohydrates, quantity),
+    protein: calculateQuantityMacro(food.base_nutriments?.proteins, quantity),
+    fat: calculateQuantityMacro(food.base_nutriments?.fat, quantity),
+    calories: calculateQuantityMacro(food.base_nutriments?.energy_kcal, quantity),
   };
 
   // Actions
   const handleAdd = () => {
-    // TODO: const id
     const mealItem: MealItem = {
       quantity,
       unit,
@@ -66,10 +57,10 @@ export default observer(function AddFoodToMeal() {
         type: 'food',
       },
     };
-    dairy$.setMealItem(date, name, food.id, mealItem);
-
-    // router.dismissAll();
-    // router.navigate({ pathname: '/meal/[date]/[name]', params: { date, name } });
+    dairy$.setMealItem(date, name, mealItemId ?? `${date}-${name}-${Date.now()}`, mealItem);
+    foods$.setFood(food.id, food);
+    router.dismissAll();
+    router.navigate({ pathname: '/meal/[date]/[name]', params: { date, name } });
   };
 
   const handleEdit = () =>

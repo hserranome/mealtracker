@@ -34,7 +34,6 @@ syncObservable(caloriesSchedule$, {
 // // Food
 // Types
 const NutrimentsSchema = z.object({
-  nutriment_basis: z.string(), // per 100g, 100ml, etc.
   energy_kcal: z.number(),
   fat: z.number(),
   saturated_fat: z.number(),
@@ -113,6 +112,9 @@ export const dairy$ = observable({
 
   getDateMeal: (date: string, mealName: string) => dairy$.entries[date].meals[mealName].get(),
 
+  getMealItem: (date: string, mealName: string, mealItemId?: string): MealItem | undefined =>
+    mealItemId ? dairy$.entries[date].meals[mealName].items[mealItemId].get() : undefined,
+
   setMealItem: (
     date: string,
     mealName: string,
@@ -120,6 +122,10 @@ export const dairy$ = observable({
     item: DairyEntry['meals'][number]['items'][number]
   ) => {
     dairy$.entries[date].meals[mealName].items.assign({ [itemId]: item });
+  },
+
+  deleteMealItem: (date: string, mealName: string, mealItemId: string) => {
+    dairy$.entries[date].meals[mealName].items[mealItemId].delete();
   },
 });
 // Persist

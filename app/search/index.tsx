@@ -30,7 +30,16 @@ const SearchAllScreen = () => {
 
   // Buttons
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = [
-    { icon: 'barcode-outline', label: 'Scan Barcode' },
+    {
+      icon: 'barcode-outline',
+      label: 'Scan Barcode',
+      onPress: () => {
+        router.push({
+          pathname: '/meal/[date]/[name]/scanner',
+          params: { date, name },
+        });
+      },
+    },
     { icon: 'add-circle-outline', label: 'Quick add' },
     {
       icon: 'nutrition-outline',
@@ -51,7 +60,7 @@ const SearchAllScreen = () => {
   const handleGoToSetFood: ComponentProps<typeof SearchScreen>['listActionOnPress'] = hasMeal
     ? (item) => {
         router.push({
-          pathname: '/meal/set/food',
+          pathname: '/meal/[date]/[name]/set/food',
           params: { date, name, foodId: item.id },
         });
       }

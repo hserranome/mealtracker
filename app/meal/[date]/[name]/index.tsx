@@ -1,14 +1,12 @@
 import { observer } from '@legendapp/state/react';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { createQueries } from 'tinybase/with-schemas';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { ListItem, ListItemType } from '~/components/common/ListItem';
 import { MacrosRow } from '~/components/common/MacrosRow';
-import { dairy$, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, useTinyBase } from '~/data';
+import { dairy$ } from '~/data';
 import { capitalize } from '~/utils/capitalize';
 import { formatDate } from '~/utils/formatDate';
 
@@ -35,22 +33,19 @@ export default observer(function MealScreen() {
     });
   };
 
-  const deleteMealItem = (id: string) => {};
+  const deleteMealItem = (id: string) => {
+    dairy$.deleteMealItem(date, name, id);
+  };
 
-  // const mealItems = [] as const;
-  // const listItems: ListItemType[] = useMemo(
-  //   () =>
-  //     Object.entries(mealItems ?? {})
-  //       .map(([id, item]) => ({
-  //         id,
-  //         name: String(item.name),
-  //         subtitle: `${item?.brands ? String(item.brands) : undefined} - ${(Number(item.energy_kcal) * Number(item.quantity)) / 100} kcal`,
-  //         mainValue: Number(item.quantity),
-  //         unit: String(item.default_serving_unit),
-  //       }))
-  //       .filter((item) => item.name),
-  //   [mealItems]
-  // );
+  const listItems: ListItemType[] = Object.entries(meal.items ?? {})
+    .map(([id, { item, quantity, unit }]) => ({
+      id,
+      name: String(item.name),
+      subtitle: `${item?.brands ? item.brands + ' - ' : ''}${(Number(item.base_nutriments.energy_kcal) * Number(quantity)) / 100} kcal`,
+      mainValue: Number(quantity),
+      unit: String(unit),
+    }))
+    .filter((item) => item.name);
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <ListItem
@@ -60,7 +55,7 @@ export default observer(function MealScreen() {
       listActionOnPress={() => deleteMealItem(item.id)}
       onPressItem={() =>
         router.push({
-          pathname: '/meal/set/food',
+          pathname: '/meal/[date]/[name]/set/food',
           params: { mealItemId: item.id, date, name },
         })
       }
@@ -91,7 +86,7 @@ export default observer(function MealScreen() {
         </View>
         <FlatList
           style={styles.foodList}
-          data={[]}
+          data={listItems}
           renderItem={renderListItem}
           keyExtractor={(item) => item.id}
         />
