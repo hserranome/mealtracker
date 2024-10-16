@@ -1,11 +1,12 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { ComponentProps, useMemo } from 'react';
+import React, { ComponentProps } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
 import { MealScreenParams } from '../meal/[date]/[name]';
 
 import { ListItemType } from '~/components/common/ListItem';
 import { SearchScreen } from '~/components/common/SearchScreen';
+import { library$ } from '~/data';
 
 const SearchAllScreen = () => {
   const { theme } = useStyles();
@@ -16,17 +17,17 @@ const SearchAllScreen = () => {
   const hasMeal = !!date && !!name;
 
   // List items
-  // const recentFoodItems = []
-  // const listItems: ListItemType[] = [useMemo(() => {
-  //   return Object.values(recentFoodItems ?? {}).map((item) => ({
-  //     id: String(item.id),
-  //     name: String(item.name),
-  //     subtitle: item.brands ? String(item.brands) : undefined,
-  //     mainValue: Number(item.energy_kcal),
-  //     secondaryValue: Number(item.default_serving_size),
-  //     unit: String(item.default_serving_unit),
-  //   }));
-  // }, [foodItems]);]
+  const recentFoodItems = library$.foods.get();
+  const listItems: ListItemType[] = Object.values(recentFoodItems ?? {})
+    .map((item) => ({
+      id: String(item.id),
+      name: String(item.name),
+      subtitle: item.brands ? String(item.brands) : undefined,
+      mainValue: Number(item.base_nutriments.energy_kcal),
+      secondaryValue: Number(item.base_serving_size),
+      unit: String(item.base_serving_unit),
+    }))
+    .reverse();
 
   // Buttons
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = [
@@ -40,7 +41,7 @@ const SearchAllScreen = () => {
         });
       },
     },
-    { icon: 'add-circle-outline', label: 'Quick add' },
+    // TODO: Quick add
     {
       icon: 'nutrition-outline',
       label: 'My food',
@@ -50,10 +51,7 @@ const SearchAllScreen = () => {
           params: { date, name },
         }),
     },
-    {
-      icon: 'restaurant-outline',
-      label: 'My Recipe',
-    },
+    // TODO: Recipes
   ];
 
   // Actions
@@ -93,7 +91,7 @@ const SearchAllScreen = () => {
       />
       <SearchScreen
         buttons={buttons}
-        listItems={[]}
+        listItems={listItems}
         listTitle="History"
         accentColor={theme.colors.blue}
         showSearchMore

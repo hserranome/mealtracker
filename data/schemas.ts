@@ -52,7 +52,6 @@ const FoodSchema = z.object({
   image_url: z.string().url(),
   deleted: z.boolean(),
   base_nutriments: NutrimentsSchema,
-  nutriments: NutrimentsSchema.optional(),
   base_serving_size: z.number(),
   base_serving_unit: z.string(),
   extra_serving_sizes: z.array(
@@ -65,16 +64,17 @@ const FoodSchema = z.object({
 });
 export type Food = z.infer<typeof FoodSchema>;
 // Observable
-export const foods$ = observable({
+// TODO: Rename to library$
+export const library$ = observable({
   foods: {} as Record<string, Food>,
-  setFood: (foodId: string, newFood: Food) => foods$.foods.assign({ [foodId]: newFood }),
-  getFood: (foodId?: string) => foods$.foods.get()[foodId ?? ''],
-  deleteFood: (foodId: string) => foods$.foods[foodId].delete(),
+  setFood: (foodId: string, newFood: Food) => library$.foods.assign({ [foodId]: newFood }),
+  getFood: (foodId?: string) => library$.foods.get()[foodId ?? ''],
+  deleteFood: (foodId: string) => library$.foods[foodId].delete(),
 });
 // Persist
-syncObservable(foods$, {
+syncObservable(library$, {
   persist: {
-    name: 'foods',
+    name: 'library',
     plugin: ObservablePersistMMKV,
   },
 });
@@ -96,6 +96,7 @@ const MealSchema = z.object({
   date: z.string().date(), // YYYY-MM-DD
   name: z.string(),
   order: z.number().int().positive().optional(),
+  nutriments: NutrimentsSchema,
   items: z.record(MealItemSchema),
 });
 export type Meal = z.infer<typeof MealSchema>;
@@ -122,6 +123,7 @@ export const dairy$ = observable({
     item: DairyEntry['meals'][number]['items'][number]
   ) => {
     dairy$.entries[date].meals[mealName].items.assign({ [itemId]: item });
+    // TODO: generate meal nutriments
   },
 
   deleteMealItem: (date: string, mealName: string, mealItemId: string) => {

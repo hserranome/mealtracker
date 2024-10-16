@@ -8,7 +8,7 @@ import { TouchableOpacity } from 'react-native';
 import { useStyles } from 'react-native-unistyles';
 
 import { FoodForm } from '~/components/common/FoodForm';
-import { Food, foods$ } from '~/data';
+import { Food, library$ } from '~/data';
 import { capitalize } from '~/utils/capitalize';
 
 export default observer(function FoodPage() {
@@ -19,9 +19,8 @@ export default observer(function FoodPage() {
   const [initialized, setInitialized] = useState(false);
 
   const isNewFood = id === 'new';
-  const foodFromLS = foods$.getFood(id);
 
-  const food = { ...foodFromLS, ...(values ? JSON.parse(values) : {}) };
+  const food = { ...library$.getFood(id), ...(values ? JSON.parse(values) : {}) };
 
   useEffect(() => {
     if (!initialized) {
@@ -33,7 +32,7 @@ export default observer(function FoodPage() {
   const onSubmit = (data: Food) => {
     try {
       const foodId = data.id ?? (isNewFood ? Crypto.randomUUID() : id);
-      foods$.setFood(foodId, {
+      library$.setFood(foodId, {
         ...data,
         id: foodId,
         name: capitalize(data.name.trim()),
@@ -46,7 +45,7 @@ export default observer(function FoodPage() {
   };
 
   const handleDelete = () => {
-    foods$.deleteFood(id);
+    library$.deleteFood(id);
     router.back();
   };
 

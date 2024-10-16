@@ -6,7 +6,7 @@ import { useStyles } from 'react-native-unistyles';
 import { MealScreenParams } from '../meal/[date]/[name]';
 
 import { SearchScreen } from '~/components/common/SearchScreen';
-import { foods$ } from '~/data';
+import { library$ } from '~/data';
 
 const FoodScreen = observer(() => {
   const { theme } = useStyles();
@@ -15,7 +15,7 @@ const FoodScreen = observer(() => {
   const hasMeal = !!date && !!name;
 
   // List items
-  const foods = foods$.foods.get();
+  const foods = library$.foods.get();
   const listItems = Object.entries(foods)
     .map(([id, item]) => {
       return {
