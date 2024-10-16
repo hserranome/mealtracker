@@ -75,7 +75,6 @@ export const OnboardingDataProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   }, [data]);
 
-  console.log('data', data);
   return (
     <OnboardingDataContext.Provider
       value={{

@@ -29,7 +29,6 @@ const LoginEmailScreen = () => {
   } = methods;
 
   const handleLogin = async (data: FormData) => {
-    console.log('data', data);
     const { email, password } = data;
 
     try {

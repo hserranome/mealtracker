@@ -62,8 +62,6 @@ export const FoodForm: React.FC<FoodFormProps> = ({
     { name: 'sodium', label: 'Sodium (mg)' },
   ];
 
-  console.log(form.getValues());
-
   return (
     <KeyboardAwareScrollView>
       <FormProvider {...form}>
