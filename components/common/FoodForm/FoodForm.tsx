@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
