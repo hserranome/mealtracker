@@ -6,12 +6,11 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow';
-import { caloriesSchedule$, Days } from '~/data';
+import { caloriesSchedule$, dairy$, Days, defaultMealNames } from '~/data';
+import { capitalize } from '~/utils/capitalize';
 import { getDateName } from '~/utils/getDateName';
 
-const defaultMeals = ['Breakfast', 'Lunch', 'Dinner'];
-
-export default observer(function Dairy() {
+export default observer(function DairyScreen() {
   const [date, setDate] = useState(new Date());
   const dateString = date.toISOString().split('T')[0];
   const router = useRouter();
@@ -47,11 +46,12 @@ export default observer(function Dairy() {
         <Text style={styles.calorieText}>{`N/A / ${calories} kcal`}</Text>
       </View>
       {/* MEAL LIST GOES HERE */}
-      {defaultMeals.map((name, index) => {
+      {defaultMealNames.map((name, index) => {
+        const meal = dairy$.getDateMeal(dateString, name);
         return (
           <View key={`${name}-${index}`} style={styles.meal}>
             <View style={styles.mealHeader}>
-              <Text style={styles.mealHeaderTitle}>{name}</Text>
+              <Text style={styles.mealHeaderTitle}>{capitalize(name)}</Text>
             </View>
             <View style={styles.addFood}>
               <Button
@@ -62,7 +62,7 @@ export default observer(function Dairy() {
               />
             </View>
             <View style={styles.macros}>
-              <MacrosRow carbohydrate={0} calories={0} fat={0} protein={0} />
+              <MacrosRow {...meal?.nutriments} />
             </View>
           </View>
         );

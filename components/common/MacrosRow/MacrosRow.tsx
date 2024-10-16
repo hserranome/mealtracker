@@ -3,20 +3,27 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { MacroItem } from '../MacroItem';
 
+import { Nutriments } from '~/data';
+
 type MacrosRowProps = {
-  carbohydrate: number;
-  protein: number;
-  fat: number;
-  calories: number;
+  carbohydrates: Nutriments['carbohydrates'];
+  proteins: Nutriments['proteins'];
+  fat: Nutriments['fat'];
+  energy_kcal: Nutriments['energy_kcal'];
 };
-export const MacrosRow = ({ carbohydrate, protein, fat, calories }: MacrosRowProps) => {
+export const MacrosRow = ({
+  carbohydrates = 0,
+  proteins = 0,
+  fat = 0,
+  energy_kcal = 0,
+}: MacrosRowProps) => {
   const { styles, theme } = useStyles(stylesheet);
   return (
     <View style={styles.macroContainer}>
-      <MacroItem label="Carbohydrate" value={`${carbohydrate}g`} color={theme.colors.red} />
-      <MacroItem label="Protein" value={`${protein}g`} color={theme.colors.blue} />
+      <MacroItem label="Carbohydrate" value={`${carbohydrates}g`} color={theme.colors.red} />
+      <MacroItem label="Protein" value={`${proteins}g`} color={theme.colors.blue} />
       <MacroItem label="Fat" value={`${fat}g`} color={theme.colors.green} />
-      <MacroItem label="Calories" value={`${calories}cal`} color={theme.colors.orange} />
+      <MacroItem label="Calories" value={`${energy_kcal}cal`} color={theme.colors.orange} />
     </View>
   );
 };

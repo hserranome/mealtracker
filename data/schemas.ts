@@ -3,6 +3,8 @@ import { ObservablePersistMMKV } from '@legendapp/state/persist-plugins/mmkv';
 import { syncObservable } from '@legendapp/state/sync';
 import { z } from 'zod';
 
+import { calculateNutrientValue } from '~/utils/calculateProportionalNutrientValue';
+
 // // Calories schedule
 // Types
 export type Days =
@@ -13,6 +15,7 @@ export type Days =
   | 'friday'
   | 'saturday'
   | 'sunday';
+export const defaultMealNames = ['breakfast', 'lunch', 'dinner'];
 export type CaloriesSchedule = Record<Days, number>;
 // Observable
 export const caloriesSchedule$ = observable({
@@ -44,6 +47,7 @@ const NutrimentsSchema = z.object({
   salt: z.number().optional(),
   sodium: z.number().optional(),
 });
+export type Nutriments = z.infer<typeof NutrimentsSchema>;
 const FoodSchema = z.object({
   id: z.string(), // can be barcode or generated uuid
   name: z.string(),
@@ -111,10 +115,39 @@ export const dairy$ = observable({
 
   getEntry: (date?: string) => dairy$.entries.get()[date ?? ''],
 
-  getDateMeal: (date: string, mealName: string) => dairy$.entries[date].meals[mealName].get(),
+  getDateMeal: (date: string, mealName: string) =>
+    dairy$.entries[date].meals[mealName.toLowerCase()].get(),
+
+  generateMealNutriments: (date: string, mealName: string) => {
+    const meal = dairy$.getDateMeal(date, mealName.toLowerCase());
+    const nutriments: Nutriments = Object.values(meal.items).reduce(
+      (acc, item) => {
+        const baseNutriments = item.item.base_nutriments;
+        Object.keys(baseNutriments).forEach((key) => {
+          const nutrientKey = key as keyof Nutriments;
+          acc[nutrientKey] += calculateNutrientValue(baseNutriments[nutrientKey], item.quantity);
+        });
+        return acc;
+      },
+      {
+        energy_kcal: 0,
+        fat: 0,
+        saturated_fat: 0,
+        carbohydrates: 0,
+        sugars: 0,
+        proteins: 0,
+        fiber: 0,
+        salt: 0,
+        sodium: 0,
+      }
+    );
+    dairy$.entries[date].meals[mealName.toLowerCase()].nutriments.set(nutriments);
+  },
 
   getMealItem: (date: string, mealName: string, mealItemId?: string): MealItem | undefined =>
-    mealItemId ? dairy$.entries[date].meals[mealName].items[mealItemId].get() : undefined,
+    mealItemId
+      ? dairy$.entries[date].meals[mealName.toLowerCase()].items[mealItemId].get()
+      : undefined,
 
   setMealItem: (
     date: string,
@@ -122,12 +155,13 @@ export const dairy$ = observable({
     itemId: string,
     item: DairyEntry['meals'][number]['items'][number]
   ) => {
-    dairy$.entries[date].meals[mealName].items.assign({ [itemId]: item });
-    // TODO: generate meal nutriments
+    dairy$.entries[date].meals[mealName.toLowerCase()].items.assign({ [itemId]: item });
+    dairy$.generateMealNutriments(date, mealName);
   },
 
   deleteMealItem: (date: string, mealName: string, mealItemId: string) => {
-    dairy$.entries[date].meals[mealName].items[mealItemId].delete();
+    dairy$.entries[date].meals[mealName.toLowerCase()].items[mealItemId].delete();
+    dairy$.generateMealNutriments(date, mealName);
   },
 });
 // Persist

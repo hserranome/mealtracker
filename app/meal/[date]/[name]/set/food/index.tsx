@@ -39,10 +39,10 @@ export default observer(function AddFoodToMeal() {
   const [unit] = useState(mealItem?.unit ?? 'g');
 
   const macros = {
-    carbohydrate: calculateNutrientValue(food.base_nutriments?.carbohydrates, quantity),
-    protein: calculateNutrientValue(food.base_nutriments?.proteins, quantity),
+    carbohydrates: calculateNutrientValue(food.base_nutriments?.carbohydrates, quantity),
+    proteins: calculateNutrientValue(food.base_nutriments?.proteins, quantity),
     fat: calculateNutrientValue(food.base_nutriments?.fat, quantity),
-    calories: calculateNutrientValue(food.base_nutriments?.energy_kcal, quantity),
+    energy_kcal: calculateNutrientValue(food.base_nutriments?.energy_kcal, quantity),
   };
 
   // Actions

@@ -37,7 +37,7 @@ export default observer(function MealScreen() {
     dairy$.deleteMealItem(date, name, id);
   };
 
-  const listItems: ListItemType[] = Object.entries(meal.items ?? {})
+  const listItems: ListItemType[] = Object.entries(meal?.items ?? {})
     .map(([id, { item, quantity, unit }]) => ({
       id,
       name: String(item.name),
@@ -82,7 +82,7 @@ export default observer(function MealScreen() {
           </View>
         </View>
         <View style={styles.macrosContainer}>
-          <MacrosRow fat={0} calories={0} carbohydrate={0} protein={0} />
+          <MacrosRow {...meal?.nutriments} />
         </View>
         <FlatList
           style={styles.foodList}
