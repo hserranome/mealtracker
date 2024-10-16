@@ -4,6 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
+import { dairy$ } from '~/data';
 
 export default function Profile() {
   const router = useRouter();
@@ -41,6 +42,14 @@ export default function Profile() {
         <Button
           onPress={handleLogout}
           title="Logout"
+          type={ButtonType.Ghost}
+          style={styles.button}
+        />
+        <Button
+          onPress={() => {
+            dairy$.deleteAllEntries();
+          }}
+          title="Delete all dairy entries"
           type={ButtonType.Ghost}
           style={styles.button}
         />
