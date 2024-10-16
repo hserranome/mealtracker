@@ -45,7 +45,6 @@ export default observer(function DairyScreen() {
       <View style={styles.calorieInfo}>
         <Text style={styles.calorieText}>{`N/A / ${calories} kcal`}</Text>
       </View>
-      {/* MEAL LIST GOES HERE */}
       {defaultMealNames.map((name, index) => {
         const meal = dairy$.getDateMeal(dateString, name);
         return (
@@ -79,6 +78,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: theme.margins[16],
     paddingVertical: theme.margins[16],
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   meal: {
