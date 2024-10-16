@@ -1,28 +1,22 @@
+import { observer } from '@legendapp/state/react';
 import { useRouter } from 'expo-router';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useTable } from 'tinybase/ui-react';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow';
-import { CALORIES_SCHEDULE_TABLE } from '~/data';
+import { caloriesSchedule$, dairy$, Days, defaultMealNames } from '~/data';
+import { capitalize } from '~/utils/capitalize';
 import { getDateName } from '~/utils/getDateName';
 
-const defaultMeals = ['Breakfast', 'Lunch', 'Dinner'];
-
-export default function Dairy() {
+export default observer(function DairyScreen() {
   const [date, setDate] = useState(new Date());
+  const dateString = date.toISOString().split('T')[0];
   const router = useRouter();
-  const caloriesSchedule = useTable(CALORIES_SCHEDULE_TABLE);
-
-  const currentDayCalories = useMemo(() => {
-    const selectedDay = new Date(date)
-      .toLocaleDateString('en-US', { weekday: 'long' })
-      .toLowerCase();
-    const day = caloriesSchedule[selectedDay];
-    return day ? day.calories : 'N/A';
-  }, [caloriesSchedule, date]);
+  const caloriesSchedule = caloriesSchedule$.schedule.get();
+  const dayOfWeek = new Date(date).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  const calories = caloriesSchedule[dayOfWeek as Days] ?? 'N/A';
 
   const dateBack = () => setDate(new Date(date.setDate(date.getDate() - 1)));
   const dateForward = () => setDate(new Date(date.setDate(date.getDate() + 1)));
@@ -31,8 +25,8 @@ export default function Dairy() {
 
   const handleGoToMeal = (name: string) => {
     router.push({
-      pathname: '/meal',
-      params: { name, date: date.toISOString().split('T')[0] },
+      pathname: '/meal/[date]/[name]',
+      params: { name, date: dateString },
     });
   };
 
@@ -49,14 +43,15 @@ export default function Dairy() {
         />
       </View>
       <View style={styles.calorieInfo}>
-        <Text style={styles.calorieText}>{`N/A / ${currentDayCalories ?? 'N/A'} kcal`}</Text>
+        <Text style={styles.calorieText}>{`N/A / ${calories} kcal`}</Text>
       </View>
       {/* MEAL LIST GOES HERE */}
-      {defaultMeals.map((name, index) => {
+      {defaultMealNames.map((name, index) => {
+        const meal = dairy$.getDateMeal(dateString, name);
         return (
           <View key={`${name}-${index}`} style={styles.meal}>
             <View style={styles.mealHeader}>
-              <Text style={styles.mealHeaderTitle}>{name}</Text>
+              <Text style={styles.mealHeaderTitle}>{capitalize(name)}</Text>
             </View>
             <View style={styles.addFood}>
               <Button
@@ -67,14 +62,14 @@ export default function Dairy() {
               />
             </View>
             <View style={styles.macros}>
-              <MacrosRow carbohydrate={0} calories={0} fat={0} protein={0} />
+              <MacrosRow {...meal?.nutriments} />
             </View>
           </View>
         );
       })}
     </View>
   );
-}
+});
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {

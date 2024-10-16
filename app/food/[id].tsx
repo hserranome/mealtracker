@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { observer } from '@legendapp/state/react';
 import * as Crypto from 'expo-crypto';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -6,22 +7,20 @@ import { FormProvider, useFormContext } from 'react-hook-form';
 import { TouchableOpacity } from 'react-native';
 import { useStyles } from 'react-native-unistyles';
 
-import { FoodForm, FoodFormData } from '~/components/common/FoodForm';
-import { FOOD_TABLE, useTinyBase } from '~/data';
+import { FoodForm } from '~/components/common/FoodForm';
+import { Food, library$ } from '~/data';
 import { capitalize } from '~/utils/capitalize';
 
-export default function FoodPage() {
-  const [initialized, setInitialized] = useState(false);
+export default observer(function FoodPage() {
   const router = useRouter();
   const { theme } = useStyles();
   const { id, values } = useLocalSearchParams<{ id: string; values?: string }>();
-  const { useSetRowCallback, useRow, useDelRowCallback } = useTinyBase();
+  const form = useFormContext<Food>();
+  const [initialized, setInitialized] = useState(false);
 
   const isNewFood = id === 'new';
-  const rowFood = useRow(FOOD_TABLE, id);
-  const food = { ...rowFood, ...(values ? JSON.parse(values) : {}) };
 
-  const form = useFormContext<FoodFormData>();
+  const food = { ...library$.getFood(id), ...(values ? JSON.parse(values) : {}) };
 
   useEffect(() => {
     if (!initialized) {
@@ -30,25 +29,25 @@ export default function FoodPage() {
     }
   }, [food, form, initialized]);
 
-  const onSubmit = useSetRowCallback(
-    FOOD_TABLE,
-    (data) => data.id ?? (isNewFood ? Crypto.randomUUID() : id),
-    (data: FoodFormData) => ({
-      ...data,
-      name: capitalize(data.name.trim()),
-      brands: data.brands ? capitalize(data.brands.trim()) : undefined,
-    }),
-    [],
-    undefined,
-    () => {
+  const onSubmit = (data: Food) => {
+    try {
+      const foodId = data.id ?? (isNewFood ? Crypto.randomUUID() : id);
+      library$.setFood(foodId, {
+        ...data,
+        id: foodId,
+        name: capitalize(data.name.trim()),
+        brands: data.brands ? capitalize(data.brands.trim()) : undefined,
+      });
       router.back();
-    },
-    []
-  );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const handleDelete = useDelRowCallback(FOOD_TABLE, id, undefined, () => {
+  const handleDelete = () => {
+    library$.deleteFood(id);
     router.back();
-  });
+  };
 
   return (
     <FormProvider {...form}>
@@ -71,4 +70,4 @@ export default function FoodPage() {
       <FoodForm form={form} onSubmit={onSubmit} submitButtonText={isNewFood ? 'Next' : 'Save'} />
     </FormProvider>
   );
-}
+});

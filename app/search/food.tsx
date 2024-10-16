@@ -1,34 +1,35 @@
+import { observer } from '@legendapp/state/react';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { ComponentProps, useMemo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
-import { SearchScreen } from '~/components/common/SearchScreen';
-import { FOOD_TABLE, useTinyBase } from '~/data';
+import { MealScreenParams } from '../meal/[date]/[name]';
 
-const FoodScreen = () => {
+import { SearchScreen } from '~/components/common/SearchScreen';
+import { library$ } from '~/data';
+
+const FoodScreen = observer(() => {
   const { theme } = useStyles();
   const router = useRouter();
-  const { useTable } = useTinyBase();
-  const { meal } = useLocalSearchParams<{ meal: string }>();
+  const { date, name } = useLocalSearchParams<MealScreenParams>();
+  const hasMeal = !!date && !!name;
 
-  const foodItems = useTable(FOOD_TABLE);
-  const listItems = useMemo(
-    () =>
-      Object.entries(foodItems)
-        .map(([id, item]) => {
-          return {
-            id,
-            name: String(item.name),
-            subtitle: item.brands ? String(item.brands) : undefined,
-            mainValue: Number(item.energy_kcal),
-            secondaryValue: Number(item.default_serving_size),
-            unit: 'kcal',
-          };
-        })
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    [foodItems]
-  );
+  // List items
+  const foods = library$.foods.get();
+  const listItems = Object.entries(foods)
+    .map(([id, item]) => {
+      return {
+        id,
+        name: String(item.name),
+        subtitle: item.brands ? String(item.brands) : undefined,
+        mainValue: Number(item.base_nutriments.energy_kcal),
+        secondaryValue: Number(item.base_serving_size),
+        unit: 'kcal',
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 
+  // Buttons
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = useMemo(
     () => [
       {
@@ -47,6 +48,23 @@ const FoodScreen = () => {
     []
   );
 
+  // Actions
+  const handleGoToSetFood: ComponentProps<typeof SearchScreen>['listActionOnPress'] = hasMeal
+    ? (item) => {
+        router.push({
+          pathname: '/meal/[date]/[name]/set/food',
+          params: { date, name, foodId: item.id, mealItemId: item.id },
+        });
+      }
+    : undefined;
+
+  const handleGoToEditFood: ComponentProps<typeof SearchScreen>['listActionOnPress'] = (item) => {
+    router.push({
+      pathname: '/food/[id]',
+      params: { id: item.id },
+    });
+  };
+
   return (
     <>
       <Stack.Screen
@@ -62,27 +80,13 @@ const FoodScreen = () => {
         buttons={buttons}
         listItems={listItems}
         listTitle="My Food"
-        listActionIcon={meal ? 'add-circle-outline' : undefined}
-        listActionOnPress={
-          meal
-            ? (item) => {
-                router.push({
-                  pathname: '/meal/set/food',
-                  params: { foodId: item.id, meal, mealItemId: item.id },
-                });
-              }
-            : undefined
-        }
-        onPressItem={(item) => {
-          router.push({
-            pathname: '/food/[id]',
-            params: { id: item.id },
-          });
-        }}
+        listActionIcon={hasMeal ? 'add-circle-outline' : undefined}
+        listActionOnPress={handleGoToSetFood}
+        onPressItem={handleGoToEditFood}
         accentColor={theme.colors.pink}
       />
     </>
   );
-};
+});
 
 export default FoodScreen;

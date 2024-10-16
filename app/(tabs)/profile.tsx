@@ -4,12 +4,10 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { usePocketbase } from '~/components/contexts/PocketbaseContext';
-import { useTinyBase, CALORIES_SCHEDULE_TABLE } from '~/data';
 
 export default function Profile() {
   const router = useRouter();
   const { logout } = usePocketbase();
-  const { useDelTableCallback } = useTinyBase();
   const { styles, theme } = useStyles(stylesheet);
 
   const handleLogout = async () => {
@@ -19,10 +17,6 @@ export default function Profile() {
       router.replace('/');
     }
   };
-
-  const deleteCalorieSchedule = useDelTableCallback(CALORIES_SCHEDULE_TABLE, undefined, () =>
-    router.replace('/welcome')
-  );
 
   const navigateToSetupWeekdays = () => {
     router.push('/setup-weekdays');
@@ -36,12 +30,6 @@ export default function Profile() {
           onPress={navigateToSetupWeekdays}
           title="Edit Calorie Intake"
           type={ButtonType.Solid}
-          style={styles.button}
-        />
-        <Button
-          onPress={deleteCalorieSchedule}
-          title="Delete calorie schedule"
-          type={ButtonType.Outline}
           style={styles.button}
         />
         <Button

@@ -1,45 +1,32 @@
+import { observer } from '@legendapp/state/react';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, ScrollView } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TextInput, Button } from '~/components/common';
-import { CALORIES_SCHEDULE_TABLE, useTinyBase } from '~/data';
-
-export type WeekdayCalories = Record<string, string>;
+import { caloriesSchedule$, CaloriesSchedule, Days } from '~/data';
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-export default function SetupWeekdays() {
+export default observer(function SetupWeekdays() {
   const { styles } = useStyles(stylesheet);
-  const methods = useForm<WeekdayCalories>();
+  const methods = useForm<CaloriesSchedule>();
   const router = useRouter();
-  const { useTable, useSetTableCallback } = useTinyBase();
-  const storedData = useTable(CALORIES_SCHEDULE_TABLE);
 
   useEffect(() => {
-    Object.keys(storedData).forEach((key) => {
-      const value = storedData[key].calories;
-      methods.setValue(key, String(value));
+    Object.entries(caloriesSchedule$.schedule.get()).map(([day, calories]) => {
+      methods.setValue(day as Days, calories);
     });
-  }, [storedData]);
+  }, []);
 
-  const onSubmit = useSetTableCallback(
-    CALORIES_SCHEDULE_TABLE,
-    (data: WeekdayCalories) => {
-      const table = Object.keys(data).reduce(
-        (acc, key) => ({
-          ...acc,
-          [key]: { calories: data[key] },
-        }),
-        {}
-      );
-      return table;
+  const onSubmit = useCallback(
+    (data: CaloriesSchedule) => {
+      caloriesSchedule$.setSchedule(data);
+      router.replace('/(tabs)');
     },
-    [],
-    undefined,
-    () => router.replace('/(tabs)')
+    [router]
   );
 
   return (
@@ -54,13 +41,13 @@ export default function SetupWeekdays() {
                 name={day.toLowerCase()}
                 placeholder="Enter calorie intake"
                 keyboardType="numeric"
-                style={styles.input}
                 type="number"
                 onSubmitEditing={() => {
                   if (index < weekdays.length - 1) {
-                    methods.setFocus(weekdays[index + 1].toLowerCase());
+                    methods.setFocus(weekdays[index + 1].toLowerCase() as Days);
                   }
                 }}
+                blurOnSubmit={index === weekdays.length - 1}
                 returnKeyType={index === weekdays.length - 1 ? 'done' : 'next'}
               />
             </View>
@@ -72,7 +59,7 @@ export default function SetupWeekdays() {
       </ScrollView>
     </FormProvider>
   );
-}
+});
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
@@ -90,9 +77,6 @@ const stylesheet = createStyleSheet((theme) => ({
   label: {
     ...theme.fonts.body.m,
     marginRight: theme.margins[8],
-  },
-  input: {
-    flex: 1,
   },
   button: {
     marginTop: theme.margins[24],

@@ -6,9 +6,12 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { FoodFormData } from './_layout';
 import { TextInput, Button } from '../../components/common';
 
+import { Food } from '~/data';
+
 type ServingSizesForm = {
-  default_serving_unit: string;
-  default_serving_size: number;
+  base_serving_size: Food['base_serving_size'];
+  base_serving_unit: Food['base_serving_unit'];
+  extra_serving_sizes: Food['extra_serving_sizes'];
 };
 
 export default function ServingSizes() {
@@ -18,14 +21,16 @@ export default function ServingSizes() {
 
   const methods = useForm<ServingSizesForm>({
     defaultValues: {
-      default_serving_size: formContextMethods.getValues('default_serving_size'),
-      default_serving_unit: formContextMethods.getValues('default_serving_unit'),
+      base_serving_size: formContextMethods.getValues('base_serving_size'),
+      base_serving_unit: formContextMethods.getValues('base_serving_unit'),
+      extra_serving_sizes: formContextMethods.getValues('extra_serving_sizes'),
     },
   });
 
   const submit = methods.handleSubmit((data: ServingSizesForm) => {
-    formContextMethods.setValue('default_serving_size', data.default_serving_size);
-    formContextMethods.setValue('default_serving_unit', data.default_serving_unit);
+    formContextMethods.setValue('base_serving_size', data.base_serving_size);
+    formContextMethods.setValue('base_serving_unit', data.base_serving_unit);
+    formContextMethods.setValue('extra_serving_sizes', data.extra_serving_sizes);
     router.back();
   });
 
@@ -44,7 +49,7 @@ export default function ServingSizes() {
         <FormProvider {...methods}>
           <TextInput
             autoFocus
-            name="default_serving_size"
+            name="base_serving_size"
             label="Serving Size"
             placeholder="e.g., 100"
             variant="ghost"
@@ -53,10 +58,10 @@ export default function ServingSizes() {
             keyboardType="numeric"
             rules={{ required: 'Serving size is required' }}
             returnKeyType="next"
-            onSubmitEditing={() => methods.setFocus('default_serving_unit')}
+            onSubmitEditing={() => methods.setFocus('base_serving_unit')}
           />
           <TextInput
-            name="default_serving_unit"
+            name="base_serving_unit"
             label="Unit"
             placeholder="e.g., g, ml, oz"
             variant="ghost"
