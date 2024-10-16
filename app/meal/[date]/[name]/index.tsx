@@ -1,3 +1,4 @@
+import { observer } from '@legendapp/state/react';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { View, Text, FlatList } from 'react-native';
@@ -7,71 +8,49 @@ import { createQueries } from 'tinybase/with-schemas';
 import { Button, ButtonType } from '~/components/common/Button';
 import { ListItem, ListItemType } from '~/components/common/ListItem';
 import { MacrosRow } from '~/components/common/MacrosRow';
-import { Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, useTinyBase } from '~/data';
+import { dairy$, Meal, MEAL_ITEMS_TABLE, MEALS_TABLE, useTinyBase } from '~/data';
+import { capitalize } from '~/utils/capitalize';
 import { formatDate } from '~/utils/formatDate';
 
-type MealScreenSearchParams = { name: string; date: string; id: string };
+export type MealScreenParams = {
+  date: string;
+  name: string;
+};
 
-export default function MealScreen() {
+export default observer(function MealScreen() {
   const router = useRouter();
   const { styles, theme } = useStyles(stylesheet);
-  const { useCreateQueries, useResultTable, useStore, useRow, useDelRowCallback } = useTinyBase();
-  const params = useLocalSearchParams<MealScreenSearchParams>();
+  const { date, name } = useLocalSearchParams<MealScreenParams>();
 
-  const meal: Meal = useMemo(getMealObject(useRow(MEALS_TABLE, params.id) as Meal, params), [
-    params,
-  ]);
-  const mealString = JSON.stringify(meal);
+  const meal = dairy$.getDateMeal(date, name);
 
-  const queries = useCreateQueries(
-    useStore(),
-    (store) => {
-      return createQueries(store).setQueryDefinition(
-        'mealItems',
-        MEAL_ITEMS_TABLE,
-        ({ select, where }) => {
-          select('name');
-          select('brands');
-          select('energy_kcal');
-          select('fat');
-          select('carbohydrates');
-          select('proteins');
-          select('quantity');
-          select('default_serving_unit');
-          where('meal_id', meal.id ?? 'none');
-        }
-      );
-    },
-    [meal.id]
-  );
-
-  const handleAddFood = () => {
-    router.push({ pathname: '/search', params: { meal: mealString } });
+  const handleGoToSearch = () => {
+    router.push({ pathname: '/search', params: { date, name } });
   };
 
   const handleScanFood = () => {
     router.push({
-      pathname: '/meal/scanner',
-      params: { meal: mealString },
+      pathname: '/meal/[date]/[name]/scanner',
+      params: { date, name },
     });
   };
 
-  const deleteMealItem = useDelRowCallback(MEAL_ITEMS_TABLE, (id: string) => id);
+  const deleteMealItem = (id: string) => {};
 
-  const mealItems = useResultTable('mealItems', queries);
-  const listItems: ListItemType[] = useMemo(
-    () =>
-      Object.entries(mealItems ?? {})
-        .map(([id, item]) => ({
-          id,
-          name: String(item.name),
-          subtitle: `${item?.brands ? String(item.brands) : undefined} - ${(Number(item.energy_kcal) * Number(item.quantity)) / 100} kcal`,
-          mainValue: Number(item.quantity),
-          unit: String(item.default_serving_unit),
-        }))
-        .filter((item) => item.name),
-    [mealItems]
-  );
+  // const mealItems = [] as const;
+  // const listItems: ListItemType[] = useMemo(
+  //   () =>
+  //     Object.entries(mealItems ?? {})
+  //       .map(([id, item]) => ({
+  //         id,
+  //         name: String(item.name),
+  //         subtitle: `${item?.brands ? String(item.brands) : undefined} - ${(Number(item.energy_kcal) * Number(item.quantity)) / 100} kcal`,
+  //         mainValue: Number(item.quantity),
+  //         unit: String(item.default_serving_unit),
+  //       }))
+  //       .filter((item) => item.name),
+  //   [mealItems]
+  // );
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <ListItem
@@ -82,13 +61,11 @@ export default function MealScreen() {
       onPressItem={() =>
         router.push({
           pathname: '/meal/set/food',
-          params: { mealItemId: item.id, meal: mealString },
+          params: { mealItemId: item.id, date, name },
         })
       }
     />
   );
-
-  const jsDate = useMemo(() => new Date(meal.date), [meal.date]);
 
   return (
     <>
@@ -105,8 +82,8 @@ export default function MealScreen() {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
-            <Text style={styles.title}>{meal.name}</Text>
-            <Text style={styles.date}>{formatDate(jsDate)}</Text>
+            <Text style={styles.title}>{capitalize(name)}</Text>
+            <Text style={styles.date}>{formatDate(new Date(date))}</Text>
           </View>
         </View>
         <View style={styles.macrosContainer}>
@@ -114,20 +91,20 @@ export default function MealScreen() {
         </View>
         <FlatList
           style={styles.foodList}
-          data={listItems}
+          data={[]}
           renderItem={renderListItem}
           keyExtractor={(item) => item.id}
         />
         <View style={styles.buttonContainer}>
           <View style={styles.searchButtonContainer}>
-            <Button title="Search for food" icon="search" onPress={handleAddFood} />
+            <Button title="Search for food" icon="search" onPress={handleGoToSearch} />
           </View>
           <Button icon="barcode-outline" type={ButtonType.Outline} onPress={handleScanFood} />
         </View>
       </View>
     </>
   );
-}
+});
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
@@ -171,25 +148,3 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
   },
 }));
-
-const getMealObject = (mealItem: Meal, params: MealScreenSearchParams): (() => Meal) => {
-  return () => {
-    if (mealItem && Object.keys(mealItem).length > 0) {
-      // Use existing meal data if available and not empty
-      return {
-        id: String(mealItem.id),
-        name: String(mealItem.name),
-        date: String(mealItem.date),
-      };
-    }
-
-    // If no meal found or it's an empty object, use params and construct mealId
-    const paramDate = params.date?.split('T')[0];
-    const paramMealName = params.name?.toLowerCase();
-    return {
-      id: paramDate && paramMealName ? `${paramDate}-${paramMealName}` : '',
-      name: params.name || '',
-      date: paramDate || '',
-    };
-  };
-};

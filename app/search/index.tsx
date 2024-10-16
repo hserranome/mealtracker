@@ -2,35 +2,33 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { ComponentProps, useMemo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
+import { MealScreenParams } from '../meal/[date]/[name]';
+
 import { ListItemType } from '~/components/common/ListItem';
 import { SearchScreen } from '~/components/common/SearchScreen';
-import { FOOD_TABLE, MEAL_ITEMS_TABLE, useTinyBase } from '~/data';
 
 const SearchAllScreen = () => {
   const { theme } = useStyles();
   const router = useRouter();
-  const { meal } = useLocalSearchParams<{ meal: string }>();
-  const { useTable } = useTinyBase();
 
-  const recentMealItems = useTable(MEAL_ITEMS_TABLE);
-  const foodItems = useTable(FOOD_TABLE);
+  // Meal
+  const { date, name } = useLocalSearchParams<MealScreenParams>();
+  const hasMeal = !!date && !!name;
 
-  const recentFoodItemsIds = Object.keys(foodItems).filter((id) =>
-    Object.values(recentMealItems).some((mealItem) => mealItem.id === id)
-  );
-  const recentFoodItems = recentFoodItemsIds.map((id) => foodItems[id]);
+  // List items
+  // const recentFoodItems = []
+  // const listItems: ListItemType[] = [useMemo(() => {
+  //   return Object.values(recentFoodItems ?? {}).map((item) => ({
+  //     id: String(item.id),
+  //     name: String(item.name),
+  //     subtitle: item.brands ? String(item.brands) : undefined,
+  //     mainValue: Number(item.energy_kcal),
+  //     secondaryValue: Number(item.default_serving_size),
+  //     unit: String(item.default_serving_unit),
+  //   }));
+  // }, [foodItems]);]
 
-  const listItems: ListItemType[] = useMemo(() => {
-    return Object.values(recentFoodItems ?? {}).map((item) => ({
-      id: String(item.id),
-      name: String(item.name),
-      subtitle: item.brands ? String(item.brands) : undefined,
-      mainValue: Number(item.energy_kcal),
-      secondaryValue: Number(item.default_serving_size),
-      unit: String(item.default_serving_unit),
-    }));
-  }, [foodItems]);
-
+  // Buttons
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = [
     { icon: 'barcode-outline', label: 'Scan Barcode' },
     { icon: 'add-circle-outline', label: 'Quick add' },
@@ -40,7 +38,7 @@ const SearchAllScreen = () => {
       onPress: () =>
         router.push({
           pathname: '/search/food',
-          params: { meal },
+          params: { date, name },
         }),
     },
     {
@@ -48,6 +46,30 @@ const SearchAllScreen = () => {
       label: 'My Recipe',
     },
   ];
+
+  // Actions
+  const handleGoToSetFood: ComponentProps<typeof SearchScreen>['listActionOnPress'] = hasMeal
+    ? (item) => {
+        router.push({
+          pathname: '/meal/set/food',
+          params: { date, name, foodId: item.id },
+        });
+      }
+    : undefined;
+
+  const handleGoToEditItem: ComponentProps<typeof SearchScreen>['onPressItem'] = (item) => {
+    router.push({
+      pathname: '/food/[id]',
+      params: { id: item.id },
+    });
+  };
+
+  const handleGoToSearchMore = (searchQuery: string) => {
+    router.push({
+      pathname: '/search/library',
+      params: { date, name, searchQuery },
+    });
+  };
 
   return (
     <>
@@ -62,34 +84,15 @@ const SearchAllScreen = () => {
       />
       <SearchScreen
         buttons={buttons}
-        listItems={listItems}
+        listItems={[]}
         listTitle="History"
         accentColor={theme.colors.blue}
         showSearchMore
         searchMoreLabel="Search more in library"
-        listActionIcon={meal ? 'add-circle-outline' : undefined}
-        listActionOnPress={
-          meal
-            ? (item) => {
-                router.push({
-                  pathname: '/meal/set/food',
-                  params: { meal, foodId: item.id },
-                });
-              }
-            : undefined
-        }
-        onPressItem={(item) => {
-          router.push({
-            pathname: '/food/[id]',
-            params: { id: item.id },
-          });
-        }}
-        onSearchMore={(searchQuery) =>
-          router.push({
-            pathname: '/search/library',
-            params: { meal, searchQuery },
-          })
-        }
+        listActionIcon={hasMeal ? 'add-circle-outline' : undefined}
+        listActionOnPress={handleGoToSetFood}
+        onPressItem={handleGoToEditItem}
+        onSearchMore={handleGoToSearchMore}
       />
     </>
   );

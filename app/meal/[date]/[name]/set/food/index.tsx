@@ -1,35 +1,82 @@
 import { observer } from '@legendapp/state/react';
 import * as Crypto from 'expo-crypto';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo } from 'react';
+import { router, Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+import { MealScreenParams } from '../..';
 
 import { Button, ButtonType } from '~/components/common/Button';
 import { MacrosRow } from '~/components/common/MacrosRow/MacrosRow';
 import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
 import {
+  dairy$,
   Food,
   FOOD_TABLE,
   foods$,
   Meal,
   MEAL_ITEMS_TABLE,
+  MealItem,
   MEALS_TABLE,
   tbStore,
   useTinyBase,
 } from '~/data';
 
-export default function AddFoodToMeal() {
+type AddFoodToMealParams = MealScreenParams & {
+  foodId?: string;
+  mealItemId?: string;
+  defaultValues?: string;
+};
+
+const calculateQuantityMacro = (macroValue: number, quantity: number) =>
+  Math.ceil((Number(macroValue) * quantity) / 100);
+
+export default observer(function AddFoodToMeal() {
   const { styles, theme } = useStyles(stylesheet);
 
-  const { foodItem, foodItemId, mealItem } = useFoodData();
-  const { quantity, setQuantity, unit } = useQuantityAndUnit(
-    mealItem?.quantity ? Number(mealItem.quantity) : 100,
-    mealItem?.unit || foodItem.default_serving_unit
-  );
-  const { handleAdd, handleEdit, isEditing } = useAddEditFood(foodItem, foodItemId, quantity, unit);
+  const isEditing = false;
 
-  const macros = useQuantityMacros(foodItem, quantity);
+  const { foodId, defaultValues, date, name } = useLocalSearchParams<AddFoodToMealParams>();
+
+  const food = {
+    ...foods$.getFood(foodId),
+    // TODO: get meal item from meal item id
+    ...(defaultValues ? JSON.parse(defaultValues) : {}),
+  };
+
+  const [quantity, setQuantity] = useState(100);
+  const [unit] = useState('g');
+
+  const macros = {
+    carbohydrate: calculateQuantityMacro(food.base_nutriments.carbohydrates, quantity),
+    protein: calculateQuantityMacro(food.base_nutriments.proteins, quantity),
+    fat: calculateQuantityMacro(food.base_nutriments.fat, quantity),
+    calories: calculateQuantityMacro(food.base_nutriments.energy_kcal, quantity),
+  };
+
+  // Actions
+  const handleAdd = () => {
+    // TODO: const id
+    const mealItem: MealItem = {
+      quantity,
+      unit,
+      item: {
+        ...food,
+        type: 'food',
+      },
+    };
+    dairy$.setMealItem(date, name, food.id, mealItem);
+
+    // router.dismissAll();
+    // router.navigate({ pathname: '/meal/[date]/[name]', params: { date, name } });
+  };
+
+  const handleEdit = () =>
+    router.push({
+      pathname: '/food/[id]',
+      params: { id: food.id, defaultValues: JSON.stringify(food) },
+    });
 
   return (
     <>
@@ -45,8 +92,8 @@ export default function AddFoodToMeal() {
       />
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.foodName}>{foodItem.name}</Text>
-          <Text style={styles.brandName}>{foodItem.brands}</Text>
+          <Text style={styles.foodName}>{food.name}</Text>
+          <Text style={styles.brandName}>{food.brands}</Text>
         </View>
 
         <View style={styles.macrosContainer}>
@@ -93,91 +140,7 @@ export default function AddFoodToMeal() {
       </View>
     </>
   );
-}
-
-// Hook to fetch and manage food data
-const useFoodData = () => {
-  const {
-    foodId,
-    mealItemId,
-    product: productString,
-  } = useLocalSearchParams<{
-    foodId?: string;
-    mealItemId?: string;
-    product?: string;
-    productId?: string;
-  }>();
-  const { useRow } = useTinyBase();
-
-  const mealItem = useRow(MEAL_ITEMS_TABLE, mealItemId ?? 'none');
-
-  const food: Food = {
-    ...foods$.getFood(foodId),
-    ...(productString ? JSON.parse(productString) : {}),
-  };
-
-  const foodItemId = food.id ?? food.code;
-
-  return { food, foodItemId, mealItem };
-};
-
-const useQuantityAndUnit = (defaultQuantity: number, defaultUnit: string = 'g') => {
-  const [quantity, setQuantity] = React.useState(defaultQuantity);
-  const [unit, setUnit] = React.useState(defaultUnit);
-  return { quantity, setQuantity, unit, setUnit };
-};
-
-const useQuantityMacros = (
-  foodItem: { carbohydrates: number; proteins: number; fat: number; energy_kcal: number },
-  quantity: number
-) => {
-  const calculateMacro = (value: number) => Math.ceil((Number(value) * quantity) / 100);
-  return React.useMemo(
-    () => ({
-      carbohydrate: calculateMacro(foodItem.carbohydrates),
-      protein: calculateMacro(foodItem.proteins),
-      fat: calculateMacro(foodItem.fat),
-      calories: calculateMacro(foodItem.energy_kcal),
-    }),
-    [foodItem, quantity]
-  );
-};
-
-const useAddEditFood = (foodItem: any, foodItemId: string, quantity: number, unit: string) => {
-  const { meal: mealString, mealItemId } = useLocalSearchParams<{
-    meal: string;
-    mealItemId?: string;
-  }>();
-  const router = useRouter();
-  const meal: Meal = React.useMemo(() => JSON.parse(mealString), [mealString]);
-
-  const handleAdd = () => {
-    const currentMeal = tbStore.getRow(MEALS_TABLE, meal.id);
-    tbStore.setRow(MEALS_TABLE, meal.id, { ...currentMeal, ...meal });
-    tbStore.setRow(FOOD_TABLE, foodItemId, foodItem);
-
-    const mealItemRowId = mealItemId || `${meal.id}-${Crypto.randomUUID()}`;
-    tbStore.setRow(MEAL_ITEMS_TABLE, mealItemRowId, {
-      ...foodItem,
-      item_id: foodItemId,
-      meal_id: meal.id,
-      type: 'food',
-      quantity,
-      unit,
-    });
-
-    router.dismissAll();
-    router.navigate({ pathname: '/meal', params: meal });
-  };
-
-  const handleEdit = () =>
-    router.push({
-      pathname: '/food/[id]',
-      params: { id: foodItemId, values: JSON.stringify(foodItem) },
-    });
-
-  return { handleAdd, handleEdit, isEditing: !!mealItemId };
-};
+});
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {

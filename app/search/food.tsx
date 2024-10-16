@@ -3,14 +3,18 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { ComponentProps, useMemo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
+import { MealScreenParams } from '../meal/[date]/[name]';
+
 import { SearchScreen } from '~/components/common/SearchScreen';
 import { foods$ } from '~/data';
 
 const FoodScreen = observer(() => {
   const { theme } = useStyles();
   const router = useRouter();
-  const { meal } = useLocalSearchParams<{ meal: string }>();
+  const { date, name } = useLocalSearchParams<MealScreenParams>();
+  const hasMeal = !!date && !!name;
 
+  // List items
   const foods = foods$.foods.get();
   const listItems = Object.entries(foods)
     .map(([id, item]) => {
@@ -25,6 +29,7 @@ const FoodScreen = observer(() => {
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
+  // Buttons
   const buttons: ComponentProps<typeof SearchScreen>['buttons'] = useMemo(
     () => [
       {
@@ -43,6 +48,23 @@ const FoodScreen = observer(() => {
     []
   );
 
+  // Actions
+  const handleGoToSetFood: ComponentProps<typeof SearchScreen>['listActionOnPress'] = hasMeal
+    ? (item) => {
+        router.push({
+          pathname: '/meal/[date]/[name]/set/food',
+          params: { date, name, foodId: item.id, mealItemId: item.id },
+        });
+      }
+    : undefined;
+
+  const handleGoToEditFood: ComponentProps<typeof SearchScreen>['listActionOnPress'] = (item) => {
+    router.push({
+      pathname: '/food/[id]',
+      params: { id: item.id },
+    });
+  };
+
   return (
     <>
       <Stack.Screen
@@ -58,23 +80,9 @@ const FoodScreen = observer(() => {
         buttons={buttons}
         listItems={listItems}
         listTitle="My Food"
-        listActionIcon={meal ? 'add-circle-outline' : undefined}
-        listActionOnPress={
-          meal
-            ? (item) => {
-                router.push({
-                  pathname: '/meal/set/food',
-                  params: { foodId: item.id, meal, mealItemId: item.id },
-                });
-              }
-            : undefined
-        }
-        onPressItem={(item) => {
-          router.push({
-            pathname: '/food/[id]',
-            params: { id: item.id },
-          });
-        }}
+        listActionIcon={hasMeal ? 'add-circle-outline' : undefined}
+        listActionOnPress={handleGoToSetFood}
+        onPressItem={handleGoToEditFood}
         accentColor={theme.colors.pink}
       />
     </>
