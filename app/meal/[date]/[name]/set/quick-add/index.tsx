@@ -29,7 +29,6 @@ export default function QuickAddScreen() {
   const form = useForm<QuickAdd>();
 
   const submit = form.handleSubmit((data) => {
-    // TODO: Add to meal
     const mealItem: MealItem = {
       type: 'quick_add',
       nutriments: data.nutriments,
