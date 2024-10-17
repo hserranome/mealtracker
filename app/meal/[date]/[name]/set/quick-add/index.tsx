@@ -37,7 +37,7 @@ export default function QuickAddScreen() {
         nutriments: data.nutriments,
       },
     };
-    dairy$.setMealItem(date, name, mealItemId ?? `${date}-${name}-${Date.now()}`, mealItem);
+    dairy$.setMealItem(date, name, mealItem, mealItemId);
     router.dismissAll();
     router.navigate({ pathname: '/meal/[date]/[name]', params: { date, name } });
   });

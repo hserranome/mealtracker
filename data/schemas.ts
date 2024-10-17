@@ -177,10 +177,11 @@ export const dairy$ = observable({
   setMealItem: (
     date: string,
     mealName: string,
-    itemId: string,
-    item: DairyEntry['meals'][number]['items'][number]
+    item: DairyEntry['meals'][number]['items'][number],
+    itemId?: string
   ) => {
-    dairy$.entries[date].meals[mealName.toLowerCase()].items.assign({ [itemId]: item });
+    const id = itemId ?? `${date}-${mealName}-${Date.now()}`;
+    dairy$.entries[date].meals[mealName.toLowerCase()].items.assign({ [id]: item });
     dairy$.generateEntryNutriments(date);
   },
 

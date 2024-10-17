@@ -1,7 +1,6 @@
 import { observer } from '@legendapp/state/react';
-import * as Crypto from 'expo-crypto';
-import { router, Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -27,7 +26,8 @@ export default observer(function AddFoodToMeal() {
   const { foodId, mealItemId, defaultValues, date, name } =
     useLocalSearchParams<SetFoodInMealParams>();
 
-  const mealItem = dairy$.getMealItem(date, name, mealItemId);
+  const result = dairy$.getMealItem(date, name, mealItemId);
+  const mealItem = result?.type === 'food' ? result : undefined;
 
   const food = {
     ...library$.getFood(foodId),
@@ -53,7 +53,7 @@ export default observer(function AddFoodToMeal() {
       unit,
       item: food,
     };
-    dairy$.setMealItem(date, name, mealItemId ?? `${date}-${name}-${Date.now()}`, mealItem);
+    dairy$.setMealItem(date, name, mealItem, mealItemId);
     library$.setFood(food.id, food);
     router.dismissAll();
     router.navigate({ pathname: '/meal/[date]/[name]', params: { date, name } });
