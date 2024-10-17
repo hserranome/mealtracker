@@ -50,10 +50,19 @@ export default observer(function DairyScreen() {
       </View>
       {defaultMealNames.map((name, index) => {
         const meal = dairy$.getDateMeal(dateString, name);
+        const itemCount = Object.keys(meal?.items ?? {}).length;
         return (
           <View key={`${name}-${index}`} style={styles.meal}>
             <View style={styles.mealHeader}>
               <Text style={styles.mealHeaderTitle}>{capitalize(name)}</Text>
+              <Text
+                style={[
+                  styles.mealHeaderCount,
+                  itemCount > 0 && styles.mealHeaderCountActive,
+                  itemCount < 10 && styles.mealHeaderCountSingle,
+                ]}>
+                {itemCount}
+              </Text>
             </View>
             <View style={styles.addFood}>
               <Button
@@ -87,8 +96,36 @@ const stylesheet = createStyleSheet((theme) => ({
   meal: {
     paddingBottom: theme.margins[24],
   },
-  mealHeader: { paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#CBD2E0' },
+  mealHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#CBD2E0',
+  },
   mealHeaderTitle: { fontWeight: '800' },
+  mealHeaderCount: {
+    fontWeight: '800',
+    marginLeft: theme.margins[10],
+    backgroundColor: theme.colors.base500,
+    paddingHorizontal: theme.margins[8],
+    paddingVertical: theme.margins[4],
+    borderRadius: 100,
+    minWidth: 18,
+    height: 18,
+    textAlign: 'center',
+    overflow: 'hidden',
+    ...theme.fonts.body.xs,
+    lineHeight: 12,
+  },
+  mealHeaderCountSingle: {
+    aspectRatio: 1,
+    paddingHorizontal: 0,
+  },
+  mealHeaderCountActive: {
+    backgroundColor: theme.colors.blue,
+    color: theme.colors.foreground,
+  },
   addFood: { justifyContent: 'center' },
   title: {
     ...theme.fonts.heading.xs,
