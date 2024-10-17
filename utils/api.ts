@@ -44,23 +44,28 @@ export const searchProductBySearchTerm = async (searchTerm: string): Promise<Foo
     `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchTerm}&search_simple=1&action=process&json=1`
   );
   const data = await response.json();
-  return data.products.map((product: any) => ({
-    id: product.id,
-    name: product.product_name_es || product.product_name,
-    brands: product.brands,
-    code: product.code,
-    image_url: product.image_url,
-    default_serving_size: parseFloat(product.product_quantity) || 100,
-    default_serving_unit: 'g',
-    energy_kcal: product.nutriments['energy-kcal_100g'],
-    fat: product.nutriments.fat_100g,
-    saturated_fat: product.nutriments['saturated-fat_100g'],
-    carbohydrates: product.nutriments.carbohydrates_100g,
-    sugars: product.nutriments.sugars_100g,
-    proteins: product.nutriments.proteins_100g,
-    fiber: product.nutriments.fiber_100g,
-    salt: product.nutriments.salt_100g,
-    sodium: product.nutriments.sodium_100g,
-    deleted: false,
-  }));
+  return data.products.map(
+    (product: any): Food => ({
+      id: product.id,
+      name: product.product_name_es || product.product_name,
+      brands: product.brands,
+      code: product.code,
+      image_url: product.image_url,
+      base_serving_size: parseFloat(product.product_quantity) || 100,
+      base_serving_unit: 'g',
+      base_nutriments: {
+        energy_kcal: product.nutriments['energy-kcal_100g'],
+        fat: product.nutriments.fat_100g,
+        saturated_fat: product.nutriments['saturated-fat_100g'],
+        carbohydrates: product.nutriments.carbohydrates_100g,
+        sugars: product.nutriments.sugars_100g,
+        proteins: product.nutriments.proteins_100g,
+        fiber: product.nutriments.fiber_100g,
+        salt: product.nutriments.salt_100g,
+        sodium: product.nutriments.sodium_100g,
+      },
+      extra_serving_sizes: [],
+      deleted: false,
+    })
+  );
 };
