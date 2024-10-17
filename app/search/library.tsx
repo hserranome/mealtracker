@@ -2,8 +2,15 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import React, { ComponentProps, useCallback, useState } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
+import { MealScreenParams } from '../meal/[date]/[name]';
+import { SetFoodInMealParams } from '../meal/[date]/[name]/set/food';
+
 import { SearchScreen } from '~/components/common/SearchScreen';
 import { fetchProductByBarcode, searchProductBySearchTerm } from '~/utils/api';
+
+type SearchLibraryParams = MealScreenParams & {
+  searchQuery?: string;
+};
 
 const SearchAllScreen = () => {
   const { theme } = useStyles();
@@ -11,8 +18,7 @@ const SearchAllScreen = () => {
     ComponentProps<typeof SearchScreen>['listItems']
   >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { meal, searchQuery } = useLocalSearchParams<{ meal?: string; searchQuery?: string }>();
-  // TODO: use searchQuery for initial search
+  const { searchQuery, date, name } = useLocalSearchParams<SearchLibraryParams>();
 
   const handleCustomSearch = useCallback(async (query: string) => {
     try {
@@ -23,8 +29,8 @@ const SearchAllScreen = () => {
           id: item.id,
           name: item.name,
           subtitle: item.brands,
-          mainValue: item.energy_kcal,
-          secondaryValue: item.default_serving_size,
+          mainValue: item.base_nutriments.energy_kcal,
+          secondaryValue: 0,
           unit: 'kcal',
         }))
       );
@@ -58,8 +64,13 @@ const SearchAllScreen = () => {
           const product = await fetchProductByBarcode(item.id);
           setIsLoading(false);
           router.push({
-            pathname: '/meal/set/food',
-            params: { foodId: product.code, meal, product: JSON.stringify(product) },
+            pathname: '/meal/[date]/[name]/set/food',
+            params: {
+              foodId: product.code,
+              defaultValues: JSON.stringify(product),
+              date,
+              name,
+            } as SetFoodInMealParams,
           });
         }}
       />
