@@ -13,7 +13,7 @@ import { BaseTextInput } from '~/components/common/TextInput/BaseTextInput';
 import { dairy$, library$, MealItem } from '~/data';
 import { calculateNutrientValue } from '~/utils/calculateProportionalNutrientValue';
 
-type AddFoodToMealParams = MealScreenParams & {
+export type SetFoodInMealParams = MealScreenParams & {
   foodId?: string;
   mealItemId?: string;
   defaultValues?: string;
@@ -25,7 +25,7 @@ export default observer(function AddFoodToMeal() {
   const isEditing = false;
 
   const { foodId, mealItemId, defaultValues, date, name } =
-    useLocalSearchParams<AddFoodToMealParams>();
+    useLocalSearchParams<SetFoodInMealParams>();
 
   const mealItem = dairy$.getMealItem(date, name, mealItemId);
 
