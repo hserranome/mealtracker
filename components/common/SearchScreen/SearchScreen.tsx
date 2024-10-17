@@ -53,7 +53,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
       onCustomSearch || debouncedSearchQuery.length < 3
         ? listItemsProp
         : listItemsProp.filter((item) =>
-            item.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+            item.name?.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
           ),
     [onCustomSearch, listItemsProp, debouncedSearchQuery]
   );

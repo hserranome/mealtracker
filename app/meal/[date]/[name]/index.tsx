@@ -37,28 +37,26 @@ export default observer(function MealScreen() {
     dairy$.deleteMealItem(date, name, id);
   };
 
-  const listItems: ListItemType[] = Object.entries(meal?.items ?? {})
-    .map(([id, mealItem]) => {
-      if (mealItem.type === 'quick_add') {
-        return {
-          id,
-          name: String(mealItem.item.description),
-          subtitle: `${mealItem.nutriments?.energy_kcal} kcal`,
-        };
-      }
-      if (mealItem.type === 'food') {
-        const { item, quantity, unit, nutriments } = mealItem;
-        return {
-          id,
-          name: String(item.name),
-          subtitle: `${item?.brands ? item.brands + ' - ' : ''}${nutriments?.energy_kcal} kcal`,
-          mainValue: Number(quantity),
-          unit: String(unit),
-        };
-      }
-      return undefined;
-    })
-    .filter((item) => item !== undefined);
+  const listItems: ListItemType[] = Object.entries(meal?.items ?? {}).map(([id, mealItem]) => {
+    if (mealItem.type === 'quick_add') {
+      return {
+        id,
+        name: String(mealItem.item.description),
+        subtitle: `${mealItem.nutriments?.energy_kcal} kcal`,
+      };
+    }
+    if (mealItem.type === 'food') {
+      const { item, quantity, unit, nutriments } = mealItem;
+      return {
+        id,
+        name: String(item.name),
+        subtitle: `${item?.brands ? item.brands + ' - ' : ''}${nutriments?.energy_kcal} kcal`,
+        mainValue: Number(quantity),
+        unit: String(unit),
+      };
+    }
+    return { id };
+  });
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <ListItem
