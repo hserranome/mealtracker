@@ -3,10 +3,7 @@ import { ObservablePersistMMKV } from '@legendapp/state/persist-plugins/mmkv';
 import { syncObservable } from '@legendapp/state/sync';
 import { z } from 'zod';
 
-import {
-  calculateNutrientValue,
-  calculateNutriments,
-} from '~/utils/calculateProportionalNutrientValue';
+import { calculateNutriments } from '~/utils/calculateProportionalNutrientValue';
 import { sumNutrimentsRecords } from '~/utils/sumNutrimentsRecords';
 
 // // Calories schedule
@@ -43,9 +40,9 @@ syncObservable(caloriesSchedule$, {
 const NutrimentsSchema = z.object({
   energy_kcal: z.number(),
   fat: z.number(),
-  saturated_fat: z.number(),
+  saturated_fat: z.number().optional(),
   carbohydrates: z.number(),
-  sugars: z.number(),
+  sugars: z.number().optional(),
   proteins: z.number(),
   fiber: z.number().optional(),
   salt: z.number().optional(),
@@ -89,16 +86,30 @@ syncObservable(library$, {
 
 // // Dairy
 // Types
-const MealItemSchema = z.object({
-  quantity: z.number(),
-  unit: z.string(),
-  nutriments: NutrimentsSchema.optional(),
-  item: z.object({ type: z.literal('food') }).merge(FoodSchema),
-  // TODO: RecipeSchema
-  // .or(z.object({ type: z.literal('recipe') }).merge(RecipeSchema))
-  // TODO: QuickAddSchema
-  // .or(z.object({ type: z.literal('quick_add') }).merge(QuickAddSchema))
+const QuickAddSchema = z.object({
+  description: z.string().optional(),
+  nutriments: NutrimentsSchema.pick({
+    energy_kcal: true,
+    fat: true,
+    carbohydrates: true,
+    proteins: true,
+  }),
 });
+export type QuickAdd = z.infer<typeof QuickAddSchema>;
+const MealItemSchema = z.union([
+  z.object({
+    type: z.literal('food'),
+    item: FoodSchema,
+    nutriments: NutrimentsSchema.optional(),
+    quantity: z.number().int().positive(),
+    unit: z.string(),
+  }),
+  z.object({
+    type: z.literal('quick_add'),
+    item: QuickAddSchema,
+    nutriments: NutrimentsSchema,
+  }),
+]);
 export type MealItem = z.infer<typeof MealItemSchema>;
 const MealSchema = z.object({
   id: z.string().uuid(),
@@ -134,10 +145,18 @@ export const dairy$ = observable({
         const meal$ = entry$.meals[mealName];
 
         const mealNutriments = Object.entries(meal.items).reduce(
-          (accMealNutriments, [itemId, { item, quantity }]) => {
-            const foodNutriments = calculateNutriments(item?.base_nutriments, quantity);
-            meal$.items[itemId].nutriments.set(foodNutriments);
-            return sumNutrimentsRecords(accMealNutriments, foodNutriments);
+          (accMealNutriments, [itemId, mealItem]) => {
+            if (mealItem.type === 'quick_add') {
+              const { nutriments } = mealItem;
+              return sumNutrimentsRecords(accMealNutriments, nutriments);
+            }
+            if (mealItem.type === 'food') {
+              const { item, quantity } = mealItem;
+              const foodNutriments = calculateNutriments(item.base_nutriments, quantity);
+              meal$.items[itemId].nutriments.set(foodNutriments);
+              return sumNutrimentsRecords(accMealNutriments, foodNutriments);
+            }
+            return accMealNutriments;
           },
           {} as Nutriments
         );

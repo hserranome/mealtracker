@@ -5,11 +5,11 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export type ListItemType = {
   id: string;
-  name: string;
+  name?: string;
   subtitle?: string;
-  mainValue: number;
+  mainValue?: number;
   secondaryValue?: number;
-  unit: string;
+  unit?: string;
 };
 
 type ListItemProps = {
@@ -40,7 +40,9 @@ export const ListItem: React.FC<ListItemProps> = ({
           onPress={() => onPressItem?.(item)}
           hitSlop={30}>
           <Ionicons name="pencil-outline" size={12} color={theme.colors.base800} />
-          <Text style={styles.listItemWeight}>{`${item.mainValue} ${item.unit}`}</Text>
+          <Text style={styles.listItemWeight}>
+            {item.mainValue} {item.unit}
+          </Text>
         </TouchableOpacity>
       </View>
 

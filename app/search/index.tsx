@@ -41,7 +41,15 @@ const SearchAllScreen = () => {
         });
       },
     },
-    // TODO: Quick add
+    {
+      icon: 'add-circle-outline',
+      label: 'Quick add',
+      onPress: () =>
+        router.push({
+          pathname: '/meal/[date]/[name]/set/quick-add',
+          params: { date, name },
+        }),
+    },
     {
       icon: 'nutrition-outline',
       label: 'My food',

@@ -38,14 +38,27 @@ export default observer(function MealScreen() {
   };
 
   const listItems: ListItemType[] = Object.entries(meal?.items ?? {})
-    .map(([id, { item, quantity, unit }]) => ({
-      id,
-      name: String(item.name),
-      subtitle: `${item?.brands ? item.brands + ' - ' : ''}${(Number(item.base_nutriments.energy_kcal) * Number(quantity)) / 100} kcal`,
-      mainValue: Number(quantity),
-      unit: String(unit),
-    }))
-    .filter((item) => item.name);
+    .map(([id, mealItem]) => {
+      if (mealItem.type === 'quick_add') {
+        return {
+          id,
+          name: String(mealItem.item.description),
+          subtitle: `${mealItem.nutriments?.energy_kcal} kcal`,
+        };
+      }
+      if (mealItem.type === 'food') {
+        const { item, quantity, unit, nutriments } = mealItem;
+        return {
+          id,
+          name: String(item.name),
+          subtitle: `${item?.brands ? item.brands + ' - ' : ''}${nutriments?.energy_kcal} kcal`,
+          mainValue: Number(quantity),
+          unit: String(unit),
+        };
+      }
+      return undefined;
+    })
+    .filter((item) => item !== undefined);
 
   const renderListItem = ({ item }: { item: ListItemType }) => (
     <ListItem

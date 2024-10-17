@@ -48,12 +48,10 @@ export default observer(function AddFoodToMeal() {
   // Actions
   const handleAdd = () => {
     const mealItem: MealItem = {
+      type: 'food',
       quantity,
       unit,
-      item: {
-        ...food,
-        type: 'food',
-      },
+      item: food,
     };
     dairy$.setMealItem(date, name, mealItemId ?? `${date}-${name}-${Date.now()}`, mealItem);
     library$.setFood(food.id, food);
