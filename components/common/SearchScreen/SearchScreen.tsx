@@ -26,6 +26,7 @@ type SearchScreenProps = {
   onSearchMore?: (query: string) => void;
   onCustomSearch?: (query: string) => void;
   isLoading?: boolean;
+  initialSearchQuery?: string;
 };
 
 export const SearchScreen: React.FC<SearchScreenProps> = ({
@@ -41,9 +42,10 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
   searchMoreLabel = 'Search More',
   onSearchMore,
   onCustomSearch,
+  initialSearchQuery = '',
 }) => {
   const { styles, theme } = useStyles(stylesheet);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300); // 300ms delay
 
   const listItems = useMemo(
@@ -61,6 +63,13 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({
       onCustomSearch(debouncedSearchQuery);
     }
   }, [debouncedSearchQuery, onCustomSearch]);
+
+  // New effect to run onCustomSearch on initial render if initialSearchQuery is provided
+  useEffect(() => {
+    if (onCustomSearch && initialSearchQuery && initialSearchQuery.trim().length >= 3) {
+      onCustomSearch(initialSearchQuery);
+    }
+  }, [onCustomSearch, initialSearchQuery]);
 
   const handleSearch = useCallback((text: string) => {
     setSearchQuery(text);

@@ -49,6 +49,7 @@ const SearchAllScreen = () => {
       <SearchScreen
         listItems={searchResults}
         accentColor={theme.colors.blue}
+        initialSearchQuery={searchQuery}
         onCustomSearch={handleCustomSearch}
         isLoading={isLoading}
         listActionIcon="add-circle-outline"
