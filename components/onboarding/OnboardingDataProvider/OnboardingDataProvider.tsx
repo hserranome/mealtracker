@@ -49,7 +49,7 @@ type OnboardingDataProviderValue = {
 		key: K,
 		value: OnboardingData[K],
 	) => void;
-	submit: () => Promise<{ id: number } | undefined>;
+	submit: () => void;
 	submitting: boolean;
 	reset: () => void;
 };
