@@ -1,35 +1,35 @@
 {
-  "cesVersion": "2.11.1",
-  "projectName": "mealtracker",
-  "packages": [
-    {
-      "name": "expo-router",
-      "type": "navigation",
-      "options": {
-        "type": "stack"
-      }
-    },
-    {
-      "name": "unistyles",
-      "type": "styling"
-    }
-  ],
-  "flags": {
-    "noGit": false,
-    "noInstall": false,
-    "overwrite": false,
-    "importAlias": true,
-    "packageManager": "yarn",
-    "eas": true
-  },
-  "packageManager": {
-    "type": "yarn",
-    "version": "1.22.22"
-  },
-  "os": {
-    "type": "Linux",
-    "platform": "linux",
-    "arch": "x64",
-    "kernelVersion": "5.15.146.1-microsoft-standard-WSL2"
-  }
+	"cesVersion": "2.11.1",
+	"projectName": "mealtracker",
+	"packages": [
+		{
+			"name": "expo-router",
+			"type": "navigation",
+			"options": {
+				"type": "stack"
+			}
+		},
+		{
+			"name": "unistyles",
+			"type": "styling"
+		}
+	],
+	"flags": {
+		"noGit": false,
+		"noInstall": false,
+		"overwrite": false,
+		"importAlias": true,
+		"packageManager": "yarn",
+		"eas": true
+	},
+	"packageManager": {
+		"type": "yarn",
+		"version": "1.22.22"
+	},
+	"os": {
+		"type": "Linux",
+		"platform": "linux",
+		"arch": "x64",
+		"kernelVersion": "5.15.146.1-microsoft-standard-WSL2"
+	}
 }

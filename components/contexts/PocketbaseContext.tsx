@@ -1,48 +1,72 @@
-import PocketBase, { RecordModel, RecordAuthResponse, AuthModel } from 'pocketbase';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import PocketBase, {
+	type RecordModel,
+	type RecordAuthResponse,
+	type AuthModel,
+} from "pocketbase";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 
 type PocketbaseContextType = {
-  register?: (email: string, password: string) => Promise<RecordModel>;
-  login?: (email: string, password: string) => Promise<RecordAuthResponse<RecordModel>>;
-  logout?: () => Promise<void>;
-  user?: AuthModel;
-  token?: string;
-  pb?: PocketBase;
+	register?: (email: string, password: string) => Promise<RecordModel>;
+	login?: (
+		email: string,
+		password: string,
+	) => Promise<RecordAuthResponse<RecordModel>>;
+	logout?: () => Promise<void>;
+	user?: AuthModel;
+	token?: string;
+	pb?: PocketBase;
 };
 export const PocketbaseContext = createContext<PocketbaseContextType>({});
 
 export const PocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const pb = useMemo(() => new PocketBase('http://192.168.1.168:8090'), []);
+	const pb = useMemo(() => new PocketBase("http://192.168.1.168:8090"), []);
 
-  const [token, setToken] = useState(pb.authStore.token);
-  const [user, setUser] = useState(pb.authStore.model);
+	const [token, setToken] = useState(pb.authStore.token);
+	const [user, setUser] = useState(pb.authStore.model);
 
-  useEffect(() => {
-    return pb.authStore.onChange((token, model) => {
-      setToken(token);
-      setUser(model);
-    });
-  }, [pb.authStore]);
+	useEffect(() => {
+		return pb.authStore.onChange((token, model) => {
+			setToken(token);
+			setUser(model);
+		});
+	}, [pb.authStore]);
 
-  const register = useCallback(async (email: string, password: string) => {
-    return await pb.collection('users').create({ email, password, passwordConfirm: password });
-  }, []);
+	const register = useCallback(
+		async (email: string, password: string) => {
+			return await pb
+				.collection("users")
+				.create({ email, password, passwordConfirm: password });
+		},
+		[pb.collection],
+	);
 
-  const login = useCallback(async (email: string, password: string) => {
-    return await pb.collection('users').authWithPassword(email, password);
-  }, []);
+	const login = useCallback(
+		async (email: string, password: string) => {
+			return await pb.collection("users").authWithPassword(email, password);
+		},
+		[pb.collection],
+	);
 
-  const logout = useCallback(async () => {
-    return await pb.authStore.clear();
-  }, []);
+	const logout = useCallback(async () => {
+		return await pb.authStore.clear();
+	}, [pb.authStore]);
 
-  // @todo: Refresh tokens
+	// @todo: Refresh tokens
 
-  return (
-    <PocketbaseContext.Provider value={{ register, login, logout, user, token, pb }}>
-      {children}
-    </PocketbaseContext.Provider>
-  );
+	return (
+		<PocketbaseContext.Provider
+			value={{ register, login, logout, user, token, pb }}
+		>
+			{children}
+		</PocketbaseContext.Provider>
+	);
 };
 
 export const usePocketbase = () => useContext(PocketbaseContext);

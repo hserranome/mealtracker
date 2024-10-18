@@ -1,69 +1,67 @@
 {
-  "expo": {
-    "name": "MealTracker",
-    "slug": "mealtracker",
-    "version": "0.0.1",
-    "scheme": "mealtracker",
-    "plugins": [
-      "expo-router",
-      [
-        "expo-dev-launcher",
-        {
-          "launchMode": "most-recent"
-        }
-      ],
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes"
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "tsconfigPaths": true
-    },
-    "orientation": "portrait",
-    "icon": "./assets/images/app/icon.png",
-    "userInterfaceStyle": "automatic",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.mealtracker.app",
-      "splash": {
-        "image": "./assets/images/app/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff",
-        "dark": {
-          "backgroundColor": "#000000"
-        }
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/app/adaptive-icon.png",
-        "monochromeImage": "./assets/images/app/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.mealtracker.app",
-      "splash": {
-        "image": "./assets/images/app/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff",
-        "dark": {
-          "backgroundColor": "#000000"
-        }
-      }
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "09fe56c8-0753-47cc-8a4f-89cc09bcda76"
-      }
-    }
-  }
+	"expo": {
+		"name": "MealTracker",
+		"slug": "mealtracker",
+		"version": "0.0.1",
+		"scheme": "mealtracker",
+		"plugins": [
+			"expo-router",
+			[
+				"expo-dev-launcher",
+				{
+					"launchMode": "most-recent"
+				}
+			],
+			[
+				"expo-camera",
+				{
+					"cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes"
+				}
+			]
+		],
+		"experiments": {
+			"typedRoutes": true,
+			"tsconfigPaths": true
+		},
+		"orientation": "portrait",
+		"icon": "./assets/images/app/icon.png",
+		"userInterfaceStyle": "automatic",
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.mealtracker.app",
+			"splash": {
+				"image": "./assets/images/app/splash.png",
+				"resizeMode": "contain",
+				"backgroundColor": "#ffffff",
+				"dark": {
+					"backgroundColor": "#000000"
+				}
+			}
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/app/adaptive-icon.png",
+				"monochromeImage": "./assets/images/app/adaptive-icon.png",
+				"backgroundColor": "#ffffff"
+			},
+			"package": "com.mealtracker.app",
+			"splash": {
+				"image": "./assets/images/app/splash.png",
+				"resizeMode": "contain",
+				"backgroundColor": "#ffffff",
+				"dark": {
+					"backgroundColor": "#000000"
+				}
+			}
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "09fe56c8-0753-47cc-8a4f-89cc09bcda76"
+			}
+		}
+	}
 }
