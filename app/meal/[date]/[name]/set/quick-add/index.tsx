@@ -86,10 +86,10 @@ export default function QuickAddScreen() {
 						name="description"
 						label="Description"
 						{...commonProps}
-						placeholder="Optional"
+						{...requiredProps}
+						autoFocus
 						type="string"
 						keyboardType="default"
-						rules={{ required: true }}
 						blurOnSubmit={false}
 						onSubmitEditing={() => form.setFocus("nutriments.energy_kcal")}
 					/>
@@ -102,7 +102,7 @@ export default function QuickAddScreen() {
 								...(field.color && { ...boldLabelStyles, color: field.color }),
 							}}
 							{...commonProps}
-							rules={field.required ? { required: true } : undefined}
+							{...(field.required ? requiredProps : {})}
 							onSubmitEditing={() => {
 								const nextField = fields[index + 1];
 								if (nextField) form.setFocus(`nutriments.${nextField.name}`);
@@ -142,8 +142,13 @@ const commonProps = {
 	blurOnSubmit: false,
 	keyboardType: "numeric" as const,
 	type: "number" as const,
-	placeholder: "Required",
+	placeholder: "Optional",
 };
+
+const requiredProps = {
+	placeholder: "Required",
+	rules: { required: true },
+} as const;
 
 const boldLabelStyles = {
 	fontWeight: "bold",
