@@ -10,7 +10,6 @@ import { Button, TextInput } from "~/components/common";
 import { type MealItem, type QuickAdd, dairy$ } from "~/data";
 import { useEffect, useMemo } from "react";
 
-// Add this new type definition
 type NutritionField = {
 	name: "energy_kcal" | "fat" | "carbohydrates" | "proteins";
 	label: string;
