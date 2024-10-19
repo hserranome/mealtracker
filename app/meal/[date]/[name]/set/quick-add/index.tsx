@@ -8,6 +8,7 @@ import type { MealScreenParams } from "../..";
 
 import { Button, TextInput } from "~/components/common";
 import { type MealItem, type QuickAdd, dairy$ } from "~/data";
+import { useEffect } from "react";
 
 // Add this new type definition
 type NutritionField = {
@@ -28,6 +29,26 @@ export default function QuickAddScreen() {
 	const { styles, theme } = useStyles(stylesheet);
 
 	const form = useForm<QuickAdd>();
+
+	const result = dairy$.getMealItem(date, name, mealItemId);
+	const mealItem = result?.type === "quick_add" ? result : undefined;
+
+	const quickAdd = mealItem ? mealItem.item : {
+		description: '',
+		nutriments: {
+			energy_kcal: 0,
+			fat: 0,
+			carbohydrates: 0,
+			proteins: 0,
+		},
+	};
+
+	const editing = !!mealItemId;
+
+	useEffect(() => {
+		form.setValue("description", quickAdd.description);
+		form.setValue("nutriments", quickAdd.nutriments);
+	}, [quickAdd, form.setValue]);
 
 	const submit = form.handleSubmit((data) => {
 		const mealItem: MealItem = {
@@ -112,7 +133,7 @@ export default function QuickAddScreen() {
 						/>
 					))}
 					<View style={styles.button}>
-						<Button onPress={submit} title="Add" disabled={hasErrors} />
+						<Button onPress={submit} title={editing ? "Update" : "Add"} disabled={hasErrors} />
 					</View>
 				</FormProvider>
 			</KeyboardAwareScrollView>

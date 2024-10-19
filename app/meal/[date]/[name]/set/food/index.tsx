@@ -21,8 +21,6 @@ export type SetFoodInMealParams = MealScreenParams & {
 export default observer(function AddFoodToMeal() {
 	const { styles, theme } = useStyles(stylesheet);
 
-	const isEditing = false;
-
 	const { foodId, mealItemId, defaultValues, date, name } =
 		useLocalSearchParams<SetFoodInMealParams>();
 
@@ -51,6 +49,8 @@ export default observer(function AddFoodToMeal() {
 		),
 	};
 
+	const editing = !!mealItemId;
+
 	// Actions
 	const handleAdd = () => {
 		const mealItem: MealItem = {
@@ -78,7 +78,7 @@ export default observer(function AddFoodToMeal() {
 		<>
 			<Stack.Screen
 				options={{
-					title: isEditing ? "Edit Food" : "Add Food",
+					title: editing ? "Edit Food" : "Add Food",
 					headerTintColor: theme.colors.foreground,
 					headerShadowVisible: false,
 					headerStyle: {
@@ -115,7 +115,7 @@ export default observer(function AddFoodToMeal() {
 				<View style={styles.buttonContainer}>
 					<View style={styles.button}>
 						<Button
-							title={isEditing ? "Update" : "Add"}
+							title={editing ? "Update" : "Add"}
 							onPress={handleAdd}
 							style={{ backgroundColor: theme.colors.pink }}
 							textStyle={{ color: theme.colors.foreground }}

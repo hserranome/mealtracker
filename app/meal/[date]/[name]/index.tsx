@@ -44,6 +44,12 @@ export default observer(function MealScreen() {
 					id,
 					name: String(mealItem.item.description),
 					subtitle: `${mealItem.nutriments?.energy_kcal} kcal`,
+					onPress: () => {
+						router.push({
+							pathname: "/meal/[date]/[name]/set/quick-add",
+							params: { mealItemId: id, date, name },
+						});
+					},
 				};
 			}
 			if (mealItem.type === "food") {
@@ -54,6 +60,12 @@ export default observer(function MealScreen() {
 					subtitle: `${item?.brands ? `${item.brands} - ` : ""}${nutriments?.energy_kcal} kcal`,
 					mainValue: Number(quantity),
 					unit: String(unit),
+					onPress: () => {
+						router.push({
+							pathname: "/meal/[date]/[name]/set/food",
+							params: { mealItemId: id, date, name },
+						});
+					},
 				};
 			}
 			return { id };
@@ -66,12 +78,6 @@ export default observer(function MealScreen() {
 			accentColor={theme.colors.blue}
 			listActionIcon="close-circle-outline"
 			listActionOnPress={() => deleteMealItem(item.id)}
-			onPressItem={() =>
-				router.push({
-					pathname: "/meal/[date]/[name]/set/food",
-					params: { mealItemId: item.id, date, name },
-				})
-			}
 		/>
 	);
 

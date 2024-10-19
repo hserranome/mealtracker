@@ -10,6 +10,7 @@ export type ListItemType = {
 	mainValue?: number;
 	secondaryValue?: number;
 	unit?: string;
+	onPress?: () => void;
 };
 
 type ListItemProps = {
@@ -29,6 +30,8 @@ export const ListItem: React.FC<ListItemProps> = ({
 }) => {
 	const { styles, theme } = useStyles(stylesheet);
 
+	const handlePress = () => item.onPress?.() || onPressItem?.(item);
+
 	return (
 		<View style={styles.listItem}>
 			<View>
@@ -38,8 +41,8 @@ export const ListItem: React.FC<ListItemProps> = ({
 				)}
 				<TouchableOpacity
 					style={styles.editContainer}
-					disabled={!onPressItem}
-					onPress={() => onPressItem?.(item)}
+					disabled={!item.onPress && !onPressItem}
+					onPress={handlePress}
 					hitSlop={30}
 				>
 					<Ionicons
