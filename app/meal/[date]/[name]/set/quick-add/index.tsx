@@ -8,7 +8,7 @@ import type { MealScreenParams } from "../..";
 
 import { Button, TextInput } from "~/components/common";
 import { type MealItem, type QuickAdd, dairy$ } from "~/data";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 // Add this new type definition
 type NutritionField = {
@@ -33,15 +33,17 @@ export default function QuickAddScreen() {
 	const result = dairy$.getMealItem(date, name, mealItemId);
 	const mealItem = result?.type === "quick_add" ? result : undefined;
 
-	const quickAdd = mealItem ? mealItem.item : {
+	const quickAdd = useMemo(() => mealItem ? mealItem.item : {
 		description: '',
 		nutriments: {
 			energy_kcal: 0,
 			fat: 0,
 			carbohydrates: 0,
 			proteins: 0,
+			},
 		},
-	};
+		[mealItem],
+	);
 
 	const editing = !!mealItemId;
 
