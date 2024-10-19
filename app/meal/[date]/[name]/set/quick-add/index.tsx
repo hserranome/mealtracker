@@ -51,6 +51,7 @@ export default function QuickAddScreen() {
 			name: "energy_kcal",
 			label: "Calories (kcal)",
 			color: theme.colors.orange,
+			required: true,
 		},
 		{ name: "fat", label: "Fat (g)", color: theme.colors.green },
 		{
@@ -64,6 +65,8 @@ export default function QuickAddScreen() {
 			color: theme.colors.red,
 		},
 	];
+
+	const hasErrors = Object.keys(form.formState.errors).length > 0;
 
 	return (
 		<>
@@ -83,10 +86,10 @@ export default function QuickAddScreen() {
 						name="description"
 						label="Description"
 						{...commonProps}
-						rules={undefined}
 						placeholder="Optional"
 						type="string"
 						keyboardType="default"
+						rules={{ required: true }}
 						blurOnSubmit={false}
 						onSubmitEditing={() => form.setFocus("nutriments.energy_kcal")}
 					/>
@@ -99,6 +102,7 @@ export default function QuickAddScreen() {
 								...(field.color && { ...boldLabelStyles, color: field.color }),
 							}}
 							{...commonProps}
+							rules={field.required ? { required: true } : undefined}
 							onSubmitEditing={() => {
 								const nextField = fields[index + 1];
 								if (nextField) form.setFocus(`nutriments.${nextField.name}`);
@@ -108,7 +112,7 @@ export default function QuickAddScreen() {
 						/>
 					))}
 					<View style={styles.button}>
-						<Button onPress={submit} title="Add" />
+						<Button onPress={submit} title="Add" disabled={hasErrors} />
 					</View>
 				</FormProvider>
 			</KeyboardAwareScrollView>
@@ -136,7 +140,6 @@ const commonProps = {
 	textAlign: "right" as const,
 	returnKeyType: "next" as const,
 	blurOnSubmit: false,
-	rules: { required: "" },
 	keyboardType: "numeric" as const,
 	type: "number" as const,
 	placeholder: "Required",
