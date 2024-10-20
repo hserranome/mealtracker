@@ -1,13 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { type ComponentProps, forwardRef } from "react";
 import {
+	Pressable,
 	type StyleProp,
 	Text,
 	type TextStyle,
 	View,
 	type ViewStyle,
 } from "react-native";
-import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export enum ButtonType {
@@ -27,9 +27,9 @@ type ButtonProps = {
 	justify?: "center" | "left" | "right";
 	style?: StyleProp<ViewStyle>;
 	textStyle?: StyleProp<TextStyle>;
-} & ComponentProps<typeof TouchableNativeFeedback>;
+} & ComponentProps<typeof Pressable>;
 
-export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
+export const Button = forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
 	(
 		{
 			title,
@@ -65,15 +65,19 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
 
 		return (
 			<View style={styles.wrapper}>
-				<TouchableNativeFeedback
+				<Pressable
 					ref={ref}
 					disabled={disabled}
-					background={TouchableNativeFeedback.Ripple(
-						theme.colors.base600,
-						false,
-					)}
+					android_ripple={{
+						color: theme.colors.base600,
+						borderless: false,
+					}}
 					{...touchableProps}
-					style={[styles.container, style]}
+					style={({ pressed }) => [
+						styles.container,
+						style,
+						pressed && styles.pressed,
+					]}
 					onPress={onPress ? onPress : undefined}
 				>
 					<View style={styles.buttonContent}>
@@ -83,7 +87,7 @@ export const Button = forwardRef<TouchableNativeFeedback, ButtonProps>(
 						)}
 						{iconPosition === "right" && iconElement}
 					</View>
-				</TouchableNativeFeedback>
+				</Pressable>
 			</View>
 		);
 	},
@@ -147,6 +151,9 @@ const stylesheet = createStyleSheet((theme) => ({
 				},
 			},
 		},
+	},
+	pressed: {
+		backgroundColor: theme.colors.base600,
 	},
 	buttonContent: {
 		flexDirection: "row",
