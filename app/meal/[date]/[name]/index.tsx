@@ -53,13 +53,13 @@ export default observer(function MealScreen() {
 				};
 			}
 			if (mealItem.type === "food") {
-				const { item, quantity, unit, nutriments } = mealItem;
+				const { item, quantity, serving, nutriments } = mealItem;
 				return {
 					id,
 					name: String(item.name),
 					subtitle: `${item?.brands ? `${item.brands} - ` : ""}${nutriments?.energy_kcal} kcal`,
 					mainValue: Number(quantity),
-					unit: String(unit),
+					unit: String(serving.unit),
 					onPress: () => {
 						router.push({
 							pathname: "/meal/[date]/[name]/set/food",

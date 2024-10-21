@@ -64,15 +64,14 @@ const FoodSchema = z.object({
 	base_serving_unit: z.string(),
 	extra_serving_sizes: z.array(
 		z.object({
-			id: z.number(),
-			name: z.string(),
-			quantity: z.number(),
+			id: z.string(), // Unique identifier for each extra serving size
+			name: z.string(), // Display name for the serving size (e.g., "cup", "slice")
+			quantity: z.number(), // Amount in base units (e.g., 240 grams for 1 cup)
 		}),
 	),
 });
 export type Food = z.infer<typeof FoodSchema>;
 // Observable
-// TODO: Rename to library$
 export const library$ = observable({
 	foods: {} as Record<string, Food>,
 	setFood: (foodId: string, newFood: Food) =>
@@ -105,8 +104,12 @@ const MealItemSchema = z.union([
 		type: z.literal("food"),
 		item: FoodSchema,
 		nutriments: NutrimentsSchema.optional(),
-		quantity: z.number().int().positive(),
-		unit: z.string(),
+		quantity: z.number().positive(),
+		serving: z.object({
+			id: z.string().optional(),
+			unit: z.string(),
+			size: z.number(),
+		}),
 	}),
 	z.object({
 		type: z.literal("quick_add"),
@@ -155,10 +158,10 @@ export const dairy$ = observable({
 							return sumNutrimentsRecords(accMealNutriments, nutriments);
 						}
 						if (mealItem.type === "food") {
-							const { item, quantity } = mealItem;
+							const { item, quantity, serving } = mealItem;
 							const foodNutriments = calculateNutriments(
 								item.base_nutriments,
-								quantity,
+								serving.size * quantity,
 							);
 							meal$.items[itemId].nutriments.set(foodNutriments);
 							return sumNutrimentsRecords(accMealNutriments, foodNutriments);

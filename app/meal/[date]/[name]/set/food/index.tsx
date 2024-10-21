@@ -3,6 +3,7 @@ import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Picker } from "@react-native-picker/picker";
 
 import type { MealScreenParams } from "../..";
 
@@ -34,18 +35,40 @@ export default observer(function AddFoodToMeal() {
 	};
 
 	const [quantity, setQuantity] = useState(mealItem?.quantity ?? 100);
-	const [unit] = useState(mealItem?.unit ?? "g");
+	const [servingId, setServingId] = useState(mealItem?.serving?.id ?? "base");
+
+	const handleServingChange = (itemValue: string) => {
+		setQuantity(itemValue === "base" ? 100 : 1);
+		setServingId(itemValue);
+	};
+
+	const servingSizes = [
+		{
+			id: "base",
+			name: food.base_serving_unit,
+			quantity: 1,
+		},
+		...(food.extra_serving_sizes || []),
+	];
+
+	const selectedServing =
+		servingSizes.find((s) => s.id === servingId) || servingSizes[0];
+
+	const quantityToUse = quantity * selectedServing.quantity;
 
 	const macros = {
 		carbohydrates: calculateNutrientValue(
 			food.base_nutriments?.carbohydrates,
-			quantity,
+			quantityToUse,
 		),
-		proteins: calculateNutrientValue(food.base_nutriments?.proteins, quantity),
-		fat: calculateNutrientValue(food.base_nutriments?.fat, quantity),
+		proteins: calculateNutrientValue(
+			food.base_nutriments?.proteins,
+			quantityToUse,
+		),
+		fat: calculateNutrientValue(food.base_nutriments?.fat, quantityToUse),
 		energy_kcal: calculateNutrientValue(
 			food.base_nutriments?.energy_kcal,
-			quantity,
+			quantityToUse,
 		),
 	};
 
@@ -56,7 +79,11 @@ export default observer(function AddFoodToMeal() {
 		const mealItem: MealItem = {
 			type: "food",
 			quantity,
-			unit,
+			serving: {
+				id: servingId,
+				unit: selectedServing.name,
+				size: selectedServing.quantity,
+			},
 			item: food,
 		};
 		dairy$.setMealItem(date, name, mealItem, mealItemId);
@@ -107,8 +134,25 @@ export default observer(function AddFoodToMeal() {
 							style={styles.quantityInput}
 						/>
 					</View>
-					<View style={styles.unitTextContainer}>
-						<Text style={styles.unitText}>{unit}</Text>
+					<View style={styles.pickerContainer}>
+						<Picker
+							selectedValue={servingId}
+							onValueChange={handleServingChange}
+							style={styles.picker}
+							mode="dropdown"
+						>
+							{servingSizes.map((serving) => (
+								<Picker.Item
+									key={serving.id}
+									label={
+										serving.id === "base"
+											? serving.name
+											: `${serving.name} (${serving.quantity}${food.base_serving_unit})`
+									}
+									value={serving.id}
+								/>
+							))}
+						</Picker>
 					</View>
 				</View>
 
@@ -223,5 +267,12 @@ const stylesheet = createStyleSheet((theme) => ({
 	nutritionLabel: {
 		...theme.fonts.body.m,
 		color: theme.colors.base600,
+	},
+	pickerContainer: {
+		flex: 1,
+		marginLeft: theme.margins[8],
+	},
+	picker: {
+		color: theme.colors.foreground,
 	},
 }));
