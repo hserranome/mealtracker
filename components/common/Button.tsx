@@ -58,7 +58,7 @@ export const Button = forwardRef<React.ElementRef<typeof Pressable>, ButtonProps
 			<Ionicons
 				name={icon}
 				size={24}
-				color={styles.buttonText.color}
+				color={textStyle ? (textStyle as TextStyle).color : styles.buttonText.color}
 				style={styles.icon}
 			/>
 		);
