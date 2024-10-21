@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { observer } from "@legendapp/state/react";
-import * as Crypto from "expo-crypto";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { FormProvider, useFormContext } from "react-hook-form";
@@ -10,6 +9,7 @@ import { useStyles } from "react-native-unistyles";
 import { FoodForm } from "~/components/common/FoodForm";
 import { type Food, library$ } from "~/data";
 import { capitalize } from "~/utils/capitalize";
+import { createUUID } from "~/utils/createUUID";
 
 export default observer(function FoodPage() {
 	const router = useRouter();
@@ -39,7 +39,7 @@ export default observer(function FoodPage() {
 
 	const onSubmit = (data: Food) => {
 		try {
-			const foodId = data.id ?? (isNewFood ? Crypto.randomUUID() : id);
+			const foodId = data.id ?? (isNewFood ? createUUID() : id);
 			library$.setFood(foodId, {
 				...data,
 				id: foodId,
