@@ -1,5 +1,11 @@
 import React, { type ComponentProps, forwardRef } from "react";
-import { TextInput as RNTextInput, Text, View } from "react-native";
+import {
+	TextInput as RNTextInput,
+	Text,
+	View,
+	type StyleProp,
+	type TextStyle,
+} from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type BaseTextInputProps = {
@@ -26,18 +32,21 @@ export const BaseTextInput = forwardRef<RNTextInput, BaseTextInputProps>(
 
 		const keyboardType = type === "number" ? "numeric" : "default";
 
+		const inputStyle = [
+			styles.input,
+			textAlign && { textAlign },
+			expand && { flex: 1 },
+			suffix && { paddingRight: 30 },
+			textInputProps.style,
+		].filter(Boolean) as StyleProp<TextStyle>;
+
 		return (
 			<View style={styles.container}>
 				<RNTextInput
 					placeholderTextColor={theme.colors.base600}
 					keyboardType={keyboardType}
 					{...textInputProps}
-					style={[
-						styles.input,
-						{ textAlign },
-						expand && { flex: 1 },
-						textInputProps.style,
-					]}
+					style={inputStyle}
 					ref={ref}
 				/>
 				{suffix && <Text style={styles.suffix}>{suffix}</Text>}
@@ -77,5 +86,6 @@ const baseInputStyleSheet = createStyleSheet((theme) => ({
 		position: "absolute",
 		right: theme.margins[10],
 		color: theme.colors.base600,
+		paddingLeft: 5,
 	},
 }));
