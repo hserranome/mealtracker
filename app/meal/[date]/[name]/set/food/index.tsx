@@ -1,6 +1,6 @@
 import { observer } from "@legendapp/state/react";
 import { Stack, router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Picker } from "@react-native-picker/picker";
@@ -42,14 +42,17 @@ export default observer(function AddFoodToMeal() {
 		setServingId(itemValue);
 	};
 
-	const servingSizes = [
-		{
-			id: "base",
-			name: food.base_serving_unit,
-			quantity: 1,
-		},
-		...(food.extra_serving_sizes || []),
-	];
+	const servingSizes = useMemo(
+		() => [
+			{
+				id: "base",
+				name: food.base_serving_unit,
+				quantity: 1,
+			},
+			...(food.extra_serving_sizes || []),
+		],
+		[food.extra_serving_sizes, food.base_serving_unit],
+	);
 
 	const selectedServing =
 		servingSizes.find((s) => s.id === servingId) || servingSizes[0];
