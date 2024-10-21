@@ -13,6 +13,7 @@ import type { FoodFormData } from "./_layout";
 
 import type { Food } from "~/data";
 import { createUUID } from "~/utils/createUUID";
+import type { ComponentProps } from "react";
 
 type ServingSizesForm = {
 	base_serving_size: Food["base_serving_size"];
@@ -53,10 +54,10 @@ export default function ServingSizes() {
 		if (fields.length < 10) append({ id: createUUID(), name: "", quantity: 0 });
 	};
 
-	const commonProps = {
-		variant: "ghost" as const,
-		direction: "horizontal" as const,
-		textAlign: "right" as const,
+	const commonProps: ComponentProps<typeof TextInput> = {
+		variant: "ghost",
+		direction: "horizontal",
+		textAlign: "right",
 	};
 
 	return (
