@@ -239,6 +239,8 @@ describe("schemas observables", () => {
 				},
 			};
 
+			// TODO: add recipe case
+
 			dairy$.setMealItem(date, "breakfast", breakfast);
 			dairy$.setMealItem(date, "lunch", lunch);
 
