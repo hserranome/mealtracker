@@ -10,6 +10,7 @@
 		"prebuild": "expo prebuild",
 		"format": "npx @biomejs/biome check --write ./",
 		"test": "jest",
+		"test:watch": "jest --watch",
 		"migration:generate": "npx drizzle-kit generate",
 		"migration:drop": "npx drizzle-kit drop",
 		"android": "expo run:android",
@@ -67,9 +68,7 @@
 	},
 	"expo": {
 		"install": {
-			"exclude": [
-				"react-native-safe-area-context"
-			]
+			"exclude": ["react-native-safe-area-context"]
 		},
 		"doctor": {
 			"reactNativeDirectoryCheck": {
