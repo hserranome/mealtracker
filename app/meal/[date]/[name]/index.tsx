@@ -75,7 +75,7 @@ export default observer(function MealScreen() {
 	const renderListItem = ({ item }: { item: ListItemType }) => (
 		<ListItem
 			item={item}
-			accentColor={theme.colors.blue}
+			accentColor={theme.colors.base800}
 			listActionIcon="close-circle-outline"
 			listActionOnPress={() => deleteMealItem(item.id)}
 		/>
