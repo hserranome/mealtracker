@@ -201,6 +201,7 @@ export const dairy$ = observable({
 			[id]: item,
 		});
 		dairy$.generateEntryNutriments(date);
+		return id;
 	},
 
 	deleteMealItem: (date: string, mealName: string, mealItemId: string) => {
