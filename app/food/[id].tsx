@@ -3,7 +3,7 @@ import { observer } from "@legendapp/state/react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { FormProvider, useFormContext } from "react-hook-form";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useStyles } from "react-native-unistyles";
 
 import { FoodForm } from "~/components/common/FoodForm";
@@ -79,11 +79,13 @@ export default observer(function FoodPage() {
 							),
 				}}
 			/>
-			<FoodForm
-				form={form}
-				onSubmit={onSubmit}
+			<View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+				<FoodForm
+					form={form}
+					onSubmit={onSubmit}
 					submitButtonText={isNewFood ? "Save" : "Update"}
-			/>
+				/>
+			</View>
 		</FormProvider>
 	);
 });
