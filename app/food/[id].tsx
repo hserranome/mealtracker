@@ -82,7 +82,7 @@ export default observer(function FoodPage() {
 			<FoodForm
 				form={form}
 				onSubmit={onSubmit}
-				submitButtonText={isNewFood ? "Next" : "Save"}
+					submitButtonText={isNewFood ? "Save" : "Update"}
 			/>
 		</FormProvider>
 	);
