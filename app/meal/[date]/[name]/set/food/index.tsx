@@ -143,6 +143,7 @@ export default observer(function AddFoodToMeal() {
 							onValueChange={handleServingChange}
 							style={styles.picker}
 							mode="dropdown"
+							itemStyle={styles.pickerItem}
 						>
 							{servingSizes.map((serving) => (
 								<Picker.Item
@@ -276,6 +277,9 @@ const stylesheet = createStyleSheet((theme) => ({
 		marginLeft: theme.margins[8],
 	},
 	picker: {
+		color: theme.colors.foreground,
+	},
+	pickerItem: {
 		color: theme.colors.foreground,
 	},
 }));
