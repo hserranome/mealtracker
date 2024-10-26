@@ -10,8 +10,8 @@ import type { MealScreenParams } from "../..";
 import { Button, ButtonType } from "~/components/common/Button";
 import { MacrosRow } from "~/components/common/MacrosRow/MacrosRow";
 import { BaseTextInput } from "~/components/common/TextInput/BaseTextInput";
-import { type MealItem, dairy$, library$ } from "~/data";
-import { calculateNutrientValue } from "~/utils/calculateProportionalNutrientValue";
+import { type MealItem, dairy$, food$ } from "~/data";
+import { calculateNutrientValue } from "~/utils/calculateNutriments";
 
 export type SetFoodInMealParams = MealScreenParams & {
 	foodId?: string;
@@ -29,7 +29,7 @@ export default observer(function AddFoodToMeal() {
 	const mealItem = result?.type === "food" ? result : undefined;
 
 	const food = {
-		...library$.getFood(foodId),
+		...food$.getFood(foodId),
 		...(mealItem ? mealItem.item : {}),
 		...(defaultValues ? JSON.parse(defaultValues) : {}),
 	};
@@ -90,7 +90,7 @@ export default observer(function AddFoodToMeal() {
 			item: food,
 		};
 		dairy$.setMealItem(date, name, mealItem, mealItemId);
-		library$.setFood(food.id, food);
+		food$.setFood(food.id, food);
 		router.dismissAll();
 		router.navigate({
 			pathname: "/meal/[date]/[name]",

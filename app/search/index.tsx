@@ -6,7 +6,7 @@ import type { MealScreenParams } from "../meal/[date]/[name]";
 
 import type { ListItemType } from "~/components/common/ListItem";
 import { SearchScreen } from "~/components/common/SearchScreen";
-import { library$ } from "~/data";
+import { food$ } from "~/data";
 
 const SearchAllScreen = () => {
 	const { theme } = useStyles();
@@ -17,7 +17,7 @@ const SearchAllScreen = () => {
 	const hasMeal = !!date && !!name;
 
 	// List items
-	const recentFoodItems = library$.foods.get();
+	const recentFoodItems = food$.foods.get();
 	const listItems: ListItemType[] = Object.values(recentFoodItems ?? {})
 		.map((item) => ({
 			id: String(item.id),

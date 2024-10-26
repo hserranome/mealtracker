@@ -7,7 +7,7 @@ import { TouchableOpacity } from "react-native";
 import { useStyles } from "react-native-unistyles";
 
 import { FoodForm } from "~/components/common/FoodForm";
-import { type Food, library$ } from "~/data";
+import { type Food, food$ } from "~/data";
 import { capitalize } from "~/utils/capitalize";
 import { createUUID } from "~/utils/createUUID";
 
@@ -25,7 +25,7 @@ export default observer(function FoodPage() {
 
 	const food = useMemo(() => {
 		return {
-			...library$.getFood(id),
+			...food$.getFood(id),
 			...(values ? JSON.parse(values) : {}),
 		};
 	}, [id, values]);
@@ -40,7 +40,7 @@ export default observer(function FoodPage() {
 	const onSubmit = (data: Food) => {
 		try {
 			const foodId = data.id ?? (isNewFood ? createUUID() : id);
-			library$.setFood(foodId, {
+			food$.setFood(foodId, {
 				...data,
 				id: foodId,
 				name: capitalize(data.name.trim()),
@@ -53,7 +53,7 @@ export default observer(function FoodPage() {
 	};
 
 	const handleDelete = () => {
-		library$.deleteFood(id);
+		food$.deleteFood(id);
 		router.back();
 	};
 

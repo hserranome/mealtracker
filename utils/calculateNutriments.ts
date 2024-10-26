@@ -4,10 +4,7 @@ import type { Nutriments } from "~/data";
 export const calculateNutrientValue = (
 	baseNutrientValue: number | undefined,
 	quantity: number,
-) =>
-	baseNutrientValue
-		? Math.ceil((Number(baseNutrientValue) * quantity) / 100)
-		: 0;
+) => (baseNutrientValue ? (Number(baseNutrientValue) * quantity) / 100 : 0);
 
 export const calculateNutriments = (
 	nutriments: Nutriments,

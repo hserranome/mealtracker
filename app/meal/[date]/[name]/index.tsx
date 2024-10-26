@@ -42,7 +42,7 @@ export default observer(function MealScreen() {
 			if (mealItem.type === "quick_add") {
 				return {
 					id,
-					name: String(mealItem.item.description),
+					name: String(mealItem.description),
 					subtitle: `${mealItem.nutriments?.energy_kcal} kcal`,
 					onPress: () => {
 						router.push({

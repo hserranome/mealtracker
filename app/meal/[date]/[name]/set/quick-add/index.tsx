@@ -8,7 +8,7 @@ import type { MealScreenParams } from "../..";
 
 import { Button, TextInput } from "~/components/common";
 import { type MealItem, type QuickAdd, dairy$ } from "~/data";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 type NutritionField = {
 	name: "energy_kcal" | "fat" | "carbohydrates" | "proteins";
@@ -32,17 +32,12 @@ export default function QuickAddScreen() {
 	const result = dairy$.getMealItem(date, name, mealItemId);
 	const mealItem = result?.type === "quick_add" ? result : undefined;
 
-	const quickAdd = useMemo(() => mealItem ? mealItem.item : {
-		description: '',
+	const quickAdd = mealItem ?? {
+		description: "",
 		nutriments: {
 			energy_kcal: 0,
-			fat: 0,
-			carbohydrates: 0,
-			proteins: 0,
-			},
 		},
-		[mealItem],
-	);
+	};
 
 	const editing = !!mealItemId;
 
@@ -54,11 +49,8 @@ export default function QuickAddScreen() {
 	const submit = form.handleSubmit((data) => {
 		const mealItem: MealItem = {
 			type: "quick_add",
+			description: data.description ?? "",
 			nutriments: data.nutriments,
-			item: {
-				description: data.description ?? "",
-				nutriments: data.nutriments,
-			},
 		};
 		dairy$.setMealItem(date, name, mealItem, mealItemId);
 		router.dismissAll();
@@ -134,7 +126,11 @@ export default function QuickAddScreen() {
 						/>
 					))}
 					<View style={styles.button}>
-						<Button onPress={submit} title={editing ? "Update" : "Add"} disabled={hasErrors} />
+						<Button
+							onPress={submit}
+							title={editing ? "Update" : "Add"}
+							disabled={hasErrors}
+						/>
 					</View>
 				</FormProvider>
 			</KeyboardAwareScrollView>
