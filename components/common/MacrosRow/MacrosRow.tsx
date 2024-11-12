@@ -18,22 +18,32 @@ export const MacrosRow = ({
 	energy_kcal = 0,
 }: MacrosRowProps) => {
 	const { styles, theme } = useStyles(stylesheet);
+	const roundedValues = {
+		carbohydrates: Math.round(carbohydrates),
+		proteins: Math.round(proteins),
+		fat: Math.round(fat),
+		energy_kcal: Math.round(energy_kcal),
+	};
 	return (
 		<View style={styles.macroContainer}>
 			<MacroItem
 				label="Carbohydrate"
-				value={`${carbohydrates}g`}
+				value={`${roundedValues.carbohydrates}g`}
 				color={theme.colors.red}
 			/>
 			<MacroItem
 				label="Protein"
-				value={`${proteins}g`}
+				value={`${roundedValues.proteins}g`}
 				color={theme.colors.blue}
 			/>
-			<MacroItem label="Fat" value={`${fat}g`} color={theme.colors.green} />
+			<MacroItem
+				label="Fat"
+				value={`${roundedValues.fat}g`}
+				color={theme.colors.green}
+			/>
 			<MacroItem
 				label="Calories"
-				value={`${energy_kcal}cal`}
+				value={`${roundedValues.energy_kcal}cal`}
 				color={theme.colors.orange}
 			/>
 		</View>

@@ -1,6 +1,5 @@
 import { Stack } from "expo-router/stack";
 import { FormProvider, useForm } from "react-hook-form";
-import { KeyboardAvoidingView } from "react-native";
 
 import type { Food } from "~/data";
 

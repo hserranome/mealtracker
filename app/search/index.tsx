@@ -1,5 +1,6 @@
+import { observer } from "@legendapp/state/react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import React, { type ComponentProps } from "react";
+import React, { type ComponentProps, useMemo } from "react";
 import { useStyles } from "react-native-unistyles";
 
 import type { MealScreenParams } from "../meal/[date]/[name]";
@@ -8,7 +9,7 @@ import type { ListItemType } from "~/components/common/ListItem";
 import { SearchScreen } from "~/components/common/SearchScreen";
 import { food$ } from "~/data";
 
-const SearchAllScreen = () => {
+const SearchAllScreen = observer(() => {
 	const { theme } = useStyles();
 	const router = useRouter();
 
@@ -33,7 +34,7 @@ const SearchAllScreen = () => {
 	const buttons: ComponentProps<typeof SearchScreen>["buttons"] = [
 		{
 			icon: "barcode-outline",
-			label: "Scan Barcode",
+			label: "Scan barcode",
 			onPress: () => {
 				router.push({
 					pathname: "/meal/[date]/[name]/scanner",
@@ -59,7 +60,15 @@ const SearchAllScreen = () => {
 					params: { date, name },
 				}),
 		},
-		// TODO: Recipes
+		{
+			icon: "restaurant-outline",
+			label: "My recipes",
+			onPress: () =>
+				router.push({
+					pathname: "/search/recipe",
+					params: { date, name },
+				}),
+		},
 	];
 
 	// Actions
@@ -82,13 +91,6 @@ const SearchAllScreen = () => {
 			});
 		};
 
-	const handleGoToSearchMore = (searchQuery: string) => {
-		router.push({
-			pathname: "/search/library",
-			params: { date, name, searchQuery },
-		});
-	};
-
 	return (
 		<>
 			<Stack.Screen
@@ -103,17 +105,14 @@ const SearchAllScreen = () => {
 			<SearchScreen
 				buttons={buttons}
 				listItems={listItems}
-				listTitle="History"
-				accentColor={theme.colors.blue}
-				showSearchMore
-				searchMoreLabel="Search more in library"
+				listTitle="Recent Foods"
 				listActionIcon={hasMeal ? "add-circle-outline" : undefined}
 				listActionOnPress={handleGoToSetFood}
 				onPressItem={handleGoToEditItem}
-				onSearchMore={handleGoToSearchMore}
+				accentColor={theme.colors.pink}
 			/>
 		</>
 	);
-};
+});
 
 export default SearchAllScreen;
